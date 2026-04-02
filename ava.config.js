@@ -1,11 +1,7 @@
 export default {
-  // compileEnhancements: false,
-  extensions: ['ts'],
-  require: [
-    // https://github.com/avajs/ava/blob/master/docs/recipes/typescript.md
-    'ts-node/register',
-
-    // https://github.com/avajs/ava/blob/master/docs/recipes/browser-testing.md
-    './test/helpers/setupBrowserEnv.js',
-  ],
+  extensions: {
+    ts: 'commonjs',
+  },
+  nodeArguments: ['--require=./test/helpers/setupBrowserEnv.js'],
+  require: ['ts-node/register'],
 };

@@ -61,7 +61,7 @@ export class InputBinding {
 
     try {
       pairs = JSON.parse(json);
-    } catch (err) {
+    } catch {
       // Ignore parse error
     }
 

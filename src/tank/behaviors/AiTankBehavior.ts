@@ -186,10 +186,7 @@ export class AiTankBehavior extends TankBehavior {
     );
     const tankPosition = tank.position;
 
-    const direction = basePosition
-      .clone()
-      .sub(tankPosition)
-      .normalize();
+    const direction = basePosition.clone().sub(tankPosition).normalize();
 
     const maxValue = Math.max(direction.x, direction.y);
 

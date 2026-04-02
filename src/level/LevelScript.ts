@@ -38,7 +38,6 @@ export abstract class LevelScript {
     this.init();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public invokeUpdate(updateArgs?: GameUpdateArgs): void {
     if (this.enabled === false) {
       return;

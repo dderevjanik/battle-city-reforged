@@ -15,10 +15,7 @@ export class BoundingBox {
   }
 
   public getCenter(): Vector {
-    return this.min
-      .clone()
-      .add(this.max)
-      .divideScalar(2);
+    return this.min.clone().add(this.max).divideScalar(2);
   }
 
   public getSize(): Size {

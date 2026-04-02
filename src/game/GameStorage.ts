@@ -12,7 +12,7 @@ export class GameStorage extends LocalStorage {
 
     try {
       value = JSON.parse(json);
-    } catch (err) {
+    } catch {
       // Not parse-able
     }
 
@@ -34,7 +34,7 @@ export class GameStorage extends LocalStorage {
 
     try {
       value = JSON.parse(json);
-    } catch (err) {
+    } catch {
       // Not parse-able
     }
 

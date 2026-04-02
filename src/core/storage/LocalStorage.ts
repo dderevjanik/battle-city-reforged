@@ -23,7 +23,7 @@ export class LocalStorage implements Storage {
     let data;
     try {
       data = JSON.parse(json);
-    } catch (err) {
+    } catch {
       // Ignore error
     }
 

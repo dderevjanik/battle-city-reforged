@@ -30,9 +30,8 @@ export class MapConfig {
   }
 
   public fillAndValidate(dto: MapDto): MapDto {
-    const { value: validatedDto, error: schemaError } = MapDtoSchema.validate(
-      dto,
-    );
+    const { value: validatedDto, error: schemaError } =
+      MapDtoSchema.validate(dto);
 
     if (schemaError !== undefined) {
       throw schemaError;

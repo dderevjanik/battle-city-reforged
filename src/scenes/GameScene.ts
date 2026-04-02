@@ -2,6 +2,7 @@ import { GameObject, Scene, SceneParams } from '../core';
 import { GameUpdateArgs } from '../game';
 import * as config from '../config';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export abstract class GameScene<T extends SceneParams = {}> extends Scene {
   protected root: GameObject;
   protected params: T;

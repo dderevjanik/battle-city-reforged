@@ -115,10 +115,7 @@ export class Text<T> {
         lineOffsetX = textWidth - lineWidth;
       }
 
-      const lineOffset = textOffset
-        .clone()
-        .addX(lineOffsetX)
-        .addY(lineOffsetY);
+      const lineOffset = textOffset.clone().addX(lineOffsetX).addY(lineOffsetY);
 
       const lineItems = this.buildWordsFromLine(line, lineOffset);
       textItems.push(...lineItems);

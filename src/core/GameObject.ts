@@ -9,7 +9,7 @@ export class GameObject extends RenderObject {
 
   private needsSetup = true;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public invokeUpdate(...args: any[]): void {
     if (this.needsSetup === true) {
       this.needsSetup = false;

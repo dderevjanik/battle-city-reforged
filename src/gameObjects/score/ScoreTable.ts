@@ -200,14 +200,10 @@ export class ScoreTable extends GameObject {
 
   private finish(): void {
     this.primaryTotalKills.setText(
-      this.getPrimaryRecord()
-        .getKillTotalCount()
-        .toString(),
+      this.getPrimaryRecord().getKillTotalCount().toString(),
     );
     this.secondaryTotalKills.setText(
-      this.getSecondaryRecord()
-        .getKillTotalCount()
-        .toString(),
+      this.getSecondaryRecord().getKillTotalCount().toString(),
     );
 
     this.state = State.Done;

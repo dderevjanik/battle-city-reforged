@@ -23,9 +23,11 @@ module.exports = {
   },
 
   plugins: [
-    new CopyWebpackPlugin([
-      { from: 'public/' },
-      { from: 'data/', to: 'data/' },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'public/' },
+        { from: 'data/', to: 'data/' },
+      ],
+    }),
   ],
 };

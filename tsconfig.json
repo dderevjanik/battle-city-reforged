@@ -5,10 +5,10 @@
     "target": "ES2015",
     "module": "commonjs",
     "moduleResolution": "node10",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "esModuleInterop": true,
     "strict": false,
     "skipLibCheck": true,
-    "typeRoots": ["./src/types"]
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   }
 }

@@ -1,4 +1,4 @@
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 const baseConfig = require('./base.config');
 
@@ -8,6 +8,6 @@ module.exports = merge(baseConfig, {
   devtool: 'source-map',
 
   devServer: {
-    contentBase: './dist',
+    static: './dist',
   },
 });

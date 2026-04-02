@@ -10,8 +10,7 @@
     "test:watch": "ava --verbose --watch"
   },
   "dependencies": {
-    "@hapi/joi": "^17.1.0",
-    "@types/hapi__joi": "^16.0.12",
+    "joi": "^18.1.2",
     "stats.js": "^0.17.0"
   },
   "devDependencies": {

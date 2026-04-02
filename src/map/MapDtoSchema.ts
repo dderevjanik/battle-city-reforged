@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import Joi from '@hapi/joi';
 
 // TODO: circular deps?
 import { TankTier } from '../tank/TankTier';

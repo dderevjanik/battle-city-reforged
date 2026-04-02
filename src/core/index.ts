@@ -24,7 +24,6 @@ export * from './Size';
 export * from './Sound';
 export * from './SpriteAlignment';
 export * from './State';
-export * from './Storage';
 export * from './Subject';
 export * from './Timer';
 export * from './Transform';

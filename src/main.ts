@@ -1,4 +1,4 @@
-import * as Stats from 'stats.js';
+import Stats from 'stats.js';
 
 import {
   AudioLoader,
@@ -30,11 +30,11 @@ import { GameSceneRouter, GameSceneType } from './scenes';
 
 import * as config from './config';
 
-import * as audioManifest from '../data/audio.manifest.json';
-import * as spriteManifest from '../data/sprite.manifest.json';
-import * as spriteFontConfig from '../data/fonts/sprite-font.json';
-import * as rectFontConfig from '../data/fonts/rect-font.json';
-import * as mapManifest from '../data/map.manifest.json';
+import audioManifest from '../data/audio.manifest.json';
+import spriteManifest from '../data/sprite.manifest.json';
+import spriteFontConfig from '../data/fonts/sprite-font.json';
+import rectFontConfig from '../data/fonts/rect-font.json';
+import mapManifest from '../data/map.manifest.json';
 
 const loadingElement = document.querySelector('[data-loading]');
 
@@ -206,7 +206,10 @@ async function main(): Promise<void> {
   // gameLoop.next();
 }
 
-main();
+main().catch((err) => {
+  console.error('Failed to start game:', err);
+  loadingElement.textContent = `ERROR: ${err.message}`;
+});
 
 if (config.IS_DEV) {
   window.gameLoop = gameLoop;

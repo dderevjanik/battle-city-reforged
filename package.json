@@ -1,21 +1,21 @@
 {
   "private": true,
   "scripts": {
-    "build:prod": "webpack --config webpack/prod.config.js",
-    "build:dev": "webpack --config webpack/dev.config.js",
+    "build:prod": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/prod.config.js",
+    "build:dev": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/dev.config.js",
     "lint": "eslint 'src/**' --max-warnings=0 --ext .js,.ts",
-    "start": "webpack-dev-server --open --config webpack/dev.config.js",
-    "start:prod": "webpack-dev-server --open --config webpack/prod.config.js",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --open --config webpack/dev.config.js",
+    "start:prod": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --open --config webpack/prod.config.js",
     "test": "ava --verbose",
     "test:watch": "ava --verbose --watch"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.0",
     "@types/hapi__joi": "^16.0.12",
-    "awesome-typescript-loader": "^5.2.1",
     "copy-webpack-plugin": "^5.1.1",
     "stats.js": "^0.17.0",
-    "typescript": "^3.7.4",
+    "ts-loader": "~8.4.0",
+    "typescript": "^6.0.2",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2"

@@ -44,7 +44,7 @@ export class LevelPointsScript extends LevelScript {
       case TankTier.D:
         return PointsValue.V400;
       default:
-        return 0;
+        return PointsValue.V100;
     }
   }
 }

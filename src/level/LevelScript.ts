@@ -55,12 +55,10 @@ export abstract class LevelScript {
     // Virtual
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected setup(updateArgs?: GameUpdateArgs): void {
     // Virtual
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected update(updateArgs?: GameUpdateArgs): void {
     // Virtual
   }

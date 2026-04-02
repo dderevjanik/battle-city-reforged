@@ -1,7 +1,6 @@
 import { SceneType } from './SceneType';
 
 export type SceneParams = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class Subject<T> {
   private listeners: ((event: T) => any)[] = [];

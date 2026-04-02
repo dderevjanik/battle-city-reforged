@@ -8,7 +8,6 @@ export abstract class MenuItem extends GameObject {
   protected focusable = true;
   public isFocused = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public updateFocused(updateArgs?: GameUpdateArgs): void {
     // Virtual
   }

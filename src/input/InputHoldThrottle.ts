@@ -1,6 +1,5 @@
 import { InputMethod, Timer } from '../core';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InputHoldThrottleCb = () => any;
 
 export interface InputHoldThrottleOptions {

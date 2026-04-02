@@ -9,7 +9,6 @@ export class GameObject extends RenderObject {
 
   private needsSetup = true;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public invokeUpdate(...args: any[]): void {
     if (this.needsSetup === true) {
       this.needsSetup = false;
@@ -35,17 +34,14 @@ export class GameObject extends RenderObject {
     return !this.needsSetup;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
   protected setup(...args: any[]): void {
     return undefined;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
   protected update(...args: any[]): void {
     return undefined;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected collide(collision: Collision): void {
     return undefined;
   }

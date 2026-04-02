@@ -1,5 +1,8 @@
 {
   "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "build:prod": "webpack --config webpack/prod.config.js",
     "build:dev": "webpack --config webpack/dev.config.js",
@@ -18,11 +21,11 @@
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
     "ava": "^6.4.1",
-    "browser-env": "^3.3.0",
-    "copy-webpack-plugin": "^12.0.0",
+    "copy-webpack-plugin": "^14.0.0",
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
+    "happy-dom": "^20.8.9",
     "prettier": "^3.8.1",
     "ts-loader": "^9.0.0",
     "ts-node": "^10.9.2",

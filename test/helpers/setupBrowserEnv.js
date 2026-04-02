@@ -1,6 +1,26 @@
-// https://github.com/avajs/ava/blob/master/docs/recipes/browser-testing.md
+const { Window } = require('happy-dom');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const browserEnv = require('browser-env');
+const window = new Window();
 
-browserEnv();
+// Expose browser globals to Node.js global scope for tests
+const globals = [
+  'document',
+  'navigator',
+  'window',
+  'HTMLCanvasElement',
+  'CanvasRenderingContext2D',
+  'Image',
+  'Audio',
+  'localStorage',
+  'performance',
+  'requestAnimationFrame',
+  'cancelAnimationFrame',
+];
+
+globals.forEach((key) => {
+  if (window[key] !== undefined) {
+    global[key] = window[key];
+  }
+});
+
+global.window = window;

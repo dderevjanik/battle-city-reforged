@@ -1,10 +1,7 @@
 import Stats from 'stats.js';
 
-import { GameLoop } from './core/GameLoop';
-import { GameObject } from './core/GameObject';
 import { Logger } from './core/Logger';
 import { State } from './core/State';
-import { Vector } from './core/Vector';
 import { CollisionSystem } from './core/collision/CollisionSystem';
 import { ColorSpriteFontGenerator } from './core/graphics/ColorSpriteFontGenerator';
 import { AudioLoader } from './core/loaders/AudioLoader';
@@ -12,11 +9,7 @@ import { ImageLoader } from './core/loaders/ImageLoader';
 import { RectFontLoader } from './core/loaders/RectFontLoader';
 import { SpriteFontLoader } from './core/loaders/SpriteFontLoader';
 import { SpriteLoader } from './core/loaders/SpriteLoader';
-import { createPixiApp } from './core/render/PixiApp';
-import { PixiTextureManager } from './core/render/PixiTextureManager';
-import { PixiRenderer } from './core/render/PixiRenderer';
-import { DebugGameLoopMenu } from './debug/DebugGameLoopMenu';
-import { DebugInspector } from './debug/DebugInspector';
+import { createPhaserGame } from './core/render/PhaserGame';
 import { AudioManager } from './game/AudioManager';
 import { GameState } from './game/GameState';
 import { GameStorage } from './game/GameStorage';
@@ -27,8 +20,6 @@ import { InputManager } from './input/InputManager';
 import { ManifestMapListReader } from './map/ManifestMapListReader';
 import { MapLoader } from './map/MapLoader';
 import { PointsHighscoreManager } from './points/PointsHighscoreManager';
-import { GameSceneRouter } from './scenes/GameSceneRouter';
-import { GameSceneType } from './scenes/GameSceneType';
 
 import * as config from './config';
 
@@ -41,15 +32,6 @@ import mapManifest from '../data/map.manifest.json';
 const loadingElement = document.querySelector('[data-loading]');
 
 const log = new Logger('main', Logger.Level.Debug);
-
-const pixiApp = createPixiApp({
-  width: config.CANVAS_WIDTH,
-  height: config.CANVAS_HEIGHT,
-});
-
-const textureManager = new PixiTextureManager(spriteManifest);
-
-let pixiRenderer: PixiRenderer;
 
 const gameStorage = new GameStorage(config.STORAGE_NAMESPACE);
 gameStorage.load();
@@ -90,26 +72,6 @@ const pointsHighscoreManager = new PointsHighscoreManager(gameStorage);
 
 const collisionSystem = new CollisionSystem();
 
-const sceneRouter = new GameSceneRouter();
-sceneRouter.start(GameSceneType.MainMenu);
-sceneRouter.transitionStarted.addListener(() => {
-  collisionSystem.reset();
-});
-
-const debugInspector = new DebugInspector(pixiApp.view as HTMLCanvasElement);
-debugInspector.listen();
-debugInspector.click.addListener((position: Vector) => {
-  const intersections: GameObject[] = [];
-
-  const scene = sceneRouter.getCurrentScene();
-  scene.getRoot().traverseDescedants((child) => {
-    if (child.getWorldBoundingBox().containsPoint(position)) {
-      intersections.push(child);
-    }
-  });
-  log.debug(intersections);
-});
-
 const gameState = new State<GameState>(GameState.Playing);
 
 const gameContext: GameContext = {
@@ -129,30 +91,11 @@ const gameContext: GameContext = {
   spriteLoader,
 };
 
-const gameLoop = new GameLoop();
-
 const stats = new Stats();
-const debugGameLoopMenu = new DebugGameLoopMenu(gameLoop);
 
 if (config.IS_DEV) {
   document.body.appendChild(stats.dom);
-  debugGameLoopMenu.attach();
 }
-
-gameLoop.tick.addListener((event) => {
-  stats.begin();
-
-  inputManager.update();
-
-  const scene = sceneRouter.getCurrentScene();
-  scene.invokeUpdate(gameContext, event.deltaTime);
-
-  pixiRenderer.render(scene.getRoot());
-
-  gameState.update();
-
-  stats.end();
-});
 
 async function main(): Promise<void> {
   log.time('Audio preload');
@@ -195,36 +138,24 @@ async function main(): Promise<void> {
   await spriteLoader.preloadAllAsync();
   log.timeEnd('Sprites preload');
 
-  log.time('PixiJS textures preload');
-  loadingElement.textContent = 'Loading PixiJS textures...';
-  await textureManager.preload();
-  log.timeEnd('PixiJS textures preload');
-
-  pixiRenderer = new PixiRenderer({
-    width: config.CANVAS_WIDTH,
-    height: config.CANVAS_HEIGHT,
-    app: pixiApp,
-    textureManager,
-  });
-  pixiRenderer.buildTextureCache(spriteManifest);
-
   log.time('Input bindings load');
   loadingElement.textContent = 'Loading input bindings...';
   inputManager.loadAllBindings();
   log.timeEnd('Input bindings load');
 
   document.body.removeChild(loadingElement);
-  document.body.appendChild(pixiApp.view as HTMLCanvasElement);
 
-  gameLoop.start();
-  // gameLoop.next();
+  // Create Phaser game — it will append its own canvas to document.body
+  const phaserGame = createPhaserGame({
+    width: config.CANVAS_WIDTH,
+    height: config.CANVAS_HEIGHT,
+  });
+
+  // Inject the game context into the Phaser registry BEFORE BridgeScene.create() runs
+  phaserGame.registry.set('gameContext', gameContext);
 }
 
 main().catch((err) => {
   console.error('Failed to start game:', err);
   loadingElement.textContent = `ERROR: ${err.message}`;
 });
-
-if (config.IS_DEV) {
-  window.gameLoop = gameLoop;
-}

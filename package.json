@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "joi": "^18.1.2",
-    "pixi.js": "^7.4.3",
+    "phaser": "^3.90.0",
     "stats.js": "^0.17.0"
   },
   "devDependencies": {

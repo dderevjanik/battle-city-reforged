@@ -1,10 +1,6 @@
-import { GameLoop } from '../core/GameLoop';
+export {};
 
 declare global {
-  interface Window {
-    gameLoop: GameLoop;
-  }
-
   type NativeCanvas = HTMLCanvasElement | OffscreenCanvas;
 
   type NativeContext =

@@ -1,9 +1,5 @@
-import { RenderObject } from './RenderObject';
-import { RenderContext } from './render';
-
-export abstract class Painter {
-  public abstract paint(
-    context: RenderContext,
-    renderObject: RenderObject, // TODO: circular reference
-  ): void;
-}
+/**
+ * Base class for painters. Concrete painters (SpritePainter, RectPainter, etc.)
+ * hold rendering properties that the PixiRenderer reads directly.
+ */
+export abstract class Painter {}

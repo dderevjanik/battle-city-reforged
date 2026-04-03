@@ -14,7 +14,6 @@ export * from './BoundingBox';
 export * from './Deferred';
 export * from './GameLoop';
 export * from './GameObject';
-export * from './GameRenderer';
 export * from './Logger';
 export * from './Matrix3';
 export * from './Matrix4';

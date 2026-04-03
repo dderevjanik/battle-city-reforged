@@ -2,7 +2,7 @@ import { GameObject } from '../core/GameObject';
 import { Subject } from '../core/Subject';
 import { GameContext } from '../game/GameUpdateArgs';
 import { InputHoldThrottle } from '../input/InputHoldThrottle';
-import { LevelSelectionInputContext } from '../input/LevelSelectionInputContext';
+import { LevelSelectionInputContext } from '../input/InputContexts';
 import * as config from '../config';
 
 import { LevelTitle } from './text/LevelTitle';

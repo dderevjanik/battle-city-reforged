@@ -6,9 +6,7 @@ import { Tank, TankState } from '../gameObjects/Tank';
 import { TankIdleAnimation } from './TankIdleAnimation';
 import { TankMoveAnimation } from './TankMoveAnimation';
 
-import { TankAnimationFrame } from './TankAnimationFrame';
-import { TankColor } from './TankColor';
-import { TankType } from './TankType';
+import { TankAnimationFrame, TankColor, TankType } from './TankTypes';
 
 // TODO: Remake to factory?
 

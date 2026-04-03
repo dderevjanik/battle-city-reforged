@@ -4,7 +4,7 @@ import { Timer } from '../../core/Timer';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { PointsRecord } from '../../points/PointsRecord';
-import { TankTier } from '../../tank/TankTier'; // TODO: circular dep?
+import { TankTier } from '../../tank/TankTypes'; // TODO: circular dep?
 import * as config from '../../config';
 
 import { SpriteText } from '../text/SpriteText';

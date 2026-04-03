@@ -1,4 +1,4 @@
-import { SceneParams } from '../../core/scene/SceneNavigator';
+import { SceneParams } from '../../core/scene/Scene';
 import { MapConfig } from '../../map/MapConfig';
 
 import { EditorLoadState } from './EditorLoadState';

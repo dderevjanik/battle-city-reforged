@@ -1,7 +1,7 @@
 import { Logger } from '../../core/Logger';
 import { Timer } from '../../core/Timer';
 import { Vector } from '../../core/Vector';
-import { RandomUtils } from '../../core/utils/RandomUtils';
+import { RandomUtils } from '../../core/utils';
 import { Rotation } from '../../game/Rotation';
 import { Tank } from '../../gameObjects/Tank';
 import * as config from '../../config';

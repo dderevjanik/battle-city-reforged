@@ -3,7 +3,7 @@ import { GameState } from '../../game/GameState';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { PauseNotice } from '../../gameObjects/PauseNotice';
 import { InputManager } from '../../input/InputManager';
-import { LevelPlayInputContext } from '../../input/LevelPlayInputContext';
+import { LevelPlayInputContext } from '../../input/InputContexts';
 
 import { LevelScript } from '../LevelScript';
 

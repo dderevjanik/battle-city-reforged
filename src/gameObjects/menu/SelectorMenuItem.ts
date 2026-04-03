@@ -1,7 +1,7 @@
 import { GameObject } from '../../core/GameObject';
 import { Subject } from '../../core/Subject';
 import { GameContext } from '../../game/GameUpdateArgs';
-import { MenuInputContext } from '../../input/MenuInputContext';
+import { MenuInputContext } from '../../input/InputContexts';
 import * as config from '../../config';
 
 import { SpriteText } from '../text/SpriteText';

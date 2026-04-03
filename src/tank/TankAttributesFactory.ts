@@ -1,7 +1,4 @@
-import { TankBulletWallDamage } from './TankBulletWallDamage';
-import { TankParty } from './TankParty';
-import { TankTier } from './TankTier';
-import { TankType } from './TankType';
+import { TankBulletWallDamage, TankParty, TankTier, TankType } from './TankTypes';
 
 export interface TankAttributes {
   bulletMaxCount: number;

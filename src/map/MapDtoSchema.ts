@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 // TODO: circular deps?
-import { TankTier } from '../tank/TankTier';
+import { TankTier } from '../tank/TankTypes';
 import { TerrainType } from '../terrain/TerrainType';
 
 import { MapDto } from './MapDto';

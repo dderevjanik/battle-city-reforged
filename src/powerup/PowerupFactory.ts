@@ -1,4 +1,4 @@
-import { RandomUtils } from '../core/utils/RandomUtils';
+import { RandomUtils } from '../core/utils';
 import { Powerup } from '../gameObjects/Powerup';
 
 import { PowerupType } from './PowerupType';

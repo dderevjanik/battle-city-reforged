@@ -4,7 +4,7 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import { EditorInputHint } from '../../gameObjects/EditorInputHint';
 import { SceneInputHint } from '../../gameObjects/text/SceneInputHint';
 import { SpriteText } from '../../gameObjects/text/SpriteText';
-import { EditorControlsInputContext } from '../../input/EditorControlsInputContext';
+import { EditorControlsInputContext } from '../../input/InputContexts';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

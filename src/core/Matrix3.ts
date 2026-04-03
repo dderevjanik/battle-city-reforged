@@ -1,6 +1,6 @@
 import { Vector } from './Vector';
 
-import { MathUtils } from './utils/MathUtils';
+import { MathUtils } from './utils';
 
 // References:
 // https://github.com/mrdoob/three.js/blob/master/src/math/Matrix3.js

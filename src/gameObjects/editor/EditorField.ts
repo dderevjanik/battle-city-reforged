@@ -4,9 +4,8 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import { Rotation } from '../../game/Rotation';
 import { Tag } from '../../game/Tag';
 import { Base } from '../Base';
-import { TankColor } from '../../tank/TankColor';
+import { TankColor, TankType } from '../../tank/TankTypes';
 import { TankColorFactory } from '../../tank/TankColorFactory';
-import { TankType } from '../../tank/TankType';
 import * as config from '../../config';
 
 import { EditorTankDummy } from './EditorTankDummy';

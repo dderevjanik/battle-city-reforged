@@ -3,7 +3,7 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import { EditorBorder } from '../../gameObjects/editor/EditorBorder';
 import { EditorField } from '../../gameObjects/editor/EditorField';
 import { EditorMap } from '../../gameObjects/editor/EditorMap';
-import { EditorMapInputContext } from '../../input/EditorMapInputContext';
+import { EditorMapInputContext } from '../../input/InputContexts';
 import { MapConfig } from '../../map/MapConfig';
 import * as config from '../../config';
 

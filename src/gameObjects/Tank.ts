@@ -15,12 +15,10 @@ import { GameState } from '../game/GameState';
 import { GameContext } from '../game/GameUpdateArgs';
 import { Rotation } from '../game/Rotation';
 import { Tag } from '../game/Tag';
-import { TankAnimationFrame } from '../tank/TankAnimationFrame';
+import { TankAnimationFrame, TankDeathReason, TankType } from '../tank/TankTypes';
 import { TankAttributes, TankAttributesFactory } from '../tank/TankAttributesFactory';
 import { TankBehavior } from '../tank/TankBehavior';
-import { TankDeathReason } from '../tank/TankDeathReason';
 import { TankSkinAnimation } from '../tank/TankSkinAnimation';
-import { TankType } from '../tank/TankType';
 import * as config from '../config';
 
 import { Bullet } from './Bullet';

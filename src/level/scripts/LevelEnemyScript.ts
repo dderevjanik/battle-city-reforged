@@ -3,15 +3,15 @@ import { Vector } from '../../core/Vector';
 import { Rotation } from '../../game/Rotation';
 import { EnemyTank } from '../../gameObjects/EnemyTank';
 import { PowerupType } from '../../powerup/PowerupType';
-import { TankDeathReason } from '../../tank/TankDeathReason';
+import { TankDeathReason, TankParty, TankType } from '../../tank/TankTypes';
 import { TankFactory } from '../../tank/TankFactory';
-import { TankParty } from '../../tank/TankParty';
-import { TankType } from '../../tank/TankType';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import { LevelEnemySpawnCompletedEvent } from '../events/LevelEnemySpawnCompletedEvent';
-import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
+import {
+  LevelEnemySpawnCompletedEvent,
+  LevelPowerupPickedEvent,
+} from '../LevelEvents';
 
 export class LevelEnemyScript extends LevelScript {
   private list: TankType[] = [];

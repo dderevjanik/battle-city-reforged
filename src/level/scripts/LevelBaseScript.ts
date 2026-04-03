@@ -3,7 +3,7 @@ import { PowerupType } from '../../powerup/PowerupType';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
+import { LevelPowerupPickedEvent } from '../LevelEvents';
 
 export class LevelBaseScript extends LevelScript {
   private base: Base;

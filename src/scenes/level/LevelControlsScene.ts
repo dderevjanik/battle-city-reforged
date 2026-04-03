@@ -8,7 +8,7 @@ import { SceneInputHint } from '../../gameObjects/text/SceneInputHint';
 import { SpriteText } from '../../gameObjects/text/SpriteText';
 import { InputDeviceType } from '../../input/InputDeviceType';
 import { InputVariant } from '../../input/InputVariant';
-import { LevelControlsInputContext } from '../../input/LevelControlsInputContext';
+import { LevelControlsInputContext } from '../../input/InputContexts';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

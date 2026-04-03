@@ -4,9 +4,9 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import { PlayerTank } from '../../gameObjects/PlayerTank';
 import { VictoryMap } from '../../gameObjects/VictoryMap';
 import { VictoryHeading } from '../../gameObjects/text/VictoryHeading';
-import { MenuInputContext } from '../../input/MenuInputContext';
+import { MenuInputContext } from '../../input/InputContexts';
+import { TankType } from '../../tank/TankTypes';
 import { TankFactory } from '../../tank/TankFactory';
-import { TankType } from '../../tank/TankType';
 import { VictoryTankBehavior } from '../../tank/behaviors/VictoryTankBehavior';
 
 import { GameScene } from '../GameScene';

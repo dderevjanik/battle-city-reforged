@@ -4,9 +4,7 @@ import { SpritePainter } from '../../core/painters/SpritePainter';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Rotation } from '../../game/Rotation';
 import { Tag } from '../../game/Tag';
-import { TankColor } from '../../tank/TankColor';
-import { TankSpriteId } from '../../tank/TankSpriteId';
-import { TankType } from '../../tank/TankType';
+import { TankColor, TankSpriteId, TankType } from '../../tank/TankTypes';
 
 export class EditorTankDummy extends GameObject {
   public collider = new BoxCollider(this);

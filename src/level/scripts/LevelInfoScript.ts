@@ -2,8 +2,10 @@ import { LevelInfo } from '../../gameObjects/info/LevelInfo';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import { LevelEnemySpawnRequestedEvent } from '../events/LevelEnemySpawnRequestedEvent';
-import { LevelPlayerDiedEvent } from '../events/LevelPlayerDiedEvent';
+import {
+  LevelEnemySpawnRequestedEvent,
+  LevelPlayerDiedEvent,
+} from '../LevelEvents';
 
 export class LevelInfoScript extends LevelScript {
   private info: LevelInfo;

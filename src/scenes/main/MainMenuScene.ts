@@ -5,7 +5,7 @@ import { Menu } from '../../gameObjects/menu/Menu';
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { MainHeading } from '../../gameObjects/text/MainHeading';
 import { SpriteText } from '../../gameObjects/text/SpriteText';
-import { MenuInputContext } from '../../input/MenuInputContext';
+import { MenuInputContext } from '../../input/InputContexts';
 import { PointsHighscoreManager } from '../../points/PointsHighscoreManager';
 import * as config from '../../config';
 

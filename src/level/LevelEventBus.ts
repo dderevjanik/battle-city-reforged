@@ -1,16 +1,18 @@
 import { Subject } from '../core/Subject';
 
-import { LevelEnemyDiedEvent } from './events/LevelEnemyDiedEvent';
-import { LevelEnemyExplodedEvent } from './events/LevelEnemyExplodedEvent';
-import { LevelEnemyHitEvent } from './events/LevelEnemyHitEvent';
-import { LevelEnemySpawnCompletedEvent } from './events/LevelEnemySpawnCompletedEvent';
-import { LevelEnemySpawnRequestedEvent } from './events/LevelEnemySpawnRequestedEvent';
-import { LevelMapTileDestroyedEvent } from './events/LevelMapTIleDestroyedEvent';
-import { LevelPlayerDiedEvent } from './events/LevelPlayerDiedEvent';
-import { LevelPlayerSpawnCompletedEvent } from './events/LevelPlayerSpawnCompletedEvent';
-import { LevelPlayerSpawnRequestedEvent } from './events/LevelPlayerSpawnRequestedEvent';
-import { LevelPowerupPickedEvent } from './events/LevelPowerupPickedEvent';
-import { LevelPowerupSpawnedEvent } from './events/LevelPowerupSpawnedEvent';
+import {
+  LevelEnemyDiedEvent,
+  LevelEnemyExplodedEvent,
+  LevelEnemyHitEvent,
+  LevelEnemySpawnCompletedEvent,
+  LevelEnemySpawnRequestedEvent,
+  LevelMapTileDestroyedEvent,
+  LevelPlayerDiedEvent,
+  LevelPlayerSpawnCompletedEvent,
+  LevelPlayerSpawnRequestedEvent,
+  LevelPowerupPickedEvent,
+  LevelPowerupSpawnedEvent,
+} from './LevelEvents';
 
 export class LevelEventBus {
   public baseDied = new Subject();

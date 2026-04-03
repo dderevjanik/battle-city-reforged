@@ -5,16 +5,18 @@ import { Session } from '../../game/Session';
 import { Border } from '../../gameObjects/Border';
 import { InputManager } from '../../input/InputManager';
 import { PowerupType } from '../../powerup/PowerupType';
-import { TankDeathReason } from '../../tank/TankDeathReason';
+import { TankDeathReason } from '../../tank/TankTypes';
 import { TerrainFactory } from '../../terrain/TerrainFactory';
 import * as config from '../../config';
 
 import { LevelEventBus } from '../../level/LevelEventBus';
 import { LevelScript } from '../../level/LevelScript';
 import { LevelWorld } from '../../level/LevelWorld';
-import { LevelEnemyDiedEvent } from '../../level/events/LevelEnemyDiedEvent';
-import { LevelPlayerDiedEvent } from '../../level/events/LevelPlayerDiedEvent';
-import { LevelPowerupPickedEvent } from '../../level/events/LevelPowerupPickedEvent';
+import {
+  LevelEnemyDiedEvent,
+  LevelPlayerDiedEvent,
+  LevelPowerupPickedEvent,
+} from '../../level/LevelEvents';
 import { LevelAudioScript } from '../../level/scripts/LevelAudioScript';
 import { LevelBaseScript } from '../../level/scripts/LevelBaseScript';
 import { LevelEnemyScript } from '../../level/scripts/LevelEnemyScript';

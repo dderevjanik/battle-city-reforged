@@ -9,9 +9,11 @@ import { TerrainType } from '../../terrain/TerrainType';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import { LevelEnemyHitEvent } from '../events/LevelEnemyHitEvent';
-import { LevelEnemySpawnCompletedEvent } from '../events/LevelEnemySpawnCompletedEvent';
-import { LevelMapTileDestroyedEvent } from '../events/LevelMapTIleDestroyedEvent';
+import {
+  LevelEnemyHitEvent,
+  LevelEnemySpawnCompletedEvent,
+  LevelMapTileDestroyedEvent,
+} from '../LevelEvents';
 
 export class LevelPowerupScript extends LevelScript {
   private timer: Timer;

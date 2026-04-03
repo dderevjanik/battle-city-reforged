@@ -2,7 +2,7 @@ import { Timer } from '../../core/Timer';
 import { AudioManager } from '../../game/AudioManager';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { GameOverHeading } from '../../gameObjects/text/GameOverHeading';
-import { MenuInputContext } from '../../input/MenuInputContext';
+import { MenuInputContext } from '../../input/InputContexts';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

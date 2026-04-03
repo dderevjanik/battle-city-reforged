@@ -7,7 +7,7 @@ import { Collision } from '../../core/collision/Collision';
 import { RectPainter } from '../../core/painters/RectPainter';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Tag } from '../../game/Tag';
-import { EditorMapInputContext } from '../../input/EditorMapInputContext';
+import { EditorMapInputContext } from '../../input/InputContexts';
 import { InputHoldThrottle, InputHoldThrottleOptions } from '../../input/InputHoldThrottle';
 import * as config from '../../config';
 

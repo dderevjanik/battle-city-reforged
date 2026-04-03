@@ -4,11 +4,11 @@ import { AudioManager } from '../../game/AudioManager';
 import { GameState } from '../../game/GameState';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { InputManager } from '../../input/InputManager';
-import { LevelPlayInputContext } from '../../input/LevelPlayInputContext';
+import { LevelPlayInputContext } from '../../input/InputContexts';
 import { PowerupType } from '../../powerup/PowerupType';
 
 import { LevelScript } from '../LevelScript';
-import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
+import { LevelPowerupPickedEvent } from '../LevelEvents';
 
 const MOVE_CONTROLS = [
   ...LevelPlayInputContext.MoveUp,

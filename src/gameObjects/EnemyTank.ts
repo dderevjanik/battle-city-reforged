@@ -2,9 +2,8 @@ import { Sound } from '../core/Sound';
 import { GameState } from '../game/GameState';
 import { GameContext } from '../game/GameUpdateArgs';
 import { Tag } from '../game/Tag';
-import { TankColor } from '../tank/TankColor';
+import { TankColor, TankTier } from '../tank/TankTypes';
 import { TankSkinAnimation } from '../tank/TankSkinAnimation';
-import { TankTier } from '../tank/TankTier';
 import * as config from '../config';
 
 import { Tank } from './Tank';

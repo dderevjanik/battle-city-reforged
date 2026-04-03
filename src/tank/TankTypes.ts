@@ -1,5 +1,35 @@
-import { TankParty } from './TankParty';
-import { TankTier } from './TankTier';
+import { Sprite } from '../core/graphics/Sprite';
+import { SpriteLoader } from '../core/loaders/SpriteLoader';
+import { Rotation } from '../game/Rotation';
+
+export enum TankParty {
+  Player = 'player',
+  Enemy = 'enemy',
+}
+
+export enum TankDeathReason {
+  Bullet = 'bullet',
+  WipeoutPowerup = 'wipeout',
+}
+
+export enum TankBulletWallDamage {
+  Low = 1,
+  High = 2,
+}
+
+export enum TankTier {
+  A = 'a',
+  B = 'b',
+  C = 'c',
+  D = 'd',
+}
+
+export enum TankColor {
+  Default = 'default',
+  Primary = 'primary',
+  Secondary = 'secondary',
+  Danger = 'danger',
+}
 
 export class TankType {
   public party: TankParty;
@@ -88,5 +118,71 @@ export class TankType {
   }
   public static EnemyD(): TankType {
     return new TankType(TankParty.Enemy, TankTier.D);
+  }
+}
+
+const SPRITE_TANK_PREFIX = 'tank';
+const SPRITE_ID_SEPARATOR = '.';
+
+export class TankSpriteId {
+  public static create(
+    type: TankType,
+    color: TankColor,
+    rotation: Rotation,
+    frameNumber = 1,
+  ): string {
+    const parts = [
+      SPRITE_TANK_PREFIX,
+      type.party.toString(),
+      color.toString(),
+      type.tier.toString(),
+      this.getRotationString(rotation),
+      frameNumber.toString(),
+    ];
+
+    const spriteId = parts.join(SPRITE_ID_SEPARATOR);
+
+    return spriteId;
+  }
+
+  private static getRotationString(rotation: Rotation): string {
+    switch (rotation) {
+      case Rotation.Up:
+        return 'up';
+      case Rotation.Down:
+        return 'down';
+      case Rotation.Left:
+        return 'left';
+      case Rotation.Right:
+        return 'right';
+      default:
+        return 'unknown';
+    }
+  }
+}
+
+export class TankAnimationFrame {
+  private sprites: Sprite[];
+
+  constructor(
+    spriteLoader: SpriteLoader,
+    type: TankType,
+    colors: TankColor[],
+    rotation: Rotation,
+    frameNumber = 1,
+  ) {
+    this.sprites = colors.map((color) => {
+      const spriteId = TankSpriteId.create(type, color, rotation, frameNumber);
+      const sprite = spriteLoader.load(spriteId);
+      return sprite;
+    });
+  }
+
+  public getSprite(index: number): Sprite {
+    const sprite = this.sprites[index];
+    if (sprite === undefined) {
+      return null;
+    }
+    return sprite;
   }
 }

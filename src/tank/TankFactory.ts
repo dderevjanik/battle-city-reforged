@@ -4,7 +4,7 @@ import { PlayerTank } from '../gameObjects/PlayerTank';
 import { AiTankBehavior } from './behaviors/AiTankBehavior';
 import { PlayerTankBehavior } from './behaviors/PlayerTankBehavior';
 import { TankBehavior } from './TankBehavior';
-import { TankType } from './TankType';
+import { TankType } from './TankTypes';
 
 export class TankFactory {
   public static createPlayer(

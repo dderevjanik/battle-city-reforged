@@ -1,6 +1,6 @@
 import { GameObject } from '../core/GameObject';
 import { Scene } from '../core/scene/Scene';
-import { SceneNavigator, SceneParams } from '../core/scene/SceneNavigator';
+import { SceneNavigator, SceneParams } from '../core/scene/Scene';
 import { GameContext } from '../game/GameUpdateArgs';
 import * as config from '../config';
 

@@ -46,3 +46,45 @@ export class MathUtils {
     return degrees;
   }
 }
+
+export class ArrayUtils {
+  public static flatten(array: any[]): any[] {
+    let result = [];
+
+    array.forEach((item) => {
+      if (Array.isArray(item)) {
+        result = result.concat(item);
+      } else {
+        result.push(item);
+      }
+    });
+
+    return result;
+  }
+}
+
+export class RandomUtils {
+  public static arrayElement<T>(values: T[]): T {
+    const index = this.number(0, values.length);
+    return values[index];
+  }
+
+  // [min, max) - min inclusive, max exclusive
+  public static number(min = 0, max = 100): number {
+    // TODO: use custom algorithm
+    return min + Math.floor(Math.random() * (max - min));
+  }
+
+  public static probability(chancePercent: number): boolean {
+    const num = this.number(1, 100);
+    const hasChance = num <= chancePercent;
+
+    return hasChance;
+  }
+}
+
+export class NumberUtils {
+  public static clamp(value: number, min: number, max: number): number {
+    return Math.max(Math.min(value, max), min);
+  }
+}

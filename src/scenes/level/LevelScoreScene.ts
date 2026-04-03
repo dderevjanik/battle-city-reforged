@@ -7,7 +7,7 @@ import { ScoreBonus } from '../../gameObjects/score/ScoreBonus';
 import { ScoreTable } from '../../gameObjects/score/ScoreTable';
 import { LevelTitle } from '../../gameObjects/text/LevelTitle';
 import { SpriteText } from '../../gameObjects/text/SpriteText';
-import { LevelScoreInputContext } from '../../input/LevelScoreInputContext';
+import { LevelScoreInputContext } from '../../input/InputContexts';
 import { PointsHighscoreManager } from '../../points/PointsHighscoreManager';
 import * as config from '../../config';
 

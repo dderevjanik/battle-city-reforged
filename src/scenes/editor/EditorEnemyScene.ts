@@ -5,7 +5,7 @@ import { SelectorMenuItem, SelectorMenuItemChoice } from '../../gameObjects/menu
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
 import { MapConfig } from '../../map/MapConfig';
-import { TankType } from '../../tank/TankType';
+import { TankType } from '../../tank/TankTypes';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

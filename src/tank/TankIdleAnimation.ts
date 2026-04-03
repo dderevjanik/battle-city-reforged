@@ -2,10 +2,7 @@ import { Animation } from '../core/Animation';
 import { SpriteLoader } from '../core/loaders/SpriteLoader';
 import { Rotation } from '../game/Rotation';
 
-import { TankAnimationFrame } from './TankAnimationFrame';
-import { TankColor } from './TankColor';
-import { TankParty } from './TankParty';
-import { TankType } from './TankType';
+import { TankAnimationFrame, TankColor, TankParty, TankType } from './TankTypes';
 
 export class TankIdleAnimation extends Animation<TankAnimationFrame> {
   private type: TankType;

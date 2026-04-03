@@ -1,13 +1,13 @@
 import { Points } from '../../gameObjects/Points';
 import { PointsValue } from '../../points/PointsValue';
-import { TankDeathReason } from '../../tank/TankDeathReason';
-import { TankTier } from '../../tank/TankTier';
-import { TankType } from '../../tank/TankType';
+import { TankDeathReason, TankTier, TankType } from '../../tank/TankTypes';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import { LevelEnemyExplodedEvent } from '../events/LevelEnemyExplodedEvent';
-import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
+import {
+  LevelEnemyExplodedEvent,
+  LevelPowerupPickedEvent,
+} from '../LevelEvents';
 
 export class LevelPointsScript extends LevelScript {
   protected setup(): void {

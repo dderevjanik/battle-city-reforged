@@ -1,8 +1,10 @@
 import { Explosion } from '../../gameObjects/Explosion';
 
 import { LevelScript } from '../LevelScript';
-import { LevelEnemyDiedEvent } from '../events/LevelEnemyDiedEvent';
-import { LevelPlayerDiedEvent } from '../events/LevelPlayerDiedEvent';
+import {
+  LevelEnemyDiedEvent,
+  LevelPlayerDiedEvent,
+} from '../LevelEvents';
 
 export class LevelExplosionScript extends LevelScript {
   protected setup(): void {

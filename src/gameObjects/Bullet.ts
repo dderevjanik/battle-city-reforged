@@ -7,7 +7,7 @@ import { SpritePainter } from '../core/painters/SpritePainter';
 import { GameContext } from '../game/GameUpdateArgs';
 import { Rotation } from '../game/Rotation';
 import { Tag } from '../game/Tag';
-import { TankBulletWallDamage } from '../tank/TankBulletWallDamage';
+import { TankBulletWallDamage } from '../tank/TankTypes';
 import * as config from '../config';
 
 import { SmallExplosion } from './SmallExplosion';

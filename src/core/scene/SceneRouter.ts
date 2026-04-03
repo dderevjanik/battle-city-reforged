@@ -1,7 +1,6 @@
 import { Subject } from '../Subject';
 
-import { SceneNavigator, SceneParams } from './SceneNavigator';
-import { SceneType } from './SceneType';
+import { SceneNavigator, SceneParams, SceneType } from './Scene';
 
 interface SceneLocation {
   type: SceneType;

@@ -2,7 +2,7 @@ import { Subject } from '../core/Subject';
 import { InputVariant } from '../input/InputVariant';
 import { PointsRecord } from '../points/PointsRecord';
 import { PowerupType } from '../powerup/PowerupType';
-import { TankTier } from '../tank/TankTier';
+import { TankTier } from '../tank/TankTypes';
 import * as config from '../config';
 
 export class SessionPlayer {

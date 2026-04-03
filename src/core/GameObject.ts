@@ -4,7 +4,7 @@ import { Collision } from './collision/Collision';
 import { Matrix3 } from './Matrix3';
 import { Painter } from './painters/Painter';
 import { Size } from './Size';
-import { MathUtils } from './utils/MathUtils';
+import { MathUtils } from './utils';
 import { Vector } from './Vector';
 
 // -1 is because coordinate system start is at top left

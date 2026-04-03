@@ -3,7 +3,7 @@ import { SpriteLoader } from '../core/loaders/SpriteLoader';
 import { RectPainter } from '../core/painters/RectPainter';
 import { TextAlignment } from '../core/text/Text';
 import { GameContext } from '../game/GameUpdateArgs';
-import { EditorMapInputContext } from '../input/EditorMapInputContext';
+import { EditorMapInputContext } from '../input/InputContexts';
 import { InputBindingType } from '../input/InputBindingType';
 import { InputManager } from '../input/InputManager';
 import { TerrainType } from '../terrain/TerrainType';

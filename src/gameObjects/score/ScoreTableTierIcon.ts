@@ -2,11 +2,7 @@ import { GameObject } from '../../core/GameObject';
 import { SpritePainter } from '../../core/painters/SpritePainter';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Rotation } from '../../game/Rotation';
-import { TankColor } from '../../tank/TankColor';
-import { TankParty } from '../../tank/TankParty';
-import { TankSpriteId } from '../../tank/TankSpriteId';
-import { TankTier } from '../../tank/TankTier';
-import { TankType } from '../../tank/TankType';
+import { TankColor, TankParty, TankSpriteId, TankTier, TankType } from '../../tank/TankTypes';
 import * as config from '../../config';
 
 import { SpriteText } from '../text/SpriteText';

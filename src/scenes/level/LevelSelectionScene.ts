@@ -3,7 +3,7 @@ import { Session } from '../../game/Session';
 import { Curtain } from '../../gameObjects/Curtain';
 import { LevelSelector } from '../../gameObjects/LevelSelector';
 import { SceneInputHint } from '../../gameObjects/text/SceneInputHint';
-import { LevelSelectionInputContext } from '../../input/LevelSelectionInputContext';
+import { LevelSelectionInputContext } from '../../input/InputContexts';
 import { MapLoader } from '../../map/MapLoader';
 
 import { GameScene } from '../GameScene';

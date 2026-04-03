@@ -6,11 +6,11 @@ import { KeyboardInputDevice } from '../core/input/KeyboardInputDevice';
 import { GameStorage } from '../game/GameStorage';
 import * as config from '../config';
 
-import { PrimaryGamepadInputBinding } from './PrimaryGamepadInputBinding';
-import { PrimaryKeyboardInputBinding } from './PrimaryKeyboardInputBinding';
-import { SecondaryGamepadInputBinding } from './SecondaryGamepadInputBinding';
-import { SecondaryKeyboardInputBinding } from './SecondaryKeyboardInputBinding';
-import { TertiaryKeyboardInputBinding } from './TertiaryKeyboardInputBinding';
+import { PrimaryGamepadInputBinding } from './InputBindings';
+import { PrimaryKeyboardInputBinding } from './InputBindings';
+import { SecondaryGamepadInputBinding } from './InputBindings';
+import { SecondaryKeyboardInputBinding } from './InputBindings';
+import { TertiaryKeyboardInputBinding } from './InputBindings';
 import { GamepadButtonCodePresenter } from './GamepadButtonCodePresenter';
 import { KeyboardButtonCodePresenter } from './KeyboardButtonCodePresenter';
 import { InputBindingType } from './InputBindingType';

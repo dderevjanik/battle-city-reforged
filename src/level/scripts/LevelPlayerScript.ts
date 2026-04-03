@@ -4,13 +4,15 @@ import { DebugLevelPlayerMenu } from '../../debug/DebugLevelPlayerMenu';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { PlayerTank } from '../../gameObjects/PlayerTank';
 import { PowerupType } from '../../powerup/PowerupType';
+import { TankParty } from '../../tank/TankTypes';
 import { TankFactory } from '../../tank/TankFactory';
-import { TankParty } from '../../tank/TankParty';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import { LevelPlayerSpawnCompletedEvent } from '../events/LevelPlayerSpawnCompletedEvent';
-import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
+import {
+  LevelPlayerSpawnCompletedEvent,
+  LevelPowerupPickedEvent,
+} from '../LevelEvents';
 
 export class LevelPlayerScript extends LevelScript {
   private positions: Vector[] = [];

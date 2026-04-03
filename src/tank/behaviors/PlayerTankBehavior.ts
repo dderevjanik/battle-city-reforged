@@ -3,7 +3,7 @@ import { Rotation } from '../../game/Rotation';
 import { PlayerTank } from '../../gameObjects/PlayerTank';
 import { TankState } from '../../gameObjects/Tank';
 import { InputManager } from '../../input/InputManager';
-import { LevelPlayInputContext } from '../../input/LevelPlayInputContext';
+import { LevelPlayInputContext } from '../../input/InputContexts';
 
 import { TankBehavior } from '../TankBehavior';
 

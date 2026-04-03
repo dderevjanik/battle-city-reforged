@@ -1,4 +1,4 @@
-import { TankColor } from './TankColor';
+import { TankColor } from './TankTypes';
 
 const COLORS = [TankColor.Primary, TankColor.Secondary];
 

@@ -1,5 +1,5 @@
 import { Animation, GameObject, Sprite, SpritePainter } from '../core';
-import { GameUpdateArgs } from '../game';
+import { GameContext } from '../game';
 import * as config from '../config';
 
 export class PauseNotice extends GameObject {
@@ -16,7 +16,7 @@ export class PauseNotice extends GameObject {
     this.animation.reset();
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     // Null as a second frame adds a blink effect
     this.animation = new Animation([spriteLoader.load('ui.pause'), null], {
       delay: 0.27,
@@ -24,8 +24,8 @@ export class PauseNotice extends GameObject {
     });
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    this.animation.update(updateArgs.deltaTime);
+  protected update(deltaTime: number): void {
+    this.animation.update(deltaTime);
     this.painter.sprite = this.animation.getCurrentFrame();
   }
 }

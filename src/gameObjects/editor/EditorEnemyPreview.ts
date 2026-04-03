@@ -1,5 +1,5 @@
 import { Animation, GameObject, RectPainter, SpritePainter } from '../../core';
-import { GameUpdateArgs, Rotation } from '../../game';
+import { GameContext, Rotation } from '../../game';
 import {
   TankAnimationFrame,
   TankColor,
@@ -33,7 +33,7 @@ export class EditorEnemyPreview extends GameObject {
     }
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     this.container = new GameObject(64, 64);
     this.container.updateMatrix();
     this.container.setCenter(this.getSelfCenter());
@@ -50,7 +50,7 @@ export class EditorEnemyPreview extends GameObject {
     });
   }
 
-  protected update({ deltaTime }: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     const animation = this.animations[this.selectedIndex];
     if (animation === undefined) {
       return;

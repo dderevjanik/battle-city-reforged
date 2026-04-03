@@ -1,5 +1,5 @@
 import { BoxCollider, SpritePainter } from '../../core';
-import { GameUpdateArgs, Tag } from '../../game';
+import { GameContext, Tag } from '../../game';
 import { TerrainType } from '../../terrain';
 import * as config from '../../config';
 
@@ -21,7 +21,7 @@ export class SteelTerrainTile extends TerrainTile {
     this.collider.unregister();
   }
 
-  protected setup({ collisionSystem, spriteLoader }: GameUpdateArgs): void {
+  protected setup({ collisionSystem, spriteLoader }: GameContext): void {
     collisionSystem.register(this.collider);
 
     this.painter.sprite = spriteLoader.load('terrain.steel');

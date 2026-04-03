@@ -1,5 +1,5 @@
 import { FileOpener, FileSaver } from '../../core';
-import { GameUpdateArgs, Session } from '../../game';
+import { GameContext, Session } from '../../game';
 import {
   AlertModal,
   ConfirmModal,
@@ -51,7 +51,7 @@ export class EditorMenuScene extends GameScene<EditorLocationParams> {
     inputHintSettings,
     mapLoader,
     session,
-  }: GameUpdateArgs): void {
+  }: GameContext): void {
     this.inputHintSettings = inputHintSettings;
     this.session = session;
     this.mapLoader = mapLoader;
@@ -138,17 +138,17 @@ export class EditorMenuScene extends GameScene<EditorLocationParams> {
     this.root.add(this.confirmModal);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     if (this.menuState === MenuState.Alert) {
       this.alertModal.traverse((node) => {
-        node.invokeUpdate(updateArgs);
+        node.invokeUpdate(this.context, deltaTime);
       });
       return;
     }
 
     if (this.menuState === MenuState.Confrimation) {
       this.confirmModal.traverse((node) => {
-        node.invokeUpdate(updateArgs);
+        node.invokeUpdate(this.context, deltaTime);
       });
       return;
     }
@@ -161,7 +161,7 @@ export class EditorMenuScene extends GameScene<EditorLocationParams> {
         return;
       }
 
-      child.invokeUpdate(updateArgs);
+      child.invokeUpdate(this.context, deltaTime);
     });
   }
 

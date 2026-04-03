@@ -1,4 +1,4 @@
-import { AudioManager, GameUpdateArgs } from '../../game';
+import { AudioManager, GameContext } from '../../game';
 import { SceneMenu, SceneMenuTitle, TextMenuItem } from '../../gameObjects';
 
 import { GameScene } from '../GameScene';
@@ -10,7 +10,7 @@ export class SettingsAudioScene extends GameScene {
   private menu: SceneMenu;
   private audioManager: AudioManager;
 
-  protected setup({ audioManager }: GameUpdateArgs): void {
+  protected setup({ audioManager }: GameContext): void {
     this.audioManager = audioManager;
 
     this.title = new SceneMenuTitle('SETTINGS → AUDIO');

@@ -1,5 +1,5 @@
 import { Subject } from '../core';
-import { GameUpdateArgs, Tag } from '../game';
+import { GameContext, Tag } from '../game';
 import {
   TankAttributesFactory,
   TankColor,
@@ -19,8 +19,8 @@ export class PlayerTank extends Tank {
   private tierSkinAnimations = new Map<TankTier, TankSkinAnimation>();
   private colors: TankColor[] = [];
 
-  protected setup(updateArgs: GameUpdateArgs): void {
-    const { spriteLoader } = updateArgs;
+  protected setup(context: GameContext): void {
+    const { spriteLoader } = context;
 
     // Player only has one color
     this.colors.push(TankColorFactory.createPlayerColor(this.partyIndex));
@@ -44,7 +44,7 @@ export class PlayerTank extends Tank {
 
     this.skinAnimation = this.tierSkinAnimations.get(this.type.tier);
 
-    super.setup(updateArgs);
+    super.setup(context);
   }
 
   // If tier is provided - it means that specific tier needs to be activated

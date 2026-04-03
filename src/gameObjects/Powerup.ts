@@ -7,7 +7,7 @@ import {
   SpritePainter,
   Subject,
 } from '../core';
-import { GameUpdateArgs, Tag } from '../game';
+import { GameContext, Tag } from '../game';
 import { PowerupType } from '../powerup';
 import * as config from '../config';
 
@@ -35,7 +35,7 @@ export class Powerup extends GameObject {
     this.collider.unregister();
   }
 
-  protected setup({ collisionSystem, spriteLoader }: GameUpdateArgs): void {
+  protected setup({ collisionSystem, spriteLoader }: GameContext): void {
     collisionSystem.register(this.collider);
 
     const spriteId = this.getSpriteId();
@@ -47,10 +47,10 @@ export class Powerup extends GameObject {
     });
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     this.collider.update();
 
-    this.animation.update(updateArgs.deltaTime);
+    this.animation.update(deltaTime);
     this.painter.sprite = this.animation.getCurrentFrame();
   }
 

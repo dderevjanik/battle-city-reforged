@@ -1,5 +1,5 @@
 import { GameObject } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import * as config from '../../config';
 
 import { LevelEnemyCounter } from './LevelEnemyCounter';
@@ -17,7 +17,7 @@ export class LevelInfo extends GameObject {
     super(64, 768);
   }
 
-  protected setup({ session }: GameUpdateArgs): void {
+  protected setup({ session }: GameContext): void {
     this.add(this.enemyCounter);
 
     this.primaryLivesCounter.position.setY(444);

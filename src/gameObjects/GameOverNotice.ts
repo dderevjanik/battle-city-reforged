@@ -1,5 +1,5 @@
 import { GameObject, SpritePainter } from '../core';
-import { GameUpdateArgs } from '../game';
+import { GameContext } from '../game';
 import * as config from '../config';
 
 export class GameOverNotice extends GameObject {
@@ -10,7 +10,7 @@ export class GameOverNotice extends GameObject {
     super(124, 60);
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     this.painter.sprite = spriteLoader.load('ui.gameOver');
   }
 }

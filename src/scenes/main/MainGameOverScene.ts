@@ -1,5 +1,5 @@
 import { Timer } from '../../core';
-import { AudioManager, GameUpdateArgs } from '../../game';
+import { AudioManager, GameContext } from '../../game';
 import { GameOverHeading } from '../../gameObjects';
 import { MenuInputContext } from '../../input';
 
@@ -13,7 +13,7 @@ export class MainGameOverScene extends GameScene {
   private timer = new Timer(SCENE_DURATION);
   private audioManager: AudioManager;
 
-  protected setup({ audioManager }: GameUpdateArgs): void {
+  protected setup({ audioManager }: GameContext): void {
     this.audioManager = audioManager;
 
     this.timer.done.addListener(this.handleDone);
@@ -26,8 +26,8 @@ export class MainGameOverScene extends GameScene {
     this.audioManager.play('game-over');
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -36,9 +36,9 @@ export class MainGameOverScene extends GameScene {
       return;
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
 
-    this.timer.update(updateArgs.deltaTime);
+    this.timer.update(deltaTime);
   }
 
   private handleDone = (): void => {

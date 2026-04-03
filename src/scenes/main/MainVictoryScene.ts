@@ -1,5 +1,5 @@
 import { Sound } from '../../core';
-import { AudioManager, GameUpdateArgs } from '../../game';
+import { AudioManager, GameContext } from '../../game';
 import { PlayerTank, VictoryHeading, VictoryMap } from '../../gameObjects';
 import { MenuInputContext } from '../../input';
 import { TankFactory, TankType, VictoryTankBehavior } from '../../tank';
@@ -18,7 +18,7 @@ export class MainVictoryScene extends GameScene {
   private victorySound: Sound;
   private victoryPlays = 0;
 
-  protected setup({ audioManager, audioLoader }: GameUpdateArgs): void {
+  protected setup({ audioManager, audioLoader }: GameContext): void {
     this.audioManager = audioManager;
 
     this.victorySound = audioLoader.load('victory');
@@ -49,8 +49,8 @@ export class MainVictoryScene extends GameScene {
     this.audioManager.playLoop('tank.move');
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { collisionSystem, inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { collisionSystem, inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -59,7 +59,7 @@ export class MainVictoryScene extends GameScene {
       return;
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
 
     // Update all transforms before checking collisions
     this.root.updateWorldMatrix(false, true);

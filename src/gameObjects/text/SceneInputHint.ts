@@ -1,5 +1,4 @@
 import { Timer } from '../../core';
-import { GameUpdateArgs } from '../../game';
 import * as config from '../../config';
 
 import { SpriteText } from './SpriteText';
@@ -22,7 +21,7 @@ export class SceneInputHint extends SpriteText {
     this.position.setY(840);
   }
 
-  protected update({ deltaTime }: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     this.blinkTimer.update(deltaTime);
 
     if (this.blinkTimer.isDone()) {

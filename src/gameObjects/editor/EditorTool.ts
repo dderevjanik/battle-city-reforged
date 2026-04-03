@@ -7,7 +7,7 @@ import {
   Timer,
   Vector,
 } from '../../core';
-import { GameUpdateArgs, Tag } from '../../game';
+import { GameContext, Tag } from '../../game';
 import {
   EditorMapInputContext,
   InputHoldThrottle,
@@ -36,6 +36,7 @@ export class EditorTool extends GameObject {
   private holdThrottles: InputHoldThrottle[] = [];
   private blinkTimer = new Timer();
   private isBlinkVisible = true;
+  private context: GameContext;
 
   constructor() {
     super();
@@ -73,15 +74,16 @@ export class EditorTool extends GameObject {
     return this.selectedBrush;
   }
 
-  protected setup({ collisionSystem }: GameUpdateArgs): void {
-    collisionSystem.register(this.collider);
+  protected setup(context: GameContext): void {
+    this.context = context;
+    context.collisionSystem.register(this.collider);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    this.updatePosition(updateArgs);
-    this.updateBlinking(updateArgs);
+  protected update(deltaTime: number): void {
+    this.updatePosition(deltaTime);
+    this.updateBlinking(deltaTime);
 
-    const { inputManager } = updateArgs;
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -112,8 +114,8 @@ export class EditorTool extends GameObject {
     }
   }
 
-  private updatePosition(updateArgs: GameUpdateArgs): void {
-    const { deltaTime, inputManager } = updateArgs;
+  private updatePosition(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -155,7 +157,7 @@ export class EditorTool extends GameObject {
     this.velocity.set(this.size.width, 0);
   };
 
-  private updateBlinking({ deltaTime }: GameUpdateArgs): void {
+  private updateBlinking(deltaTime: number): void {
     if (this.blinkTimer.isDone()) {
       this.isBlinkVisible = !this.isBlinkVisible;
       this.blinkTimer.reset(BLINK_DELAY);

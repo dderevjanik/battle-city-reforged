@@ -1,5 +1,4 @@
 import { Subject, Timer } from '../../core';
-import { GameUpdateArgs } from '../../game';
 import { Tank } from '../../gameObjects';
 
 import { TankBehavior } from '../TankBehavior';
@@ -24,7 +23,7 @@ export class VictoryTankBehavior extends TankBehavior {
   private fireCounter = 0;
   private state = State.Moving;
 
-  public update(tank: Tank, updateArgs: GameUpdateArgs): void {
+  public update(tank: Tank, deltaTime: number): void {
     if (this.state === State.Done) {
       return;
     }
@@ -37,9 +36,9 @@ export class VictoryTankBehavior extends TankBehavior {
         return;
       }
 
-      tank.move(updateArgs.deltaTime);
+      tank.move(deltaTime);
 
-      this.moveTimer.update(updateArgs.deltaTime);
+      this.moveTimer.update(deltaTime);
       return;
     }
 
@@ -49,7 +48,7 @@ export class VictoryTankBehavior extends TankBehavior {
         return;
       }
 
-      this.prefireTimer.update(updateArgs.deltaTime);
+      this.prefireTimer.update(deltaTime);
       return;
     }
 

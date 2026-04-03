@@ -1,5 +1,5 @@
 import { GameObject, SpritePainter } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import { InputControl } from '../../input';
 
 import { GameScene } from '../GameScene';
@@ -9,7 +9,7 @@ export class SandboxTransformScene extends GameScene {
   private child: GameObject;
   private angle = 0;
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     const sprite = spriteLoader.load('tank.player.primary.a.up.1');
 
     this.parent = new GameObject(64, 64);
@@ -28,8 +28,8 @@ export class SandboxTransformScene extends GameScene {
     // this.parent.add(this.child);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -41,6 +41,6 @@ export class SandboxTransformScene extends GameScene {
       // this.child.updateMatrix();
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
   }
 }

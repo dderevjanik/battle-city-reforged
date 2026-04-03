@@ -1,5 +1,5 @@
 import { GameObject, RectPainter, SpriteLoader, TextAlignment } from '../core';
-import { GameUpdateArgs } from '../game';
+import { GameContext } from '../game';
 import {
   InputBindingType,
   EditorMapInputContext,
@@ -38,7 +38,7 @@ export class EditorInputHint extends GameObject {
     this.updateText();
   }
 
-  protected setup(updateArgs: GameUpdateArgs): void {
+  protected setup(updateArgs: GameContext): void {
     const { inputManager } = updateArgs;
 
     this.inputManager = inputManager;

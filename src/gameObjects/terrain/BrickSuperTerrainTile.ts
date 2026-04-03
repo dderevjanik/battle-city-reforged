@@ -1,5 +1,5 @@
 import { BoxCollider } from '../../core';
-import { GameUpdateArgs, Tag } from '../../game';
+import { GameContext, Tag } from '../../game';
 import { TerrainType } from '../../terrain';
 import * as config from '../../config';
 
@@ -35,7 +35,7 @@ export class BrickSuperTerrainTile extends TerrainTile {
     }
   }
 
-  protected setup({ collisionSystem }: GameUpdateArgs): void {
+  protected setup({ collisionSystem }: GameContext): void {
     collisionSystem.register(this.collider);
 
     for (const tile of this.subTiles) {

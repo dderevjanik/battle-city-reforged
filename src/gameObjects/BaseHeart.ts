@@ -6,7 +6,7 @@ import {
   SpritePainter,
   Subject,
 } from '../core';
-import { GameUpdateArgs, Tag } from '../game';
+import { GameContext, Tag } from '../game';
 import { Bullet, Explosion } from '../gameObjects';
 import * as config from '../config';
 
@@ -41,7 +41,7 @@ export class BaseHeart extends GameObject {
     this.died.notify(null);
   }
 
-  protected setup({ collisionSystem, spriteLoader }: GameUpdateArgs): void {
+  protected setup({ collisionSystem, spriteLoader }: GameContext): void {
     collisionSystem.register(this.collider);
 
     this.aliveSprite = spriteLoader.load('base.heart.alive');

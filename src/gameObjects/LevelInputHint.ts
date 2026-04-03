@@ -1,5 +1,5 @@
 import { GameObject, RectPainter, SpritePainter, TextAlignment } from '../core';
-import { GameUpdateArgs, Rotation } from '../game';
+import { GameContext, Rotation } from '../game';
 import {
   InputBindingType,
   InputManager,
@@ -34,7 +34,7 @@ export class LevelInputHint extends GameObject {
     this.updateText();
   }
 
-  protected setup(updateArgs: GameUpdateArgs): void {
+  protected setup(updateArgs: GameContext): void {
     const { inputManager, spriteLoader } = updateArgs;
 
     this.inputManager = inputManager;

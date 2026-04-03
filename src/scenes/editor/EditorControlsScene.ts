@@ -1,5 +1,5 @@
 import { GameObject, RectPainter } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import { EditorInputHint, SceneInputHint, SpriteText } from '../../gameObjects';
 import { EditorControlsInputContext } from '../../input';
 import * as config from '../../config';
@@ -15,7 +15,7 @@ export class EditorControlsScene extends GameScene<EditorLocationParams> {
   private editorHint: EditorInputHint;
   private continueHint: GameObject;
 
-  protected setup({ inputHintSettings, inputManager }: GameUpdateArgs): void {
+  protected setup({ inputHintSettings, inputManager }: GameContext): void {
     inputHintSettings.setSeenEditorHint();
 
     const activeBindingType = inputManager.getActiveBindingType();
@@ -47,8 +47,8 @@ export class EditorControlsScene extends GameScene<EditorLocationParams> {
     this.root.add(this.continueHint);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -58,6 +58,6 @@ export class EditorControlsScene extends GameScene<EditorLocationParams> {
       return;
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
   }
 }

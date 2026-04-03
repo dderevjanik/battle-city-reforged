@@ -1,5 +1,5 @@
 import { BoxCollider, GameObject } from '../../core';
-import { GameUpdateArgs, Rotation, Tag } from '../../game';
+import { GameContext, Rotation, Tag } from '../../game';
 import { Base } from '../../gameObjects';
 import { TankColor, TankColorFactory, TankType } from '../../tank';
 import * as config from '../../config';
@@ -13,7 +13,7 @@ export class EditorField extends GameObject {
     super(config.FIELD_SIZE, config.FIELD_SIZE);
   }
 
-  protected setup({ collisionSystem }: GameUpdateArgs): void {
+  protected setup({ collisionSystem }: GameContext): void {
     this.base = new Base();
     this.base.collider = new BoxCollider(this.base, false);
     this.base.tags = [Tag.EditorBlockMove];

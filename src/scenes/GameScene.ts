@@ -1,33 +1,39 @@
-import { GameObject, Scene, SceneParams } from '../core';
-import { GameUpdateArgs } from '../game';
+import { GameObject, Scene, SceneNavigator, SceneParams } from '../core';
+import { GameContext } from '../game';
 import * as config from '../config';
 
-export abstract class GameScene<T extends SceneParams = {}> extends Scene {
+export abstract class GameScene<
+  T extends SceneParams = {},
+> extends Scene<T> {
   protected root: GameObject;
-  protected params: T;
+  protected context: GameContext;
   private needsSetup = true;
+
+  constructor(navigator: SceneNavigator, params: T) {
+    super(navigator, params);
+  }
 
   public getRoot(): GameObject {
     return this.root;
   }
 
-  public invokeUpdate(updateArgs: GameUpdateArgs): void {
+  public invokeUpdate(context: GameContext, deltaTime: number): void {
     if (this.needsSetup === true) {
       this.needsSetup = false;
+      this.context = context;
       this.root = this.createRoot();
-      this.root.invokeUpdate(updateArgs);
-      this.setup(updateArgs);
+      this.root.invokeUpdate(context, deltaTime);
+      this.setup(context);
     }
 
-    this.update(updateArgs);
+    this.update(deltaTime);
   }
 
-  protected abstract setup(updateArgs: GameUpdateArgs): void;
+  protected abstract setup(context: GameContext): void;
 
-  // Calls update on all children of the scene root
-  protected update(updateArgs: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     this.root.traverseDescedants((child) => {
-      child.invokeUpdate(updateArgs);
+      child.invokeUpdate(this.context, deltaTime);
     });
   }
 

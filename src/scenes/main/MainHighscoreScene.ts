@@ -1,4 +1,4 @@
-import { AudioManager, GameUpdateArgs } from '../../game';
+import { AudioManager, GameContext } from '../../game';
 import { HighscoreHeading } from '../../gameObjects';
 import { MenuInputContext } from '../../input';
 
@@ -14,7 +14,7 @@ export class MainHighscoreScene extends GameScene {
     audioLoader,
     pointsHighscoreManager,
     session,
-  }: GameUpdateArgs): void {
+  }: GameContext): void {
     this.audioManager = audioManager;
 
     const primaryGamePoints = session.primaryPlayer.getGamePoints();
@@ -61,8 +61,8 @@ export class MainHighscoreScene extends GameScene {
     highscoreSound.play();
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -71,7 +71,7 @@ export class MainHighscoreScene extends GameScene {
       return;
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
   }
 
   private handleAudioEnded = (): void => {

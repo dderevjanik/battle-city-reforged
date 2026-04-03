@@ -1,5 +1,5 @@
 import { Timer, Vector } from '../../core';
-import { GameUpdateArgs, Rotation } from '../../game';
+import { Rotation } from '../../game';
 import { EnemyTank } from '../../gameObjects';
 import { PowerupType } from '../../powerup';
 import { TankDeathReason, TankFactory, TankParty, TankType } from '../../tank';
@@ -35,7 +35,7 @@ export class LevelEnemyScript extends LevelScript {
     this.freezeTimer.done.addListener(this.handleFreezeTimer);
   }
 
-  protected update({ deltaTime }: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     this.spawnTimer.update(deltaTime);
     this.freezeTimer.update(deltaTime);
   }

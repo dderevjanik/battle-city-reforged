@@ -1,5 +1,5 @@
 import { GameObject, Subject } from '../core';
-import { GameUpdateArgs } from '../game';
+import { GameContext } from '../game';
 import { InputHoldThrottle, LevelSelectionInputContext } from '../input';
 import * as config from '../config';
 
@@ -19,6 +19,7 @@ export class LevelSelector extends GameObject {
   private arrowLeft: SpriteText;
   private arrowRight: SpriteText;
   private holdThrottles: InputHoldThrottle[] = [];
+  private context: GameContext;
 
   constructor(maxLevel = 1, isPlaytest = false) {
     super();
@@ -46,7 +47,8 @@ export class LevelSelector extends GameObject {
     ];
   }
 
-  protected setup(): void {
+  protected setup(context: GameContext): void {
+    this.context = context;
     this.title = new LevelTitle(0, this.isPlaytest);
     this.title.origin.set(0.5, 0.5);
     this.title.updateMatrix();
@@ -70,8 +72,8 @@ export class LevelSelector extends GameObject {
     this.add(this.arrowRight);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { deltaTime, inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 

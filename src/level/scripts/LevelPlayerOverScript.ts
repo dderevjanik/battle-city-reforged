@@ -1,5 +1,4 @@
 import { Timer } from '../../core';
-import { GameUpdateArgs } from '../../game';
 import { GameOverNotice } from '../../gameObjects';
 
 import { LevelScript } from '../LevelScript';
@@ -47,8 +46,7 @@ export class LevelPlayerOverScript extends LevelScript {
     this.timer.done.addListener(this.handleTimerDone);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { deltaTime } = updateArgs;
+  protected update(deltaTime: number): void {
 
     if (this.state === State.Moving) {
       const { startX, endX } = SLIDE_POSITIONS[this.playerIndex];

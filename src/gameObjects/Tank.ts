@@ -13,7 +13,7 @@ import {
   Timer,
   Vector,
 } from '../core';
-import { GameState, GameUpdateArgs, Rotation, Tag } from '../game';
+import { GameContext, GameState, Rotation, Tag } from '../game';
 import {
   TankAnimationFrame,
   TankAttributes,
@@ -96,6 +96,8 @@ export class Tank extends GameObject {
     TankCollisionResolution.Unknown;
   protected isCollisionAbusedByPlayer = false;
   protected collisionSystem: CollisionSystem;
+  protected context: GameContext;
+  protected gameState: GameContext['gameState'];
 
   constructor(type: TankType, behavior: TankBehavior, partyIndex: number) {
     super(64, 64);
@@ -112,14 +114,14 @@ export class Tank extends GameObject {
     this.stunTimer.done.addListener(this.handleStunTimer);
   }
 
-  protected setup(updateArgs: GameUpdateArgs): void {
-    const { collisionSystem } = updateArgs;
+  protected setup(context: GameContext): void {
+    this.context = context;
+    this.collisionSystem = context.collisionSystem;
+    this.gameState = context.gameState;
 
-    this.collisionSystem = collisionSystem;
+    this.collisionSystem.register(this.collider);
 
-    collisionSystem.register(this.collider);
-
-    this.behavior.setup(this, updateArgs);
+    this.behavior.setup(this, context);
 
     SKIN_LAYER_DESCRIPTIONS.forEach(() => {
       const layer = new GameObject();
@@ -136,8 +138,8 @@ export class Tank extends GameObject {
     });
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { deltaTime, gameState } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { gameState } = this;
 
     if (this.spawnCollisionState.is(SpawnCollisionState.WaitCollide)) {
       // Collide has not been called on prev frame means tank is not colliding
@@ -212,7 +214,7 @@ export class Tank extends GameObject {
 
     // Behavior code is responsible for blocking movement for a tank when it
     // is sliding
-    this.behavior.update(this, updateArgs);
+    this.behavior.update(this, deltaTime);
 
     this.lastFireTimer.update(deltaTime);
 

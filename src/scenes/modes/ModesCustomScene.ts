@@ -1,5 +1,5 @@
 import { FileOpener } from '../../core';
-import { GameUpdateArgs, Session } from '../../game';
+import { GameContext, Session } from '../../game';
 import {
   DividerMenuItem,
   MenuDescription,
@@ -24,7 +24,7 @@ export class ModesCustomScene extends GameScene {
   private session: Session;
   private fileMapListReader: FileMapListReader = null;
 
-  protected setup({ mapLoader, session }: GameUpdateArgs): void {
+  protected setup({ mapLoader, session }: GameContext): void {
     this.mapLoader = mapLoader;
     this.session = session;
 

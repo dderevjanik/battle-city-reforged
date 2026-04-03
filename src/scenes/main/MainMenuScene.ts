@@ -1,5 +1,5 @@
 import { GameObject } from '../../core';
-import { GameUpdateArgs, Session } from '../../game';
+import { GameContext, Session } from '../../game';
 import { MainHeading, Menu, SpriteText, TextMenuItem } from '../../gameObjects';
 import { MenuInputContext } from '../../input';
 import { PointsHighscoreManager } from '../../points';
@@ -36,7 +36,7 @@ export class MainMenuScene extends GameScene {
     mapLoader,
     pointsHighscoreManager,
     session,
-  }: GameUpdateArgs): void {
+  }: GameContext): void {
     this.session = session;
     this.pointsHighscoreManager = pointsHighscoreManager;
 
@@ -114,8 +114,8 @@ export class MainMenuScene extends GameScene {
     this.root.add(this.group);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { deltaTime, inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -140,12 +140,12 @@ export class MainMenuScene extends GameScene {
         this.menu.showCursor();
         this.session.setSeenIntro(true);
       } else {
-        super.update(updateArgs);
+        super.update(deltaTime);
       }
       return;
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
   }
 
   private getPrimaryPointsText(): string {

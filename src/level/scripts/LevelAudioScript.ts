@@ -1,6 +1,6 @@
-import { Sound } from '../../core';
-import { AudioManager, GameUpdateArgs, GameState } from '../../game';
-import { LevelPlayInputContext } from '../../input';
+import { Sound, State } from '../../core';
+import { AudioManager, GameContext, GameState } from '../../game';
+import { InputManager, LevelPlayInputContext } from '../../input';
 import { PowerupType } from '../../powerup';
 
 import { LevelScript } from '../LevelScript';
@@ -20,6 +20,8 @@ enum MoveState {
 
 export class LevelAudioScript extends LevelScript {
   private audioManager: AudioManager;
+  private gameState: State<GameState>;
+  private inputManager: InputManager;
   private moveState = MoveState.Idle;
 
   private moveSound: Sound;
@@ -27,8 +29,15 @@ export class LevelAudioScript extends LevelScript {
   private pauseSound: Sound;
   private playerExplosionSound: Sound;
 
-  protected setup({ audioManager, audioLoader }: GameUpdateArgs): void {
+  protected setup({
+    audioManager,
+    audioLoader,
+    gameState,
+    inputManager,
+  }: GameContext): void {
     this.audioManager = audioManager;
+    this.gameState = gameState;
+    this.inputManager = inputManager;
 
     this.eventBus.baseDied.addListener(this.handleBaseDied);
     this.eventBus.enemyDied.addListener(this.handleEnemyDied);
@@ -70,21 +79,19 @@ export class LevelAudioScript extends LevelScript {
     this.idleSound.playLoop();
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { gameState, inputManager, session } = updateArgs;
-
-    const activeMethod = inputManager.getActiveMethod();
+  protected update(): void {
+    const activeMethod = this.inputManager.getActiveMethod();
 
     // By default check single-player active input
     let inputMethods = [activeMethod];
 
-    if (session.isMultiplayer()) {
-      const playerSessions = session.getPlayers();
+    if (this.session.isMultiplayer()) {
+      const playerSessions = this.session.getPlayers();
 
       // Get input variants for all players
       inputMethods = playerSessions.map((playerSession) => {
         const playerVariant = playerSession.getInputVariant();
-        const playerMethod = inputManager.getMethodByVariant(playerVariant);
+        const playerMethod = this.inputManager.getMethodByVariant(playerVariant);
         return playerMethod;
       });
     }
@@ -97,7 +104,7 @@ export class LevelAudioScript extends LevelScript {
       return inputMethod.isNotHoldAll(MOVE_CONTROLS);
     });
 
-    if (!gameState.is(GameState.Paused)) {
+    if (!this.gameState.is(GameState.Paused)) {
       // Check if started moving
       if (anybodyMoving && this.moveState !== MoveState.Moving) {
         this.moveState = MoveState.Moving;

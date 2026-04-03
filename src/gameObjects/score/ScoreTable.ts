@@ -1,5 +1,5 @@
 import { GameObject, Subject, Timer } from '../../core';
-import { GameUpdateArgs, Session } from '../../game';
+import { GameContext, Session } from '../../game';
 import { PointsRecord } from '../../points';
 import { TankTier } from '../../tank/TankTier'; // TODO: circular dep?
 import * as config from '../../config';
@@ -50,7 +50,7 @@ export class ScoreTable extends GameObject {
     super(836, 544);
   }
 
-  protected setup({ session }: GameUpdateArgs): void {
+  protected setup({ session }: GameContext): void {
     this.session = session;
 
     this.primaryPlayerLabel.position.set(256, 0);
@@ -132,7 +132,7 @@ export class ScoreTable extends GameObject {
     }
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     if (this.state === State.Idle || this.state === State.Done) {
       return;
     }
@@ -152,7 +152,7 @@ export class ScoreTable extends GameObject {
         this.state = State.Counting;
       }
 
-      this.transitionTimer.update(updateArgs.deltaTime);
+      this.transitionTimer.update(deltaTime);
       return;
     }
 

@@ -1,5 +1,5 @@
 import { GameObject, SpritePainter } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 
 import { SpriteText } from '../text';
 
@@ -16,7 +16,7 @@ export class LevelNumberCounter extends GameObject {
     this.levelNumberText.setText(text);
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     this.icon.painter = new SpritePainter(spriteLoader.load('flag'));
     this.add(this.icon);
 

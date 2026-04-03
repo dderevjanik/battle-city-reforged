@@ -1,5 +1,5 @@
 import { Sprite, SpritePainter } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import { TerrainType } from '../../terrain';
 import * as config from '../../config';
 
@@ -14,7 +14,7 @@ export class MenuBrickTerrainTile extends TerrainTile {
     super(config.BRICK_TILE_SIZE, config.BRICK_TILE_SIZE);
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     this.sprites = spriteLoader.loadList([
       'terrain.menu-brick.1',
       'terrain.menu-brick.2',

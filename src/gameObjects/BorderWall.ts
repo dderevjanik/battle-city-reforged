@@ -1,5 +1,5 @@
 import { BoxCollider, GameObject, RectPainter } from '../core';
-import { GameUpdateArgs, Tag } from '../game';
+import { GameContext, Tag } from '../game';
 import * as config from '../config';
 
 export class BorderWall extends GameObject {
@@ -8,7 +8,7 @@ export class BorderWall extends GameObject {
   public tags = [Tag.Wall, Tag.Border, Tag.BlockMove];
   public zIndex = config.BORDER_WALL_Z_INDEX;
 
-  protected setup({ collisionSystem }: GameUpdateArgs): void {
+  protected setup({ collisionSystem }: GameContext): void {
     collisionSystem.register(this.collider);
   }
 

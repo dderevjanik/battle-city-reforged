@@ -1,5 +1,4 @@
 import { Timer } from '../../core';
-import { GameUpdateArgs } from '../../game';
 
 import { LevelScript } from '../LevelScript';
 
@@ -15,8 +14,8 @@ export class LevelWinScript extends LevelScript {
     this.timer.done.addListener(this.handleTimer);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    this.timer.update(updateArgs.deltaTime);
+  protected update(deltaTime: number): void {
+    this.timer.update(deltaTime);
   }
 
   private handleTimer = (): void => {

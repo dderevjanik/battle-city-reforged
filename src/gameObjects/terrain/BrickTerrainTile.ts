@@ -1,5 +1,5 @@
 import { BoxCollider, Sprite, SpritePainter } from '../../core';
-import { GameUpdateArgs, Tag } from '../../game';
+import { GameContext, Tag } from '../../game';
 import { TerrainType } from '../../terrain';
 import * as config from '../../config';
 
@@ -25,7 +25,7 @@ export class BrickTerrainTile extends TerrainTile {
     this.collider.unregister();
   }
 
-  protected setup({ collisionSystem, spriteLoader }: GameUpdateArgs): void {
+  protected setup({ collisionSystem, spriteLoader }: GameContext): void {
     collisionSystem.register(this.collider);
 
     this.sprites = spriteLoader.loadList(this.getSpriteIds());

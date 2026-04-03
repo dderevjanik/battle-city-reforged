@@ -1,5 +1,5 @@
 import { GameObject, Subject } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 
 export abstract class MenuItem extends GameObject {
   public focused = new Subject();
@@ -8,7 +8,7 @@ export abstract class MenuItem extends GameObject {
   protected focusable = true;
   public isFocused = false;
 
-  public updateFocused(updateArgs?: GameUpdateArgs): void {
+  public updateFocused(context?: GameContext): void {
     // Virtual
   }
 

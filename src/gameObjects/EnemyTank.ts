@@ -1,5 +1,5 @@
 import { Sound } from '../core';
-import { GameUpdateArgs, GameState, Tag } from '../game';
+import { GameContext, GameState, Tag } from '../game';
 import { TankColor, TankSkinAnimation, TankTier } from '../tank';
 import * as config from '../config';
 
@@ -11,8 +11,8 @@ export class EnemyTank extends Tank {
   private healthSkinAnimations = new Map<number, TankSkinAnimation>();
   private hitSound: Sound;
 
-  protected setup(updateArgs: GameUpdateArgs): void {
-    const { audioLoader, spriteLoader } = updateArgs;
+  protected setup(context: GameContext): void {
+    const { audioLoader, spriteLoader } = context;
 
     this.hitSound = audioLoader.load('hit.enemy');
 
@@ -55,11 +55,11 @@ export class EnemyTank extends Tank {
 
     this.skinAnimation = this.healthSkinAnimations.get(this.attributes.health);
 
-    super.setup(updateArgs);
+    super.setup(context);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { gameState } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { gameState } = this;
 
     const shouldIdle =
       this.freezeState.hasChangedTo(true) ||
@@ -78,11 +78,11 @@ export class EnemyTank extends Tank {
       this.collider.update();
 
       // Tanks with drop should be blinking when paused or freezed
-      this.updateAnimation(updateArgs.deltaTime);
+      this.updateAnimation(deltaTime);
       return;
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
   }
 
   protected receiveHit(damage: number, hitterPartyIndex: number): void {

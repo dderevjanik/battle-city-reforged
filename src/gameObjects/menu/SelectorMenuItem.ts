@@ -1,5 +1,5 @@
 import { GameObject, Subject } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import { MenuInputContext } from '../../input';
 import * as config from '../../config';
 
@@ -72,8 +72,8 @@ export class SelectorMenuItem<T> extends MenuItem {
     return value;
   }
 
-  public updateFocused(updateArgs: GameUpdateArgs): void {
-    const { inputManager } = updateArgs;
+  public updateFocused(context: GameContext): void {
+    const { inputManager } = context;
 
     const inputMethod = inputManager.getActiveMethod();
 

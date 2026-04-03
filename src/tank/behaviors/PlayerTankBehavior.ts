@@ -1,5 +1,6 @@
-import { GameUpdateArgs, Rotation } from '../../game';
+import { GameContext, Rotation } from '../../game';
 import { PlayerTank, TankState } from '../../gameObjects';
+import { InputManager } from '../../input';
 import { LevelPlayInputContext } from '../../input';
 
 import { TankBehavior } from '../TankBehavior';
@@ -12,8 +13,16 @@ const MOVE_CONTROLS = [
 ];
 
 export class PlayerTankBehavior extends TankBehavior {
-  public update(tank: PlayerTank, updateArgs: GameUpdateArgs): void {
-    const { deltaTime, inputManager, session } = updateArgs;
+  private inputManager: InputManager;
+  private session: GameContext['session'];
+
+  public setup(tank: PlayerTank, context: GameContext): void {
+    this.inputManager = context.inputManager;
+    this.session = context.session;
+  }
+
+  public update(tank: PlayerTank, deltaTime: number): void {
+    const { inputManager, session } = this;
 
     let inputMethod = inputManager.getActiveMethod();
 

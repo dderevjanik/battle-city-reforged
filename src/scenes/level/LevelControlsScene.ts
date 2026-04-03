@@ -1,5 +1,5 @@
 import { GameObject, RectPainter } from '../../core';
-import { GameUpdateArgs, Session } from '../../game';
+import { GameContext, Session } from '../../game';
 import {
   LevelInputHint,
   SceneInputHint,
@@ -32,7 +32,7 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
     inputHintSettings,
     inputManager,
     session,
-  }: GameUpdateArgs): void {
+  }: GameContext): void {
     this.session = session;
 
     inputHintSettings.setSeenLevelHint();
@@ -174,8 +174,8 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
     this.root.add(this.continueHint);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -184,11 +184,11 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
       return;
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
 
     // Usually it is handled by menu, but here we are using it outside menu
     if (this.params.canSelectVariant) {
-      this.selector.updateFocused(updateArgs);
+      this.selector.updateFocused(this.context);
     }
   }
 

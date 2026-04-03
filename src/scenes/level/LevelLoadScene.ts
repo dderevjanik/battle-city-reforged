@@ -1,5 +1,5 @@
 import { Logger } from '../../core';
-import { GameUpdateArgs, Session } from '../../game';
+import { GameContext, Session } from '../../game';
 import { AlertModal, Curtain, LevelTitle } from '../../gameObjects';
 import { InputHintSettings } from '../../input';
 import { MapConfig, MapLoader } from '../../map';
@@ -28,7 +28,7 @@ export class LevelLoadScene extends GameScene {
     inputHintSettings,
     mapLoader,
     session,
-  }: GameUpdateArgs): void {
+  }: GameContext): void {
     this.inputHintSettings = inputHintSettings;
     this.session = session;
 
@@ -61,10 +61,10 @@ export class LevelLoadScene extends GameScene {
     this.mapLoader.loadAsync(levelNumber);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     if (this.state === State.Alert) {
       this.alertModal.traverse((node) => {
-        node.invokeUpdate(updateArgs);
+        node.invokeUpdate(this.context, deltaTime);
       });
       return;
     }
@@ -74,7 +74,7 @@ export class LevelLoadScene extends GameScene {
         return;
       }
 
-      child.invokeUpdate(updateArgs);
+      child.invokeUpdate(this.context, deltaTime);
     });
   }
 

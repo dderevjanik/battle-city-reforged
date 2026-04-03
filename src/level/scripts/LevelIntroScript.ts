@@ -1,5 +1,4 @@
 import { Subject, Timer } from '../../core';
-import { GameUpdateArgs } from '../../game';
 import { Curtain, LevelTitle } from '../../gameObjects';
 import * as config from '../../config';
 
@@ -33,7 +32,7 @@ export class LevelIntroScript extends LevelScript {
     this.world.sceneRoot.add(this.title);
   }
 
-  protected update({ deltaTime }: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     this.timer.update(deltaTime);
   }
 

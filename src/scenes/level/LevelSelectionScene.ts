@@ -1,4 +1,4 @@
-import { GameUpdateArgs, Session } from '../../game';
+import { GameContext, Session } from '../../game';
 import { Curtain, SceneInputHint, LevelSelector } from '../../gameObjects';
 import { LevelSelectionInputContext } from '../../input';
 import { MapLoader } from '../../map';
@@ -13,7 +13,7 @@ export class LevelSelectionScene extends GameScene {
   private session: Session;
   private mapLoader: MapLoader;
 
-  protected setup({ inputManager, mapLoader, session }: GameUpdateArgs): void {
+  protected setup({ inputManager, mapLoader, session }: GameContext): void {
     this.session = session;
     this.mapLoader = mapLoader;
 

@@ -1,5 +1,5 @@
 import { GameObject, SpritePainter } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 
 import { SpriteText } from '../text';
 
@@ -15,7 +15,7 @@ export class LevelLivesCounter extends GameObject {
     this.playerIndex = playerIndex;
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     const titleText = `${this.getPlayerNumberText(this.playerIndex)}P`;
     this.title = new SpriteText(titleText);
 

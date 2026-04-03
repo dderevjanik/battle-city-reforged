@@ -1,5 +1,5 @@
 import { Logger, RandomUtils, Timer, Vector } from '../../core';
-import { GameUpdateArgs, Rotation } from '../../game';
+import { Rotation } from '../../game';
 import { Tank } from '../../gameObjects';
 import * as config from '../../config';
 
@@ -29,7 +29,7 @@ export class AiTankBehavior extends TankBehavior {
   private fireTimer = new Timer();
   private log = new Logger(AiTankBehavior.name, Logger.Level.Info);
 
-  public update(tank: Tank, updateArgs: GameUpdateArgs): void {
+  public update(tank: Tank, deltaTime: number): void {
     if (this.fireTimer.isDone()) {
       const hasFired = tank.fire();
       if (hasFired) {
@@ -47,7 +47,7 @@ export class AiTankBehavior extends TankBehavior {
       // Fire next bullet in some random interval
       this.attemptFire();
     } else {
-      this.fireTimer.update(updateArgs.deltaTime);
+      this.fireTimer.update(deltaTime);
     }
 
     // Simply waiting to fire after tank decided to fire
@@ -73,11 +73,11 @@ export class AiTankBehavior extends TankBehavior {
         tank.rotate(nextRotation);
         return;
       }
-      this.thinkTimer.update(updateArgs.deltaTime);
+      this.thinkTimer.update(deltaTime);
       return;
     }
 
-    tank.move(updateArgs.deltaTime);
+    tank.move(deltaTime);
 
     // Position might come as floats, but we need precise ints in here to
     // check if positions is exactly the same

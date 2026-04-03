@@ -7,7 +7,7 @@ import {
   Text,
   TextOptions,
 } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import * as config from '../../config';
 
 export interface SpriteTextOptions extends TextOptions {
@@ -40,7 +40,7 @@ export class SpriteText extends GameObject {
     this.text = new Text(text, this.options);
   }
 
-  protected setup({ colorSpriteFontGenerator }: GameUpdateArgs): void {
+  protected setup({ colorSpriteFontGenerator }: GameContext): void {
     this.colorSpriteFontGenerator = colorSpriteFontGenerator;
 
     const font = this.colorSpriteFontGenerator.get(

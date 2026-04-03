@@ -1,5 +1,5 @@
 import { Animation, GameObject, Sprite, SpritePainter } from '../core';
-import { GameUpdateArgs, GameState } from '../game';
+import { GameContext, GameState } from '../game';
 import * as config from '../config';
 
 export class Shield extends GameObject {
@@ -7,27 +7,30 @@ export class Shield extends GameObject {
   public zIndex = config.SHIELD_Z_INDEX;
   public painter = new SpritePainter();
   private animation: Animation<Sprite>;
+  private gameState: GameContext['gameState'];
 
   constructor() {
     super(64, 64);
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup(context: GameContext): void {
+    this.gameState = context.gameState;
+
     this.animation = new Animation(
-      spriteLoader.loadList(['shield.1', 'shield.2']),
+      context.spriteLoader.loadList(['shield.1', 'shield.2']),
       { delay: 0.05, loop: true },
     );
   }
 
-  protected update({ deltaTime, gameState }: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     // Shield is not displayed during a pause
-    if (gameState.hasChangedTo(GameState.Paused)) {
+    if (this.gameState.hasChangedTo(GameState.Paused)) {
       this.setVisible(false);
     }
-    if (gameState.hasChangedTo(GameState.Playing)) {
+    if (this.gameState.hasChangedTo(GameState.Playing)) {
       this.setVisible(true);
     }
-    if (gameState.is(GameState.Paused)) {
+    if (this.gameState.is(GameState.Paused)) {
       return;
     }
 

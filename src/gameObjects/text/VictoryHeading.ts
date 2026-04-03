@@ -1,5 +1,4 @@
 import { GameObject, Timer } from '../../core';
-import { GameUpdateArgs } from '../../game';
 import { TerrainType } from '../../terrain';
 
 import { TerrainText } from './TerrainText';
@@ -33,7 +32,7 @@ export class VictoryHeading extends GameObject {
     this.updateVisibility();
   }
 
-  protected update({ deltaTime }: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     if (this.timer.isDone()) {
       this.nextText();
       this.updateVisibility();

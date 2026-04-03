@@ -1,5 +1,5 @@
 import { SpritePainter } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import { TerrainType } from '../../terrain';
 import * as config from '../../config';
 
@@ -14,7 +14,7 @@ export class JungleTerrainTile extends TerrainTile {
     super(config.JUNGLE_TILE_SIZE, config.JUNGLE_TILE_SIZE);
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     this.painter.sprite = spriteLoader.load('terrain.jungle');
   }
 }

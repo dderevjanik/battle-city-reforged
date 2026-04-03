@@ -1,5 +1,4 @@
 import { Timer } from '../../core';
-import { GameUpdateArgs } from '../../game';
 import { GameOverNotice } from '../../gameObjects';
 
 import { LevelScript } from '../LevelScript';
@@ -31,8 +30,7 @@ export class LevelGameOverScript extends LevelScript {
     this.totalTimer.done.addListener(this.handleTotalTimer);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { deltaTime } = updateArgs;
+  protected update(deltaTime: number): void {
 
     this.notice.position.y -= SLIDE_SPEED * deltaTime;
     if (this.notice.position.y <= TARGET_POSITION_Y) {

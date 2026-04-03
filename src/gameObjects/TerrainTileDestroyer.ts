@@ -1,5 +1,5 @@
 import { BoxCollider, Collision, GameObject } from '../core';
-import { GameUpdateArgs, Tag } from '../game';
+import { GameContext, Tag } from '../game';
 import { TankBulletWallDamage } from '../tank';
 import * as config from '../config';
 
@@ -21,7 +21,7 @@ export class TerrainTileDestroyer extends GameObject {
     this.collider = new BoxCollider(this, true);
   }
 
-  protected setup({ collisionSystem }: GameUpdateArgs): void {
+  protected setup({ collisionSystem }: GameContext): void {
     collisionSystem.register(this.collider);
   }
 

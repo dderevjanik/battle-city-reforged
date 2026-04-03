@@ -20,7 +20,7 @@ import { PixiRenderer } from './core/render/PixiRenderer';
 import { DebugGameLoopMenu, DebugInspector } from './debug';
 import {
   AudioManager,
-  GameUpdateArgs,
+  GameContext,
   GameState,
   GameStorage,
   Session,
@@ -112,12 +112,11 @@ debugInspector.click.addListener((position: Vector) => {
 
 const gameState = new State<GameState>(GameState.Playing);
 
-const updateArgs: GameUpdateArgs = {
+const gameContext: GameContext = {
   audioManager,
   audioLoader,
   collisionSystem,
   colorSpriteFontGenerator,
-  deltaTime: 0,
   imageLoader,
   inputHintSettings,
   inputManager,
@@ -145,10 +144,8 @@ gameLoop.tick.addListener((event) => {
 
   inputManager.update();
 
-  updateArgs.deltaTime = event.deltaTime;
-
   const scene = sceneRouter.getCurrentScene();
-  scene.invokeUpdate(updateArgs);
+  scene.invokeUpdate(gameContext, event.deltaTime);
 
   pixiRenderer.render(scene.getRoot());
 

@@ -1,6 +1,5 @@
 import { Rect, Timer } from '../../core';
 import { DebugLevelPowerupMenu } from '../../debug';
-import { GameUpdateArgs } from '../../game';
 import { Powerup } from '../../gameObjects';
 import { PowerupFactory, PowerupGrid, PowerupType } from '../../powerup';
 import { TerrainType } from '../../terrain';
@@ -43,7 +42,7 @@ export class LevelPowerupScript extends LevelScript {
     }
   }
 
-  protected update({ deltaTime }: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     this.timer.update(deltaTime);
   }
 

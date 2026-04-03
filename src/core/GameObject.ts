@@ -518,16 +518,16 @@ export class GameObject {
 
   private needsSetup = true;
 
-  public invokeUpdate(...args: any[]): void {
+  public invokeUpdate(context: any, deltaTime: number): void {
     if (this.needsSetup === true) {
       this.needsSetup = false;
-      this.setup(...args);
+      this.setup(context);
       this.updateMatrix();
       this.updateWorldVisible(true);
       this.updateWorldZIndex(true);
     }
 
-    this.update(...args);
+    this.update(deltaTime);
   }
 
   public invokeCollide(collision: Collision): void {
@@ -542,11 +542,11 @@ export class GameObject {
     return !this.needsSetup;
   }
 
-  protected setup(...args: any[]): void {
+  protected setup(context: any): void {
     return undefined;
   }
 
-  protected update(...args: any[]): void {
+  protected update(deltaTime: number): void {
     return undefined;
   }
 

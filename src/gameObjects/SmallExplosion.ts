@@ -6,7 +6,7 @@ import {
   SpritePainter,
   Subject,
 } from '../core';
-import { GameUpdateArgs } from '../game';
+import { GameContext } from '../game';
 import * as config from '../config';
 
 export class SmallExplosion extends GameObject {
@@ -21,7 +21,7 @@ export class SmallExplosion extends GameObject {
     this.painter.alignment = SpriteAlignment.MiddleCenter;
   }
 
-  protected setup({ spriteLoader }: GameUpdateArgs): void {
+  protected setup({ spriteLoader }: GameContext): void {
     this.animation = new Animation(
       spriteLoader.loadList([
         'explosion.small.1',
@@ -32,14 +32,14 @@ export class SmallExplosion extends GameObject {
     );
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     if (this.animation.isComplete()) {
       this.removeSelf();
       this.done.notify(null);
       return;
     }
 
-    this.animation.update(updateArgs.deltaTime);
+    this.animation.update(deltaTime);
     this.painter.sprite = this.animation.getCurrentFrame();
   }
 }

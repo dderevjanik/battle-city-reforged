@@ -1,5 +1,5 @@
 import { GameObject, Subject } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import { MenuInputContext } from '../../input';
 
 import { MenuCursor } from './MenuCursor';
@@ -25,12 +25,17 @@ export class Menu extends GameObject {
   private options: MenuOptions;
   private cursor: MenuCursor = new MenuCursor();
   private focusedIndex = -1;
+  private context: GameContext;
 
   constructor(options: MenuOptions = {}) {
     super();
 
     this.options = Object.assign({}, DEFAULT_OPTIONS, options);
     this.focusedIndex = this.options.initialIndex;
+  }
+
+  protected setup(context: GameContext): void {
+    this.context = context;
   }
 
   public setItems(items: MenuItem[]): void {
@@ -67,8 +72,8 @@ export class Menu extends GameObject {
     this.focusItem(0);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -86,7 +91,7 @@ export class Menu extends GameObject {
 
     this.items.forEach((menuItem, index) => {
       if (index === this.focusedIndex) {
-        menuItem.updateFocused(updateArgs);
+        menuItem.updateFocused(this.context);
       }
     });
   }

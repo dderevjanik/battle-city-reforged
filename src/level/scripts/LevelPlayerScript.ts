@@ -1,6 +1,6 @@
 import { Timer, Vector } from '../../core';
 import { DebugLevelPlayerMenu } from '../../debug';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import { PlayerTank } from '../../gameObjects';
 import { PowerupType } from '../../powerup';
 import { TankFactory, TankParty } from '../../tank';
@@ -17,7 +17,7 @@ export class LevelPlayerScript extends LevelScript {
   private timers: Timer[] = [];
   private tanks: PlayerTank[] = [];
 
-  protected setup({ session }: GameUpdateArgs): void {
+  protected setup({ session }: GameContext): void {
     this.eventBus.playerSpawnCompleted.addListener(this.handleSpawnCompleted);
     this.eventBus.powerupPicked.addListener(this.handlePowerupPicked);
     this.eventBus.levelGameOverMoveBlocked.addListener(
@@ -71,7 +71,7 @@ export class LevelPlayerScript extends LevelScript {
     }
   }
 
-  protected update({ deltaTime }: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     this.timers.forEach((timer) => {
       timer.update(deltaTime);
     });

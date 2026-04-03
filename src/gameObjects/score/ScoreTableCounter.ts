@@ -1,5 +1,5 @@
 import { GameObject, Sound, Timer } from '../../core';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import * as config from '../../config';
 
 import { SpriteText } from '../text';
@@ -32,7 +32,7 @@ export class ScoreTableCounter extends GameObject {
     this.showAtRight = showAtRight;
   }
 
-  protected setup({ audioLoader }: GameUpdateArgs): void {
+  protected setup({ audioLoader }: GameContext): void {
     this.incrementSound = audioLoader.load('score');
 
     this.pointsLabel.position.setX(160);
@@ -56,7 +56,7 @@ export class ScoreTableCounter extends GameObject {
     this.add(this.killsText);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
+  protected update(deltaTime: number): void {
     if (this.state !== State.Progress) {
       return;
     }
@@ -75,7 +75,7 @@ export class ScoreTableCounter extends GameObject {
       this.timer.reset(INCREMENT_DELAY);
     }
 
-    this.timer.update(updateArgs.deltaTime);
+    this.timer.update(deltaTime);
   }
 
   public start(): void {

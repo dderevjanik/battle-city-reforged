@@ -1,5 +1,5 @@
 import { RectPainter, Timer } from '../../core';
-import { AudioManager, GameUpdateArgs, Session } from '../../game';
+import { AudioManager, GameContext, Session } from '../../game';
 import {
   LevelTitle,
   ScoreBonus,
@@ -41,7 +41,7 @@ export class LevelScoreScene extends GameScene {
     audioManager,
     pointsHighscoreManager,
     session,
-  }: GameUpdateArgs): void {
+  }: GameContext): void {
     this.audioManager = audioManager;
     this.pointsHighscoreManager = pointsHighscoreManager;
     this.session = session;
@@ -106,8 +106,8 @@ export class LevelScoreScene extends GameScene {
     this.scoreTable.start();
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { deltaTime, inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -135,7 +135,7 @@ export class LevelScoreScene extends GameScene {
       this.postTimer.update(deltaTime);
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
   }
 
   private getCommonHighscoreText(): string {

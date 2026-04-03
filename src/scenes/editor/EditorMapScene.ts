@@ -1,5 +1,5 @@
 import { DebugCollisionMenu } from '../../debug';
-import { GameUpdateArgs } from '../../game';
+import { GameContext } from '../../game';
 import { EditorBorder, EditorField, EditorMap } from '../../gameObjects';
 import { EditorMapInputContext } from '../../input';
 import { MapConfig } from '../../map';
@@ -16,8 +16,7 @@ export class EditorMapScene extends GameScene<EditorLocationParams> {
   private mapConfig: MapConfig;
   private debugCollisionMenu: DebugCollisionMenu;
 
-  protected setup(updateArgs: GameUpdateArgs): void {
-    const { collisionSystem } = updateArgs;
+  protected setup({ collisionSystem }: GameContext): void {
 
     this.debugCollisionMenu = new DebugCollisionMenu(
       collisionSystem,
@@ -48,8 +47,8 @@ export class EditorMapScene extends GameScene<EditorLocationParams> {
     this.root.add(this.field);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { collisionSystem, inputManager } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { collisionSystem, inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
 
@@ -58,7 +57,7 @@ export class EditorMapScene extends GameScene<EditorLocationParams> {
       return;
     }
 
-    super.update(updateArgs);
+    super.update(deltaTime);
 
     // Update all transforms before checking collisions
     this.root.updateWorldMatrix(false, true);

@@ -6,7 +6,7 @@ import {
   Subject,
   SweptBoxCollider,
 } from '../core';
-import { GameUpdateArgs, Rotation, Tag } from '../game';
+import { GameContext, Rotation, Tag } from '../game';
 import { TankBulletWallDamage } from '../tank';
 import * as config from '../config';
 
@@ -46,7 +46,7 @@ export class Bullet extends GameObject {
     audioLoader,
     collisionSystem,
     spriteLoader,
-  }: GameUpdateArgs): void {
+  }: GameContext): void {
     collisionSystem.register(this.collider);
 
     this.hitBrickSound = audioLoader.load('hit.brick');
@@ -59,8 +59,8 @@ export class Bullet extends GameObject {
     this.painter.sprite = sprite;
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    this.translateY(this.speed * updateArgs.deltaTime);
+  protected update(deltaTime: number): void {
+    this.translateY(this.speed * deltaTime);
     this.updateMatrix();
 
     this.collider.update();

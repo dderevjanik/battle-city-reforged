@@ -1,5 +1,4 @@
 import { Animation, GameObject, Rect, Subject, Timer } from '../core';
-import { GameUpdateArgs } from '../game';
 import { TerrainFactory, TerrainType } from '../terrain';
 import * as config from '../config';
 
@@ -50,8 +49,8 @@ export class Base extends GameObject {
     this.defenceTimer.done.addListener(this.handleDefenceTimer);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    this.defenceTimer.update(updateArgs.deltaTime);
+  protected update(deltaTime: number): void {
+    this.defenceTimer.update(deltaTime);
 
     if (this.isFading) {
       if (this.fadeAnimation.isComplete()) {
@@ -60,7 +59,7 @@ export class Base extends GameObject {
         return;
       }
 
-      this.fadeAnimation.update(updateArgs.deltaTime);
+      this.fadeAnimation.update(deltaTime);
 
       const fadeWallType = this.fadeAnimation.getCurrentFrame();
       if (this.lastFadeWallType !== fadeWallType) {

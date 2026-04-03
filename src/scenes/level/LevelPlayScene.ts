@@ -1,5 +1,5 @@
 import { DebugCollisionMenu } from '../../debug';
-import { GameUpdateArgs, GameState, Session } from '../../game';
+import { GameContext, GameState, Session } from '../../game';
 import { Border } from '../../gameObjects';
 import { InputManager } from '../../input';
 import { PowerupType } from '../../powerup';
@@ -61,8 +61,8 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private spawnScript: LevelSpawnScript;
   private winScript: LevelWinScript;
 
-  protected setup(updateArgs: GameUpdateArgs): void {
-    const { collisionSystem, inputManager, session } = updateArgs;
+  protected setup(context: GameContext): void {
+    const { collisionSystem, inputManager, session } = context;
 
     this.debugCollisionMenu = new DebugCollisionMenu(
       collisionSystem,
@@ -180,11 +180,11 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.eventBus.levelWinCompleted.addListener(this.handleLevelWinCompleted);
   }
 
-  protected update(updateArgs: GameUpdateArgs): void {
-    const { collisionSystem, gameState } = updateArgs;
+  protected update(deltaTime: number): void {
+    const { collisionSystem, gameState } = this.context;
 
     this.alwaysUpdateScripts.forEach((script) => {
-      script.invokeUpdate(updateArgs);
+      script.invokeUpdate(this.context, deltaTime);
     });
 
     if (!gameState.is(GameState.Paused)) {
@@ -195,7 +195,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
           return;
         }
 
-        script.invokeUpdate(updateArgs);
+        script.invokeUpdate(this.context, deltaTime);
       });
     }
 
@@ -203,7 +203,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.root.traverseDescedants((node) => {
       const shouldUpdate = gameState.is(GameState.Playing) || node.ignorePause;
       if (shouldUpdate) {
-        node.invokeUpdate(updateArgs);
+        node.invokeUpdate(this.context, deltaTime);
       }
     });
 

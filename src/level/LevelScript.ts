@@ -1,4 +1,4 @@
-import { GameUpdateArgs, Session } from '../game';
+import { GameContext, Session } from '../game';
 import { MapConfig } from '../map';
 
 import { LevelEventBus } from './LevelEventBus';
@@ -38,28 +38,28 @@ export abstract class LevelScript {
     this.init();
   }
 
-  public invokeUpdate(updateArgs?: GameUpdateArgs): void {
+  public invokeUpdate(context: GameContext, deltaTime: number): void {
     if (this.enabled === false) {
       return;
     }
 
     if (this.needsSetup === true) {
       this.needsSetup = false;
-      this.setup(updateArgs);
+      this.setup(context);
     }
 
-    this.update(updateArgs);
+    this.update(deltaTime);
   }
 
   protected init(): void {
     // Virtual
   }
 
-  protected setup(updateArgs?: GameUpdateArgs): void {
+  protected setup(context?: GameContext): void {
     // Virtual
   }
 
-  protected update(updateArgs?: GameUpdateArgs): void {
+  protected update(deltaTime?: number): void {
     // Virtual
   }
 }

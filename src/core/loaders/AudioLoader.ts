@@ -1,3 +1,5 @@
+import Phaser from 'phaser';
+
 import { Logger } from '../Logger';
 import { Sound } from '../Sound';
 import { Subject } from '../Subject';
@@ -12,68 +14,56 @@ interface AudioManifest {
 
 export class AudioLoader {
   public loaded = new Subject<Sound>();
-  private manifest: AudioManifest;
-  private readonly sounds: Map<string, Sound> = new Map();
+
+  private soundManager: Phaser.Sound.BaseSoundManager | null = null;
+  private readonly sounds = new Map<string, Sound>();
   protected readonly log = new Logger(AudioLoader.name, Logger.Level.None);
+
+  // manifest kept for the no-op preloadAllAsync signature compatibility
+  private readonly manifest: AudioManifest;
 
   constructor(manifest: AudioManifest) {
     this.manifest = manifest;
   }
 
+  /**
+   * Must be called once, from BridgeScene.create(), after Phaser has loaded
+   * all audio assets via BridgeScene.preload().
+   */
+  public initPhaserAudio(soundManager: Phaser.Sound.BaseSoundManager): void {
+    this.soundManager = soundManager;
+  }
+
   public load(id: string): Sound {
-    const item = this.manifest[id];
-    if (item === undefined) {
-      throw new Error(`Invalid audio id = "${id}"`);
+    if (this.sounds.has(id)) {
+      return this.sounds.get(id);
     }
 
-    const { file: filePath } = item;
-
-    if (this.sounds.has(filePath)) {
-      return this.sounds.get(filePath);
+    if (this.soundManager === null) {
+      throw new Error(
+        `AudioLoader.load("${id}") called before initPhaserAudio()`,
+      );
     }
 
-    const audioElement = new Audio();
+    const phaserSound = this.soundManager.add(id);
+    const sound = new Sound(phaserSound);
 
-    const sound = new Sound(audioElement);
-    sound.loaded.addListener(() => {
-      this.log.debug('Loaded "%s"', filePath);
-      this.loaded.notify(sound);
-    });
-
-    audioElement.preload = 'auto';
-    audioElement.src = filePath;
-
-    this.sounds.set(filePath, sound);
+    this.sounds.set(id, sound);
+    this.log.debug('Loaded "%s"', id);
+    this.loaded.notify(sound);
 
     return sound;
   }
 
   public async loadAsync(id: string): Promise<Sound> {
-    return new Promise((resolve) => {
-      const sound = this.load(id);
-      if (sound.isLoaded()) {
-        resolve(sound);
-      } else {
-        sound.loaded.addListener(() => {
-          resolve(sound);
-        });
-      }
-    });
+    return this.load(id);
   }
 
-  public preloadAll(): void {
-    Object.keys(this.manifest).forEach((id) => {
-      this.load(id);
-    });
-  }
+  /** No-op: Phaser preloads all audio in BridgeScene.preload(). */
+  public preloadAll(): void {}
 
-  public async preloadAllAsync(): Promise<void> {
-    await Promise.all(
-      Object.keys(this.manifest).map((id) => {
-        return this.loadAsync(id);
-      }),
-    );
-  }
+  /** No-op: Phaser preloads all audio in BridgeScene.preload(). */
+  public async preloadAllAsync(): Promise<void> {}
 
   public getAllLoaded(): Sound[] {
     return Array.from(this.sounds.values());

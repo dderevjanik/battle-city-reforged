@@ -52,6 +52,8 @@ export class BridgeScene extends Phaser.Scene {
       this.input.gamepad,
     );
 
+    this.gameContext.audioLoader.initPhaserAudio(this.sound);
+
     this.gameRenderer = new PhaserRenderer(this, spriteManifest);
 
     this.sceneRouter = new GameSceneRouter();

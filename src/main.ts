@@ -97,11 +97,6 @@ if (config.IS_DEV) {
 }
 
 async function main(): Promise<void> {
-  log.time('Audio preload');
-  loadingElement.textContent = 'Loading audio...';
-  await audioLoader.preloadAllAsync();
-  log.timeEnd('Audio preload');
-
   log.time('Rect font preload');
   loadingElement.textContent = 'Loading rects fonts...';
   await rectFontLoader.preloadAll();

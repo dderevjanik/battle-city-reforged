@@ -8,7 +8,7 @@ import * as config from '../../config';
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
-import { EditorLocationParams } from './params';
+import { EditorLocationParams } from './EditorLocationParams';
 
 export class EditorMapScene extends GameScene<EditorLocationParams> {
   private field: EditorField;

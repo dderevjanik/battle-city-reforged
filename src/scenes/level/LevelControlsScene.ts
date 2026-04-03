@@ -17,7 +17,8 @@ import * as config from '../../config';
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
-import { LevelControlsLocationParams, LevelPlayLocationParams } from './params';
+import { LevelControlsLocationParams } from './LevelControlsLocationParams';
+import { LevelPlayLocationParams } from './LevelPlayLocationParams';
 
 export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
   private background: GameObject;

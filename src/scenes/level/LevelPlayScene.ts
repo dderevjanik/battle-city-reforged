@@ -33,7 +33,7 @@ import {
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
-import { LevelPlayLocationParams } from './params';
+import { LevelPlayLocationParams } from './LevelPlayLocationParams';
 
 export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private world: LevelWorld;

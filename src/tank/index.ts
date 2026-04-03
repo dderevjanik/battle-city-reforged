@@ -1,4 +1,5 @@
-export * from './animations';
+export * from './TankIdleAnimation';
+export * from './TankMoveAnimation';
 export * from './behaviors';
 
 export * from './TankAnimationFrame';

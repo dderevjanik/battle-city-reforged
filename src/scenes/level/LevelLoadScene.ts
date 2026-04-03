@@ -7,7 +7,7 @@ import { MapConfig, MapLoader } from '../../map';
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
-import { LevelControlsLocationParams } from './params';
+import { LevelControlsLocationParams } from './LevelControlsLocationParams';
 
 enum State {
   Navigation,

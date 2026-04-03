@@ -19,7 +19,8 @@ import {
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
-import { EditorLoadState, EditorLocationParams } from './params';
+import { EditorLoadState } from './EditorLoadState';
+import { EditorLocationParams } from './EditorLocationParams';
 
 enum MenuState {
   Navigation,

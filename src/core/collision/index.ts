@@ -1,4 +1,5 @@
-export * from './colliders';
+export * from './BoxCollider';
+export * from './SweptBoxCollider';
 
 export * from './Collider';
 export * from './Collision';

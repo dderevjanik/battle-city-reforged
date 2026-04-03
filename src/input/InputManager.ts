@@ -8,17 +8,13 @@ import {
 import { GameStorage } from '../game';
 import * as config from '../config';
 
-import {
-  PrimaryGamepadInputBinding,
-  PrimaryKeyboardInputBinding,
-  SecondaryGamepadInputBinding,
-  SecondaryKeyboardInputBinding,
-  TertiaryKeyboardInputBinding,
-} from './bindings';
-import {
-  GamepadButtonCodePresenter,
-  KeyboardButtonCodePresenter,
-} from './presenters';
+import { PrimaryGamepadInputBinding } from './PrimaryGamepadInputBinding';
+import { PrimaryKeyboardInputBinding } from './PrimaryKeyboardInputBinding';
+import { SecondaryGamepadInputBinding } from './SecondaryGamepadInputBinding';
+import { SecondaryKeyboardInputBinding } from './SecondaryKeyboardInputBinding';
+import { TertiaryKeyboardInputBinding } from './TertiaryKeyboardInputBinding';
+import { GamepadButtonCodePresenter } from './GamepadButtonCodePresenter';
+import { KeyboardButtonCodePresenter } from './KeyboardButtonCodePresenter';
 import { InputBindingType } from './InputBindingType';
 import { InputButtonCodePresenter } from './InputButtonCodePresenter';
 import { InputControl } from './InputControl';

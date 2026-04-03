@@ -3,7 +3,7 @@ import { SpriteFont } from '../text';
 
 import { Rect } from '../Rect';
 
-import { CanvasImage } from './sources';
+import { CanvasImage } from './CanvasImage';
 
 interface ColorSpriteFontGeneratorIitem {
   defaultColor: string;

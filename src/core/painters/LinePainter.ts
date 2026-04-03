@@ -1,7 +1,6 @@
-import { Painter } from '../Painter';
 import { Vector } from '../Vector';
 
-export class LinePainter extends Painter {
+export class LinePainter {
   public positions: Vector[] = [];
   public strokeColor = '#000';
 }

@@ -118,7 +118,6 @@ const updateArgs: GameUpdateArgs = {
   collisionSystem,
   colorSpriteFontGenerator,
   deltaTime: 0,
-  gameStorage,
   imageLoader,
   inputHintSettings,
   inputManager,

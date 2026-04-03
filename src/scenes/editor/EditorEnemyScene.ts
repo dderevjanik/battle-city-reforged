@@ -14,7 +14,7 @@ import * as config from '../../config';
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
-import { EditorLocationParams } from './params';
+import { EditorLocationParams } from './EditorLocationParams';
 
 const ENEMY_TYPES = [
   TankType.EnemyA(),

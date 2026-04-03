@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-import { RenderObject } from '../RenderObject';
+import { GameObject } from '../GameObject';
 import { SpritePainter } from '../painters/SpritePainter';
 import { RectPainter } from '../painters/RectPainter';
 import { LinePainter } from '../painters/LinePainter';
@@ -11,12 +11,12 @@ import { Rect } from '../Rect';
 import { PixiTextureManager } from './PixiTextureManager';
 
 /**
- * WeakMap associating each RenderObject with its flat PixiJS display object.
+ * WeakMap associating each GameObject with its flat PixiJS display object.
  * All display objects live as direct children of pixiRoot (no nesting),
  * matching the original GameRenderer which flattened the tree and globally
  * z-sorted everything.
  */
-const displayMap = new WeakMap<RenderObject, PIXI.Container>();
+const displayMap = new WeakMap<GameObject, PIXI.Container>();
 
 export interface PixiRendererOptions {
   width: number;
@@ -43,13 +43,13 @@ export class PixiRenderer {
     return this.app.view as HTMLCanvasElement;
   }
 
-  public render(root: RenderObject): void {
+  public render(root: GameObject): void {
     // 1. Update world matrices (needed for collision + position readout)
     root.updateWorldMatrix(false, true);
 
     // 2. Flatten the scene graph (excluding root), exactly like the
     //    original GameRenderer did.
-    const objects: RenderObject[] = [];
+    const objects: GameObject[] = [];
     root.traverse((object) => {
       if (object === root) return;
       objects.push(object);
@@ -91,7 +91,7 @@ export class PixiRenderer {
   }
 
   private syncTransform(
-    node: RenderObject,
+    node: GameObject,
     pixiNode: PIXI.Container,
   ): void {
     // The original engine never visually rotates sprites — painters draw
@@ -111,7 +111,7 @@ export class PixiRenderer {
   }
 
   private syncPainter(
-    node: RenderObject,
+    node: GameObject,
     pixiNode: PIXI.Container,
   ): void {
     const painter = node.painter;
@@ -138,7 +138,7 @@ export class PixiRenderer {
   }
 
   private syncSpritePainter(
-    node: RenderObject,
+    node: GameObject,
     pixiNode: PIXI.Container,
     painter: SpritePainter,
   ): void {
@@ -224,7 +224,7 @@ export class PixiRenderer {
   }
 
   private syncRectPainter(
-    node: RenderObject,
+    node: GameObject,
     pixiNode: PIXI.Container,
     painter: RectPainter,
   ): void {
@@ -255,7 +255,7 @@ export class PixiRenderer {
   }
 
   private syncLinePainter(
-    node: RenderObject,
+    node: GameObject,
     pixiNode: PIXI.Container,
     painter: LinePainter,
   ): void {
@@ -282,7 +282,7 @@ export class PixiRenderer {
   }
 
   private syncSpriteTextPainter(
-    node: RenderObject,
+    node: GameObject,
     pixiNode: PIXI.Container,
     painter: SpriteTextPainter,
   ): void {

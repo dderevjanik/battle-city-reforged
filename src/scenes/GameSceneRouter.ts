@@ -20,8 +20,6 @@ import { SettingsAudioScene } from './settings/SettingsAudioScene';
 import { SettingsInterfaceScene } from './settings/SettingsInterfaceScene';
 import { SettingsKeybindingScene } from './settings/SettingsKeybindingScene';
 import { SettingsMenuScene } from './settings/SettingsMenuScene';
-import { SandboxTransformScene } from './sandbox/SandboxTransformScene';
-
 import { GameScene } from './GameScene';
 import { GameSceneType } from './GameSceneType';
 
@@ -50,6 +48,5 @@ export class GameSceneRouter extends SceneRouter<GameScene> {
     this.register(GameSceneType.SettingsInterface, SettingsInterfaceScene);
     this.register(GameSceneType.SettingsMenu, SettingsMenuScene);
     this.register(GameSceneType.SettingsKeybinding, SettingsKeybindingScene);
-    this.register(GameSceneType.SandboxTransform, SandboxTransformScene);
   }
 }

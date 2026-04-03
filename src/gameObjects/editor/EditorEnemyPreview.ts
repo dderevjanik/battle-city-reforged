@@ -31,8 +31,6 @@ export class EditorEnemyPreview extends GameObject {
     } else {
       this.setVisible(true);
     }
-
-    this.setNeedsPaint();
   }
 
   protected setup({ spriteLoader }: GameUpdateArgs): void {
@@ -65,6 +63,5 @@ export class EditorEnemyPreview extends GameObject {
 
     const painter = this.container.painter as SpritePainter;
     painter.sprite = sprite;
-    this.setNeedsPaint();
   }
 }

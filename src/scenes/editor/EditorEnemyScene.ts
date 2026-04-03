@@ -219,7 +219,6 @@ export class EditorEnemyScene extends GameScene<EditorLocationParams> {
 
   private handleSelectorUnfocused = (): void => {
     this.preview.setVisible(false);
-    this.preview.dirtyPaintBox();
   };
 
   private handleNextSelected = (): void => {

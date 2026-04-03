@@ -71,8 +71,6 @@ export class Curtain extends GameObject {
 
     this.bottomPart.size.setHeight(nextHeight);
     this.bottomPart.updateMatrix();
-
-    this.dirtyPaintBox();
   }
 
   public close(): void {

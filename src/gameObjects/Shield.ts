@@ -33,6 +33,5 @@ export class Shield extends GameObject {
 
     this.animation.update(deltaTime);
     this.painter.sprite = this.animation.getCurrentFrame();
-    this.setNeedsPaint();
   }
 }

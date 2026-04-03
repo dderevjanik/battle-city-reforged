@@ -58,7 +58,6 @@ export class LevelPauseScript extends LevelScript {
   }
 
   private deactivate(): void {
-    this.notice.dirtyPaintBox();
     this.notice.setVisible(false);
 
     this.eventBus.levelUnpaused.notify(null);

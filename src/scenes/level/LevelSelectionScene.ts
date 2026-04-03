@@ -17,7 +17,8 @@ export class LevelSelectionScene extends GameScene {
     this.session = session;
     this.mapLoader = mapLoader;
 
-    this.curtain = new Curtain(this.root.size.width, this.root.size.height);
+    // Start curtain fully closed (grey background) so black text is visible
+    this.curtain = new Curtain(this.root.size.width, this.root.size.height, false);
     this.root.add(this.curtain);
 
     this.selector = new LevelSelector(
@@ -34,8 +35,6 @@ export class LevelSelectionScene extends GameScene {
     );
     this.continueHint = new SceneInputHint(`${continueDisplayCode} TO SELECT`);
     this.root.add(this.continueHint);
-
-    this.curtain.close();
   }
 
   private handleLevelSelected = (levelNumber: number): void => {

@@ -38,7 +38,6 @@ export class VictoryHeading extends GameObject {
       this.nextText();
       this.updateVisibility();
       this.timer.reset(VISIBILITY_DURATION);
-      this.setNeedsPaint();
     } else {
       this.timer.update(deltaTime);
     }

@@ -291,7 +291,6 @@ export class EditorMenuScene extends GameScene<EditorLocationParams> {
     this.confirmModal.resetSelection();
     this.confirmModal.setVisible(false);
     this.menuState = MenuState.Navigation;
-    this.root.setNeedsPaint();
   }
 
   private handleConfirmAccepted = (): void => {

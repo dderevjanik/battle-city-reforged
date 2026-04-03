@@ -34,7 +34,6 @@ export class SandboxTransformScene extends GameScene {
     const inputMethod = inputManager.getActiveMethod();
 
     if (inputMethod.isDown(InputControl.PrimaryAction)) {
-      this.parent.dirtyPaintBox();
       this.parent.position.addX(100);
       this.parent.updateMatrix();
       // this.angle += 90;

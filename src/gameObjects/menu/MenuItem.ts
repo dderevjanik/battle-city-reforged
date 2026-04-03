@@ -14,7 +14,6 @@ export abstract class MenuItem extends GameObject {
 
   public setFocusable(focusable: boolean): void {
     this.focusable = focusable;
-    this.setNeedsPaint();
   }
 
   public isFocusable(): boolean {

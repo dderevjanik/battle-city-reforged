@@ -79,7 +79,6 @@ export class EnemyTank extends Tank {
 
       // Tanks with drop should be blinking when paused or freezed
       this.updateAnimation(updateArgs.deltaTime);
-      this.setNeedsPaint();
       return;
     }
 

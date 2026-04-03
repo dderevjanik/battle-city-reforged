@@ -1,4 +1,3 @@
-import { BoundingBox } from './BoundingBox';
 import { Painter } from './Painter';
 import { Transform } from './Transform';
 
@@ -17,10 +16,6 @@ export class RenderObject extends Transform {
   protected visible: boolean = null;
   // Computed, don't change
   protected worldVisible: boolean = null;
-
-  protected prevDirtyBox: BoundingBox = null;
-
-  protected needsPaint = true;
 
   public canRender(): boolean {
     if (this.painter === null) {
@@ -96,40 +91,9 @@ export class RenderObject extends Transform {
     }
   }
 
-  // Dirty box
-
-  public dirtyPaintBox(): void {
-    this.prevDirtyBox = this.getWorldBoundingBox().clone();
-    this.needsPaint = true;
-
-    for (const child of this.children) {
-      child.dirtyPaintBox();
-    }
-  }
-
-  public getPrevDirtyBox(): BoundingBox {
-    return this.prevDirtyBox;
-  }
-
-  public resetPrevDirtyBox(): void {
-    this.prevDirtyBox = null;
-  }
-
-  // Paint flag
-
-  public setNeedsPaint(): void {
-    this.needsPaint = true;
-
-    for (const child of this.children) {
-      child.setNeedsPaint();
-    }
-  }
-
-  public doesNeedPaint(): boolean {
-    return this.needsPaint;
-  }
-
-  public resetNeedsPaint(): void {
-    this.needsPaint = false;
-  }
+  // Legacy no-ops kept for backward compatibility during migration
+  public dirtyPaintBox(): void {}
+  public setNeedsPaint(): void {}
+  public doesNeedPaint(): boolean { return false; }
+  public resetNeedsPaint(): void {}
 }

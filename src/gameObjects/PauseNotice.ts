@@ -27,6 +27,5 @@ export class PauseNotice extends GameObject {
   protected update(updateArgs: GameUpdateArgs): void {
     this.animation.update(updateArgs.deltaTime);
     this.painter.sprite = this.animation.getCurrentFrame();
-    this.setNeedsPaint();
   }
 }

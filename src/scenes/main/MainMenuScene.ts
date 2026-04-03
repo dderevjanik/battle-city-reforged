@@ -132,7 +132,6 @@ export class MainMenuScene extends GameScene {
 
       const hasReachedTop = nextPosition === 0;
 
-      this.group.dirtyPaintBox();
       this.group.position.setY(nextPosition);
       this.group.updateMatrix(true);
 

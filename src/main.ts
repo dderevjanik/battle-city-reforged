@@ -6,7 +6,6 @@ import {
   ColorSpriteFontGenerator,
   GameObject,
   GameLoop,
-  GameRenderer,
   ImageLoader,
   Logger,
   RectFontLoader,
@@ -15,6 +14,9 @@ import {
   State,
   Vector,
 } from './core';
+import { createPixiApp } from './core/render/PixiApp';
+import { PixiTextureManager } from './core/render/PixiTextureManager';
+import { PixiRenderer } from './core/render/PixiRenderer';
 import { DebugGameLoopMenu, DebugInspector } from './debug';
 import {
   AudioManager,
@@ -40,11 +42,14 @@ const loadingElement = document.querySelector('[data-loading]');
 
 const log = new Logger('main', Logger.Level.Debug);
 
-const gameRenderer = new GameRenderer({
-  // debug: true,
-  height: config.CANVAS_HEIGHT,
+const pixiApp = createPixiApp({
   width: config.CANVAS_WIDTH,
+  height: config.CANVAS_HEIGHT,
 });
+
+const textureManager = new PixiTextureManager(spriteManifest);
+
+let pixiRenderer: PixiRenderer;
 
 const gameStorage = new GameStorage(config.STORAGE_NAMESPACE);
 gameStorage.load();
@@ -91,7 +96,7 @@ sceneRouter.transitionStarted.addListener(() => {
   collisionSystem.reset();
 });
 
-const debugInspector = new DebugInspector(gameRenderer.getDomElement());
+const debugInspector = new DebugInspector(pixiApp.view as HTMLCanvasElement);
 debugInspector.listen();
 debugInspector.click.addListener((position: Vector) => {
   const intersections: GameObject[] = [];
@@ -146,7 +151,7 @@ gameLoop.tick.addListener((event) => {
   const scene = sceneRouter.getCurrentScene();
   scene.invokeUpdate(updateArgs);
 
-  gameRenderer.render(scene.getRoot());
+  pixiRenderer.render(scene.getRoot());
 
   gameState.update();
 
@@ -194,13 +199,26 @@ async function main(): Promise<void> {
   await spriteLoader.preloadAllAsync();
   log.timeEnd('Sprites preload');
 
+  log.time('PixiJS textures preload');
+  loadingElement.textContent = 'Loading PixiJS textures...';
+  await textureManager.preload();
+  log.timeEnd('PixiJS textures preload');
+
+  pixiRenderer = new PixiRenderer({
+    width: config.CANVAS_WIDTH,
+    height: config.CANVAS_HEIGHT,
+    app: pixiApp,
+    textureManager,
+  });
+  pixiRenderer.buildTextureCache(spriteManifest);
+
   log.time('Input bindings load');
   loadingElement.textContent = 'Loading input bindings...';
   inputManager.loadAllBindings();
   log.timeEnd('Input bindings load');
 
   document.body.removeChild(loadingElement);
-  document.body.appendChild(gameRenderer.getDomElement());
+  document.body.appendChild(pixiApp.view as HTMLCanvasElement);
 
   gameLoop.start();
   // gameLoop.next();

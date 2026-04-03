@@ -51,8 +51,6 @@ export class LevelPlayerOverScript extends LevelScript {
     const { deltaTime } = updateArgs;
 
     if (this.state === State.Moving) {
-      this.notice.dirtyPaintBox();
-
       const { startX, endX } = SLIDE_POSITIONS[this.playerIndex];
       const totalDistance = endX - startX;
       const speed = totalDistance / MOVE_DURATION;
@@ -82,7 +80,6 @@ export class LevelPlayerOverScript extends LevelScript {
     }
     if (this.state === State.Staying) {
       this.state = State.Done;
-      this.notice.dirtyPaintBox();
       this.notice.removeSelf();
       return;
     }

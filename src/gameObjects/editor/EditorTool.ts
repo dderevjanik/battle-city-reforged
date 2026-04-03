@@ -78,8 +78,6 @@ export class EditorTool extends GameObject {
   }
 
   protected update(updateArgs: GameUpdateArgs): void {
-    this.dirtyPaintBox();
-
     this.updatePosition(updateArgs);
     this.updateBlinking(updateArgs);
 

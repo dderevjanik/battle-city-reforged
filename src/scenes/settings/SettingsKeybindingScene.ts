@@ -155,7 +155,6 @@ export class SettingsKeybindingScene extends GameScene {
     this.selectedControl = null;
     this.state = State.Navigation;
     this.modal.setVisible(false);
-    this.root.dirtyPaintBox();
   }
 
   private updateMenu(): void {

@@ -158,7 +158,6 @@ export class SelectorMenuItem<T> extends MenuItem {
     }
 
     if (this.hasBeenSetup()) {
-      this.container.dirtyPaintBox();
       this.container.children.forEach((item, index) => {
         if (this.selectedIndex === index) {
           item.setVisible(true);

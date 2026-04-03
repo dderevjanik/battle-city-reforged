@@ -106,7 +106,6 @@ export class Menu extends GameObject {
     this.focusedIndex = index;
     this.showCursor();
 
-    this.cursor.dirtyPaintBox();
     this.cursor.position.setY(this.cursor.size.height * this.focusedIndex);
     this.cursor.updateMatrix(true);
 

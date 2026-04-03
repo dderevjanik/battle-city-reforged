@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.ts$\")",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx webpack:*)",
+      "Bash(node -e \"const pkg = require\\('/Users/danielderevjanik/Repositories/dderevjanik/cattle-bity/node_modules/pixi.js/package.json'\\); console.log\\(pkg.version\\)\")",
+      "Bash(curl -s http://localhost:8080)",
+      "Bash(node -e \"const PIXI = require\\('pixi.js'\\); console.log\\('BaseTexture.defaultOptions:', typeof PIXI.BaseTexture.defaultOptions\\); console.log\\('SCALE_MODES:', PIXI.SCALE_MODES\\);\")",
+      "Bash(node -e \"const PIXI = require\\('pixi.js'\\); console.log\\('CanvasRenderer:', typeof PIXI.CanvasRenderer\\);\")",
+      "Bash(node -e \"const PIXI = require\\('pixi.js'\\); console.log\\('ALPHA_MODES:', PIXI.ALPHA_MODES\\);\")",
+      "Bash(node -e \"const PIXI = require\\('pixi.js'\\); const app = new PIXI.Application\\({width:1,height:1}\\); const r = app.renderer; console.log\\('type:', r.type === 1 ? 'WebGL' : 'Canvas'\\); console.log\\('options keys:', Object.keys\\(r.options || {}\\)\\); console.log\\('context attrs:', r.gl ? r.gl.getContextAttributes\\(\\) : 'no gl'\\); app.destroy\\(\\);\")",
+      "Bash(node -e ':*)"
+    ]
+  }
+}

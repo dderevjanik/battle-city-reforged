@@ -26,7 +26,6 @@ export class SceneInputHint extends SpriteText {
     this.blinkTimer.update(deltaTime);
 
     if (this.blinkTimer.isDone()) {
-      this.dirtyPaintBox();
       this.setVisible(!this.getVisible());
       this.blinkTimer.reset(BLINK_DELAY);
     }

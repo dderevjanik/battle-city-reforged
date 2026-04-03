@@ -181,8 +181,6 @@ export class Tank extends GameObject {
       return;
     }
 
-    this.dirtyPaintBox();
-
     if (this.isSliding()) {
       if (this.isOnIce) {
         this.slideTimer.update(deltaTime);

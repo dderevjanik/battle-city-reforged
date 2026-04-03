@@ -18,6 +18,7 @@ export function createPhaserGame(options: PhaserGameOptions): Phaser.Game {
     pixelArt: true,
     scene: [BridgeScene],
     audio: { disableWebAudio: false },
+    input: { gamepad: true },
     parent: options.parent,
   });
 }

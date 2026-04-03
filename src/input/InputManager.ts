@@ -1,3 +1,5 @@
+import Phaser from 'phaser';
+
 import { GamepadInputDevice } from '../core/input/GamepadInputDevice';
 import { InputBinding } from '../core/input/InputBinding';
 import { InputDevice } from '../core/input/InputDevice';
@@ -35,14 +37,7 @@ export class InputManager {
   constructor(storage: GameStorage) {
     this.storage = storage;
 
-    // Order by priority, first is default.
-    // Assume that keyboard is only one, and that there might be multiple
-    // gamepads.
-    this.deviceMap.set(InputDeviceType.Keyboard, [new KeyboardInputDevice()]);
-    this.deviceMap.set(InputDeviceType.Gamepad, [
-      new GamepadInputDevice(0),
-      new GamepadInputDevice(1),
-    ]);
+    // Devices are injected after Phaser initialises via initPhaserDevices().
 
     if (this.deviceMap.size > 0) {
       this.activeDeviceType = Array.from(this.deviceMap.keys())[0];
@@ -85,6 +80,29 @@ export class InputManager {
       InputDeviceType.Gamepad,
       new GamepadButtonCodePresenter(),
     );
+  }
+
+  /**
+   * Must be called once, from BridgeScene.create(), after Phaser has
+   * initialised its input plugins.
+   */
+  public initPhaserDevices(
+    keyboard: Phaser.Input.Keyboard.KeyboardPlugin,
+    gamepad: Phaser.Input.Gamepad.GamepadPlugin,
+  ): void {
+    this.deviceMap.set(InputDeviceType.Keyboard, [
+      new KeyboardInputDevice(keyboard),
+    ]);
+    this.deviceMap.set(InputDeviceType.Gamepad, [
+      new GamepadInputDevice(gamepad, 0),
+      new GamepadInputDevice(gamepad, 1),
+    ]);
+
+    if (this.activeDeviceType === null && this.deviceMap.size > 0) {
+      this.activeDeviceType = Array.from(this.deviceMap.keys())[0];
+    }
+
+    this.listen();
   }
 
   public getBinding(bindingType: InputBindingType): InputBinding {

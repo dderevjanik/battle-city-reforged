@@ -37,7 +37,6 @@ const gameStorage = new GameStorage(config.STORAGE_NAMESPACE);
 gameStorage.load();
 
 const inputManager = new InputManager(gameStorage);
-inputManager.listen();
 
 const audioLoader = new AudioLoader(audioManifest);
 const imageLoader = new ImageLoader();

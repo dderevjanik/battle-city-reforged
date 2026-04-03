@@ -47,6 +47,11 @@ export class BridgeScene extends Phaser.Scene {
       }
     }
 
+    this.gameContext.inputManager.initPhaserDevices(
+      this.input.keyboard,
+      this.input.gamepad,
+    );
+
     this.gameRenderer = new PhaserRenderer(this, spriteManifest);
 
     this.sceneRouter = new GameSceneRouter();

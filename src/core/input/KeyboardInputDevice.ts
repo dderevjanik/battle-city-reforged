@@ -1,26 +1,32 @@
+import Phaser from 'phaser';
+
 import { InputDevice } from './InputDevice';
 
 export class KeyboardInputDevice implements InputDevice {
+  private readonly keyboard: Phaser.Input.Keyboard.KeyboardPlugin;
+
   private listenedDownCodes: number[] = [];
 
   private downCodes: number[] = [];
   private holdCodes: number[] = [];
   private upCodes: number[] = [];
 
+  constructor(keyboard: Phaser.Input.Keyboard.KeyboardPlugin) {
+    this.keyboard = keyboard;
+  }
+
   public isConnected(): boolean {
     return true;
   }
 
   public listen(): void {
-    document.addEventListener('keydown', this.handleWindowKeyDown);
-    document.addEventListener('keyup', this.handleWindowKeyUp);
-    window.addEventListener('blur', this.handleWindowBlur);
+    this.keyboard.on('keydown', this.handleKeyDown, this);
+    this.keyboard.on('keyup', this.handleKeyUp, this);
   }
 
   public unlisten(): void {
-    document.removeEventListener('keydown', this.handleWindowKeyDown);
-    document.removeEventListener('keyup', this.handleWindowKeyUp);
-    window.removeEventListener('blur', this.handleWindowBlur);
+    this.keyboard.off('keydown', this.handleKeyDown, this);
+    this.keyboard.off('keyup', this.handleKeyUp, this);
   }
 
   public update(): void {
@@ -30,21 +36,14 @@ export class KeyboardInputDevice implements InputDevice {
     const holdCodes = [];
 
     for (const code of codes) {
-      // Newly pressed key, which was not previously down or hold
       if (!this.downCodes.includes(code) && !this.holdCodes.includes(code)) {
         downCodes.push(code);
       }
 
-      // Key that was down on previous frame is now considered hold, because
-      // it is still down on current frame.
-      // Hold key continues to be hold.
       if (this.downCodes.includes(code) || this.holdCodes.includes(code)) {
         holdCodes.push(code);
       }
     }
-
-    // Find keycodes that were down or hold on previous frame, which means
-    // that in current frame they are considered up
 
     const upCodes = [];
 
@@ -77,31 +76,20 @@ export class KeyboardInputDevice implements InputDevice {
     return this.upCodes;
   }
 
-  private handleWindowKeyDown = (ev): void => {
-    const { keyCode } = ev;
+  private handleKeyDown = (event: KeyboardEvent): void => {
+    const { keyCode } = event;
 
     if (!this.listenedDownCodes.includes(keyCode)) {
       this.listenedDownCodes.push(keyCode);
     }
   };
 
-  private handleWindowKeyUp = (ev): void => {
-    const { keyCode } = ev;
+  private handleKeyUp = (event: KeyboardEvent): void => {
+    const { keyCode } = event;
 
     const index = this.listenedDownCodes.indexOf(keyCode);
     if (index !== -1) {
       this.listenedDownCodes.splice(index, 1);
     }
-  };
-
-  // If we press a key and game window becomes unfocused (for example,
-  // file dialog) and then the key is released, it's release won't be
-  // captured by the game window, because something else is in focus now
-  // (like file dialog). When we come back to game window, it's state
-  // has only captured key down event, but not key up, so it becomes
-  // stuck until same key goes full cycle once again. Reset the state
-  // when game window loses focus.
-  private handleWindowBlur = (): void => {
-    this.listenedDownCodes = [];
   };
 }

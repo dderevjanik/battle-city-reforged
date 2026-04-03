@@ -1,10 +1,8 @@
-import { Spawn } from '../../gameObjects';
+import { Spawn } from '../../gameObjects/Spawn';
 
 import { LevelScript } from '../LevelScript';
-import {
-  LevelEnemySpawnRequestedEvent,
-  LevelPlayerSpawnRequestedEvent,
-} from '../events';
+import { LevelEnemySpawnRequestedEvent } from '../events/LevelEnemySpawnRequestedEvent';
+import { LevelPlayerSpawnRequestedEvent } from '../events/LevelPlayerSpawnRequestedEvent';
 
 export class LevelSpawnScript extends LevelScript {
   protected setup(): void {

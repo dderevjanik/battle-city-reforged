@@ -1,9 +1,10 @@
 import { BoundingBox } from './BoundingBox';
-import { Collider, Collision } from './collision';
+import { Collider } from './collision/Collider';
+import { Collision } from './collision/Collision';
 import { Matrix3 } from './Matrix3';
-import { Painter } from './painters';
+import { Painter } from './painters/Painter';
 import { Size } from './Size';
-import { MathUtils } from './utils';
+import { MathUtils } from './utils/MathUtils';
 import { Vector } from './Vector';
 
 // -1 is because coordinate system start is at top left

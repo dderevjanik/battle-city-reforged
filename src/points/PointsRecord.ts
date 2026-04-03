@@ -1,5 +1,5 @@
-import { PowerupType } from '../powerup';
-import { TankTier } from '../tank';
+import { PowerupType } from '../powerup/PowerupType';
+import { TankTier } from '../tank/TankTier';
 import * as config from '../config';
 
 const TANK_POINTS_MAP = {

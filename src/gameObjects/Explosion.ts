@@ -1,12 +1,10 @@
-import {
-  Animation,
-  GameObject,
-  Sprite,
-  SpriteAlignment,
-  SpritePainter,
-  Subject,
-} from './../core';
-import { GameContext } from '../game';
+import { Animation } from '../core/Animation';
+import { GameObject } from '../core/GameObject';
+import { SpriteAlignment } from '../core/SpriteAlignment';
+import { Subject } from '../core/Subject';
+import { Sprite } from '../core/graphics/Sprite';
+import { SpritePainter } from '../core/painters/SpritePainter';
+import { GameContext } from '../game/GameUpdateArgs';
 import * as config from '../config';
 
 export class Explosion extends GameObject {

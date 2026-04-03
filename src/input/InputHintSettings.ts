@@ -1,4 +1,4 @@
-import { GameStorage } from '../game';
+import { GameStorage } from '../game/GameStorage';
 import * as config from '../config';
 
 export class InputHintSettings {

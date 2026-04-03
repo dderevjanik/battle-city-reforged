@@ -1,7 +1,10 @@
-import { GameContext, Session } from '../../game';
-import { Curtain, SceneInputHint, LevelSelector } from '../../gameObjects';
-import { LevelSelectionInputContext } from '../../input';
-import { MapLoader } from '../../map';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { Curtain } from '../../gameObjects/Curtain';
+import { LevelSelector } from '../../gameObjects/LevelSelector';
+import { SceneInputHint } from '../../gameObjects/text/SceneInputHint';
+import { LevelSelectionInputContext } from '../../input/LevelSelectionInputContext';
+import { MapLoader } from '../../map/MapLoader';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

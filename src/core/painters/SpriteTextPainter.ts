@@ -1,5 +1,5 @@
-import { Sprite } from '../graphics';
-import { Text } from '../text';
+import { Sprite } from '../graphics/Sprite';
+import { Text } from '../text/Text';
 
 export class SpriteTextPainter {
   public text: Text<Sprite> = null;

@@ -1,13 +1,13 @@
-import { FileOpener } from '../../core';
-import { GameContext, Session } from '../../game';
-import {
-  DividerMenuItem,
-  MenuDescription,
-  SceneMenu,
-  SceneMenuTitle,
-  TextMenuItem,
-} from '../../gameObjects';
-import { FileMapListReader, MapLoader } from '../../map';
+import { FileOpener } from '../../core/file/FileOpener';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { DividerMenuItem } from '../../gameObjects/menu/DividerMenuItem';
+import { MenuDescription } from '../../gameObjects/menu/MenuDescription';
+import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
+import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
+import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
+import { FileMapListReader } from '../../map/FileMapListReader';
+import { MapLoader } from '../../map/MapLoader';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

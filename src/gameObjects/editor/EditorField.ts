@@ -1,7 +1,12 @@
-import { BoxCollider, GameObject } from '../../core';
-import { GameContext, Rotation, Tag } from '../../game';
-import { Base } from '../../gameObjects';
-import { TankColor, TankColorFactory, TankType } from '../../tank';
+import { GameObject } from '../../core/GameObject';
+import { BoxCollider } from '../../core/collision/BoxCollider';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Rotation } from '../../game/Rotation';
+import { Tag } from '../../game/Tag';
+import { Base } from '../Base';
+import { TankColor } from '../../tank/TankColor';
+import { TankColorFactory } from '../../tank/TankColorFactory';
+import { TankType } from '../../tank/TankType';
 import * as config from '../../config';
 
 import { EditorTankDummy } from './EditorTankDummy';

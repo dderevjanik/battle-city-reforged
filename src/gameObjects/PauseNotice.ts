@@ -1,5 +1,8 @@
-import { Animation, GameObject, Sprite, SpritePainter } from '../core';
-import { GameContext } from '../game';
+import { Animation } from '../core/Animation';
+import { GameObject } from '../core/GameObject';
+import { Sprite } from '../core/graphics/Sprite';
+import { SpritePainter } from '../core/painters/SpritePainter';
+import { GameContext } from '../game/GameUpdateArgs';
 import * as config from '../config';
 
 export class PauseNotice extends GameObject {

@@ -1,4 +1,4 @@
-import { RectFont, RectFontConfig, RectFontOptions } from '../text';
+import { RectFont, RectFontConfig, RectFontOptions } from '../text/RectFont';
 
 interface RegisteredItem {
   config: RectFontConfig;

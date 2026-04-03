@@ -1,5 +1,8 @@
-import { AudioManager, GameContext } from '../../game';
-import { SceneMenu, SceneMenuTitle, TextMenuItem } from '../../gameObjects';
+import { AudioManager } from '../../game/AudioManager';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
+import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
+import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
 
 import { GameScene } from '../GameScene';
 

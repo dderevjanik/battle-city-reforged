@@ -1,8 +1,13 @@
-import { Sound } from '../../core';
-import { AudioManager, GameContext } from '../../game';
-import { PlayerTank, VictoryHeading, VictoryMap } from '../../gameObjects';
-import { MenuInputContext } from '../../input';
-import { TankFactory, TankType, VictoryTankBehavior } from '../../tank';
+import { Sound } from '../../core/Sound';
+import { AudioManager } from '../../game/AudioManager';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { PlayerTank } from '../../gameObjects/PlayerTank';
+import { VictoryMap } from '../../gameObjects/VictoryMap';
+import { VictoryHeading } from '../../gameObjects/text/VictoryHeading';
+import { MenuInputContext } from '../../input/MenuInputContext';
+import { TankFactory } from '../../tank/TankFactory';
+import { TankType } from '../../tank/TankType';
+import { VictoryTankBehavior } from '../../tank/behaviors/VictoryTankBehavior';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

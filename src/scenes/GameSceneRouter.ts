@@ -1,33 +1,26 @@
-import { SceneRouter } from '../core';
+import { SceneRouter } from '../core/scene/SceneRouter';
 
-import {
-  EditorEnemyScene,
-  EditorControlsScene,
-  EditorMapScene,
-  EditorMenuScene,
-} from './editor';
-import {
-  LevelControlsScene,
-  LevelLoadScene,
-  LevelSelectionScene,
-  LevelPlayScene,
-  LevelScoreScene,
-} from './level';
-import {
-  MainAboutScene,
-  MainGameOverScene,
-  MainHighscoreScene,
-  MainMenuScene,
-  MainVictoryScene,
-} from './main';
-import { ModesCustomScene, ModesMenuScene } from './modes';
-import {
-  SettingsAudioScene,
-  SettingsInterfaceScene,
-  SettingsKeybindingScene,
-  SettingsMenuScene,
-} from './settings';
-import { SandboxTransformScene } from './sandbox';
+import { EditorControlsScene } from './editor/EditorControlsScene';
+import { EditorEnemyScene } from './editor/EditorEnemyScene';
+import { EditorMapScene } from './editor/EditorMapScene';
+import { EditorMenuScene } from './editor/EditorMenuScene';
+import { LevelControlsScene } from './level/LevelControlsScene';
+import { LevelLoadScene } from './level/LevelLoadScene';
+import { LevelPlayScene } from './level/LevelPlayScene';
+import { LevelScoreScene } from './level/LevelScoreScene';
+import { LevelSelectionScene } from './level/LevelSelectionScene';
+import { MainAboutScene } from './main/MainAboutScene';
+import { MainGameOverScene } from './main/MainGameOverScene';
+import { MainHighscoreScene } from './main/MainHighscoreScene';
+import { MainMenuScene } from './main/MainMenuScene';
+import { MainVictoryScene } from './main/MainVictoryScene';
+import { ModesCustomScene } from './modes/ModesCustomScene';
+import { ModesMenuScene } from './modes/ModesMenuScene';
+import { SettingsAudioScene } from './settings/SettingsAudioScene';
+import { SettingsInterfaceScene } from './settings/SettingsInterfaceScene';
+import { SettingsKeybindingScene } from './settings/SettingsKeybindingScene';
+import { SettingsMenuScene } from './settings/SettingsMenuScene';
+import { SandboxTransformScene } from './sandbox/SandboxTransformScene';
 
 import { GameScene } from './GameScene';
 import { GameSceneType } from './GameSceneType';

@@ -1,18 +1,14 @@
-import {
-  BoxCollider,
-  Collision,
-  GameObject,
-  RectPainter,
-  Subject,
-  Timer,
-  Vector,
-} from '../../core';
-import { GameContext, Tag } from '../../game';
-import {
-  EditorMapInputContext,
-  InputHoldThrottle,
-  InputHoldThrottleOptions,
-} from '../../input';
+import { GameObject } from '../../core/GameObject';
+import { Subject } from '../../core/Subject';
+import { Timer } from '../../core/Timer';
+import { Vector } from '../../core/Vector';
+import { BoxCollider } from '../../core/collision/BoxCollider';
+import { Collision } from '../../core/collision/Collision';
+import { RectPainter } from '../../core/painters/RectPainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Tag } from '../../game/Tag';
+import { EditorMapInputContext } from '../../input/EditorMapInputContext';
+import { InputHoldThrottle, InputHoldThrottleOptions } from '../../input/InputHoldThrottle';
 import * as config from '../../config';
 
 import { EditorBrush } from './EditorBrush';

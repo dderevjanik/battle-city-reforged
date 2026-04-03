@@ -1,4 +1,5 @@
-import { ImageSource, Sprite } from '../graphics';
+import { ImageSource } from '../graphics/ImageSource';
+import { Sprite } from '../graphics/Sprite';
 
 import { Rect } from '../Rect';
 import { Vector } from '../Vector';

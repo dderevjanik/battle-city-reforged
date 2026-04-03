@@ -1,15 +1,16 @@
-import { GameObject, RectPainter, SpriteLoader, TextAlignment } from '../core';
-import { GameContext } from '../game';
-import {
-  InputBindingType,
-  EditorMapInputContext,
-  InputManager,
-} from '../input';
-import { TerrainType } from '../terrain';
+import { GameObject } from '../core/GameObject';
+import { SpriteLoader } from '../core/loaders/SpriteLoader';
+import { RectPainter } from '../core/painters/RectPainter';
+import { TextAlignment } from '../core/text/Text';
+import { GameContext } from '../game/GameUpdateArgs';
+import { EditorMapInputContext } from '../input/EditorMapInputContext';
+import { InputBindingType } from '../input/InputBindingType';
+import { InputManager } from '../input/InputManager';
+import { TerrainType } from '../terrain/TerrainType';
 import * as config from '../config';
 
-import { EditorBrush } from './editor';
-import { SpriteText } from './text';
+import { EditorBrush } from './editor/EditorBrush';
+import { SpriteText } from './text/SpriteText';
 
 export class EditorInputHint extends GameObject {
   public zIndex = 0;

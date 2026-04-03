@@ -1,10 +1,9 @@
-import { GameObject, Rect } from '../../core';
-import { MapConfig } from '../../map';
-import {
-  TerrainFactory,
-  TerrainRegionConfig,
-  TerrainType,
-} from '../../terrain';
+import { GameObject } from '../../core/GameObject';
+import { Rect } from '../../core/Rect';
+import { MapConfig } from '../../map/MapConfig';
+import { TerrainFactory } from '../../terrain/TerrainFactory';
+import { TerrainRegionConfig } from '../../terrain/TerrainRegionConfig';
+import { TerrainType } from '../../terrain/TerrainType';
 import * as config from '../../config';
 
 import { EditorBrush } from './EditorBrush';

@@ -1,6 +1,6 @@
-import { Vector } from '../../core';
-import { Rotation } from '../../game';
-import { Tank } from '../../gameObjects';
+import { Vector } from '../../core/Vector';
+import { Rotation } from '../../game/Rotation';
+import { Tank } from '../../gameObjects/Tank';
 
 import { TankBehavior } from '../TankBehavior';
 

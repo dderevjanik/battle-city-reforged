@@ -1,5 +1,5 @@
-import { SceneParams } from '../../core';
-import { MapConfig } from '../../map';
+import { SceneParams } from '../../core/scene/SceneNavigator';
+import { MapConfig } from '../../map/MapConfig';
 
 export interface LevelPlayLocationParams extends SceneParams {
   mapConfig: MapConfig;

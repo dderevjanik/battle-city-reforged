@@ -1,5 +1,10 @@
-import { Animation, GameObject, Rect, Subject, Timer } from '../core';
-import { TerrainFactory, TerrainType } from '../terrain';
+import { Animation } from '../core/Animation';
+import { GameObject } from '../core/GameObject';
+import { Rect } from '../core/Rect';
+import { Subject } from '../core/Subject';
+import { Timer } from '../core/Timer';
+import { TerrainFactory } from '../terrain/TerrainFactory';
+import { TerrainType } from '../terrain/TerrainType';
 import * as config from '../config';
 
 import { BaseHeart } from './BaseHeart';

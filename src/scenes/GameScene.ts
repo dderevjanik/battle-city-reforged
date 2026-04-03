@@ -1,5 +1,7 @@
-import { GameObject, Scene, SceneNavigator, SceneParams } from '../core';
-import { GameContext } from '../game';
+import { GameObject } from '../core/GameObject';
+import { Scene } from '../core/scene/Scene';
+import { SceneNavigator, SceneParams } from '../core/scene/SceneNavigator';
+import { GameContext } from '../game/GameUpdateArgs';
 import * as config from '../config';
 
 export abstract class GameScene<

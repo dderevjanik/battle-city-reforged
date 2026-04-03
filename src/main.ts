@@ -1,34 +1,34 @@
 import Stats from 'stats.js';
 
-import {
-  AudioLoader,
-  CollisionSystem,
-  ColorSpriteFontGenerator,
-  GameObject,
-  GameLoop,
-  ImageLoader,
-  Logger,
-  RectFontLoader,
-  SpriteFontLoader,
-  SpriteLoader,
-  State,
-  Vector,
-} from './core';
+import { GameLoop } from './core/GameLoop';
+import { GameObject } from './core/GameObject';
+import { Logger } from './core/Logger';
+import { State } from './core/State';
+import { Vector } from './core/Vector';
+import { CollisionSystem } from './core/collision/CollisionSystem';
+import { ColorSpriteFontGenerator } from './core/graphics/ColorSpriteFontGenerator';
+import { AudioLoader } from './core/loaders/AudioLoader';
+import { ImageLoader } from './core/loaders/ImageLoader';
+import { RectFontLoader } from './core/loaders/RectFontLoader';
+import { SpriteFontLoader } from './core/loaders/SpriteFontLoader';
+import { SpriteLoader } from './core/loaders/SpriteLoader';
 import { createPixiApp } from './core/render/PixiApp';
 import { PixiTextureManager } from './core/render/PixiTextureManager';
 import { PixiRenderer } from './core/render/PixiRenderer';
-import { DebugGameLoopMenu, DebugInspector } from './debug';
-import {
-  AudioManager,
-  GameContext,
-  GameState,
-  GameStorage,
-  Session,
-} from './game';
-import { InputHintSettings, InputManager } from './input';
-import { ManifestMapListReader, MapLoader } from './map';
-import { PointsHighscoreManager } from './points';
-import { GameSceneRouter, GameSceneType } from './scenes';
+import { DebugGameLoopMenu } from './debug/DebugGameLoopMenu';
+import { DebugInspector } from './debug/DebugInspector';
+import { AudioManager } from './game/AudioManager';
+import { GameState } from './game/GameState';
+import { GameStorage } from './game/GameStorage';
+import { GameContext } from './game/GameUpdateArgs';
+import { Session } from './game/Session';
+import { InputHintSettings } from './input/InputHintSettings';
+import { InputManager } from './input/InputManager';
+import { ManifestMapListReader } from './map/ManifestMapListReader';
+import { MapLoader } from './map/MapLoader';
+import { PointsHighscoreManager } from './points/PointsHighscoreManager';
+import { GameSceneRouter } from './scenes/GameSceneRouter';
+import { GameSceneType } from './scenes/GameSceneType';
 
 import * as config from './config';
 

@@ -1,5 +1,6 @@
-import { AudioLoader, Sound } from '../core';
-import { GameStorage } from '../game';
+import { Sound } from '../core/Sound';
+import { AudioLoader } from '../core/loaders/AudioLoader';
+import { GameStorage } from './GameStorage';
 import * as config from '../config';
 
 export class AudioManager {

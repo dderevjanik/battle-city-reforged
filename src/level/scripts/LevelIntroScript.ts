@@ -1,5 +1,7 @@
-import { Subject, Timer } from '../../core';
-import { Curtain, LevelTitle } from '../../gameObjects';
+import { Subject } from '../../core/Subject';
+import { Timer } from '../../core/Timer';
+import { Curtain } from '../../gameObjects/Curtain';
+import { LevelTitle } from '../../gameObjects/text/LevelTitle';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';

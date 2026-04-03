@@ -1,5 +1,9 @@
-import { GameObject, RandomUtils, Rect, Subject } from '../core';
-import { TerrainFactory, TerrainType } from '../terrain';
+import { GameObject } from '../core/GameObject';
+import { Rect } from '../core/Rect';
+import { Subject } from '../core/Subject';
+import { RandomUtils } from '../core/utils/RandomUtils';
+import { TerrainFactory } from '../terrain/TerrainFactory';
+import { TerrainType } from '../terrain/TerrainType';
 import * as config from '../config';
 
 import { SmallExplosion } from './SmallExplosion';

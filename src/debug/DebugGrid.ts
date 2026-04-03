@@ -1,4 +1,7 @@
-import { GameObject, LinePainter, RectPainter, Vector } from '../core';
+import { GameObject } from '../core/GameObject';
+import { Vector } from '../core/Vector';
+import { LinePainter } from '../core/painters/LinePainter';
+import { RectPainter } from '../core/painters/RectPainter';
 import * as config from '../config';
 
 export class DebugGrid extends GameObject {

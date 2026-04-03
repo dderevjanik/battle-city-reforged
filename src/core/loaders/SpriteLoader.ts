@@ -1,4 +1,4 @@
-import { Sprite } from '../graphics';
+import { Sprite } from '../graphics/Sprite';
 
 import { Rect } from '../Rect';
 

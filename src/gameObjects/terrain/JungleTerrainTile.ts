@@ -1,6 +1,6 @@
-import { SpritePainter } from '../../core';
-import { GameContext } from '../../game';
-import { TerrainType } from '../../terrain';
+import { SpritePainter } from '../../core/painters/SpritePainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { TerrainType } from '../../terrain/TerrainType';
 import * as config from '../../config';
 
 import { TerrainTile } from '../TerrainTile';

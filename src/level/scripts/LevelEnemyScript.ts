@@ -1,15 +1,17 @@
-import { Timer, Vector } from '../../core';
-import { Rotation } from '../../game';
-import { EnemyTank } from '../../gameObjects';
-import { PowerupType } from '../../powerup';
-import { TankDeathReason, TankFactory, TankParty, TankType } from '../../tank';
+import { Timer } from '../../core/Timer';
+import { Vector } from '../../core/Vector';
+import { Rotation } from '../../game/Rotation';
+import { EnemyTank } from '../../gameObjects/EnemyTank';
+import { PowerupType } from '../../powerup/PowerupType';
+import { TankDeathReason } from '../../tank/TankDeathReason';
+import { TankFactory } from '../../tank/TankFactory';
+import { TankParty } from '../../tank/TankParty';
+import { TankType } from '../../tank/TankType';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import {
-  LevelEnemySpawnCompletedEvent,
-  LevelPowerupPickedEvent,
-} from '../events';
+import { LevelEnemySpawnCompletedEvent } from '../events/LevelEnemySpawnCompletedEvent';
+import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
 
 export class LevelEnemyScript extends LevelScript {
   private list: TankType[] = [];

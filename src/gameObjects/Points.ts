@@ -1,6 +1,8 @@
-import { GameObject, SpritePainter, Timer } from '../core';
-import { GameContext } from '../game';
-import { PointsValue } from '../points';
+import { GameObject } from '../core/GameObject';
+import { Timer } from '../core/Timer';
+import { SpritePainter } from '../core/painters/SpritePainter';
+import { GameContext } from '../game/GameUpdateArgs';
+import { PointsValue } from '../points/PointsValue';
 import * as config from '../config';
 
 const SPRITE_POINTS_PREFIX = 'points';

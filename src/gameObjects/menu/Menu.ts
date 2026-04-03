@@ -1,6 +1,7 @@
-import { GameObject, Subject } from '../../core';
-import { GameContext } from '../../game';
-import { MenuInputContext } from '../../input';
+import { GameObject } from '../../core/GameObject';
+import { Subject } from '../../core/Subject';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { MenuInputContext } from '../../input/MenuInputContext';
 
 import { MenuCursor } from './MenuCursor';
 import { MenuItem } from './MenuItem';

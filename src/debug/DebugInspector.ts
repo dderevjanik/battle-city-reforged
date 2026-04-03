@@ -1,4 +1,6 @@
-import { NumberUtils, Subject, Vector } from '../core';
+import { Subject } from '../core/Subject';
+import { Vector } from '../core/Vector';
+import { NumberUtils } from '../core/utils/NumberUtils';
 
 export class DebugInspector {
   public readonly click = new Subject<Vector>();

@@ -1,4 +1,4 @@
-import { GameObject } from '../core';
+import { GameObject } from '../core/GameObject';
 import * as config from '../config';
 
 export class Field extends GameObject {

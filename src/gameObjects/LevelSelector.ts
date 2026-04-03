@@ -1,9 +1,12 @@
-import { GameObject, Subject } from '../core';
-import { GameContext } from '../game';
-import { InputHoldThrottle, LevelSelectionInputContext } from '../input';
+import { GameObject } from '../core/GameObject';
+import { Subject } from '../core/Subject';
+import { GameContext } from '../game/GameUpdateArgs';
+import { InputHoldThrottle } from '../input/InputHoldThrottle';
+import { LevelSelectionInputContext } from '../input/LevelSelectionInputContext';
 import * as config from '../config';
 
-import { LevelTitle, SpriteText } from './text';
+import { LevelTitle } from './text/LevelTitle';
+import { SpriteText } from './text/SpriteText';
 
 const SLOW_HOLD_DELAY = 0.12;
 const FAST_HOLD_DELAY = 0.016;

@@ -1,6 +1,9 @@
-import { Rect, Vector } from '../core';
-import { TankParty, TankType } from '../tank';
-import { TerrainFactory, TerrainRegionConfig } from '../terrain';
+import { Rect } from '../core/Rect';
+import { Vector } from '../core/Vector';
+import { TankParty } from '../tank/TankParty';
+import { TankType } from '../tank/TankType';
+import { TerrainFactory } from '../terrain/TerrainFactory';
+import { TerrainRegionConfig } from '../terrain/TerrainRegionConfig';
 import * as config from '../config';
 
 import { MapDto } from './MapDto';

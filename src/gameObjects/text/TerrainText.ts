@@ -1,6 +1,10 @@
-import { ArrayUtils, GameObject, Rect, Text, TextOptions } from '../../core';
-import { GameContext } from '../../game';
-import { TerrainFactory, TerrainType } from '../../terrain';
+import { GameObject } from '../../core/GameObject';
+import { Rect } from '../../core/Rect';
+import { Text, TextOptions } from '../../core/text/Text';
+import { ArrayUtils } from '../../core/utils/ArrayUtils';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { TerrainFactory } from '../../terrain/TerrainFactory';
+import { TerrainType } from '../../terrain/TerrainType';
 import * as config from '../../config';
 
 export class TerrainText extends GameObject {

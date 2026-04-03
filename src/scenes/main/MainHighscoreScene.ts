@@ -1,6 +1,7 @@
-import { AudioManager, GameContext } from '../../game';
-import { HighscoreHeading } from '../../gameObjects';
-import { MenuInputContext } from '../../input';
+import { AudioManager } from '../../game/AudioManager';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { HighscoreHeading } from '../../gameObjects/text/HighscoreHeading';
+import { MenuInputContext } from '../../input/MenuInputContext';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

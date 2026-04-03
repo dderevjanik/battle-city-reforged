@@ -1,13 +1,10 @@
-import {
-  ColorSpriteFontGenerator,
-  GameObject,
-  Size,
-  Sprite,
-  SpriteTextPainter,
-  Text,
-  TextOptions,
-} from '../../core';
-import { GameContext } from '../../game';
+import { GameObject } from '../../core/GameObject';
+import { Size } from '../../core/Size';
+import { ColorSpriteFontGenerator } from '../../core/graphics/ColorSpriteFontGenerator';
+import { Sprite } from '../../core/graphics/Sprite';
+import { SpriteTextPainter } from '../../core/painters/SpriteTextPainter';
+import { Text, TextOptions } from '../../core/text/Text';
+import { GameContext } from '../../game/GameUpdateArgs';
 import * as config from '../../config';
 
 export interface SpriteTextOptions extends TextOptions {

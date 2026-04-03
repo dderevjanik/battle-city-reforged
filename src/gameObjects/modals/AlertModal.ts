@@ -1,5 +1,9 @@
-import { GameObject, RectPainter, Subject } from '../../core';
-import { Menu, TextMenuItem, SpriteText } from '../../gameObjects';
+import { GameObject } from '../../core/GameObject';
+import { Subject } from '../../core/Subject';
+import { RectPainter } from '../../core/painters/RectPainter';
+import { Menu } from '../menu/Menu';
+import { TextMenuItem } from '../menu/TextMenuItem';
+import { SpriteText } from '../text/SpriteText';
 import * as config from '../../config';
 
 export interface AlertModalOptions {

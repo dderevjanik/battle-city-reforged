@@ -1,9 +1,7 @@
-import {
-  BoundingBox,
-  CollisionSystem,
-  GameObject,
-  RectPainter,
-} from '../core';
+import { BoundingBox } from '../core/BoundingBox';
+import { GameObject } from '../core/GameObject';
+import { CollisionSystem } from '../core/collision/CollisionSystem';
+import { RectPainter } from '../core/painters/RectPainter';
 import * as config from '../config';
 
 import { DebugMenu, DebugMenuOptions } from './DebugMenu';

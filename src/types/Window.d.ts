@@ -1,4 +1,4 @@
-import { GameLoop } from '../core';
+import { GameLoop } from '../core/GameLoop';
 
 declare global {
   interface Window {

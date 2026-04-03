@@ -1,5 +1,6 @@
-import { GameContext, Session } from '../game';
-import { MapConfig } from '../map';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Session } from '../game/Session';
+import { MapConfig } from '../map/MapConfig';
 
 import { LevelEventBus } from './LevelEventBus';
 import { LevelWorld } from './LevelWorld';

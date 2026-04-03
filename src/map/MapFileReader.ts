@@ -1,4 +1,4 @@
-import { TextFileReader } from '../core';
+import { TextFileReader } from '../core/file/TextFileReader';
 
 import { MapConfig } from './MapConfig';
 

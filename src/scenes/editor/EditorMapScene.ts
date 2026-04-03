@@ -1,8 +1,10 @@
-import { DebugCollisionMenu } from '../../debug';
-import { GameContext } from '../../game';
-import { EditorBorder, EditorField, EditorMap } from '../../gameObjects';
-import { EditorMapInputContext } from '../../input';
-import { MapConfig } from '../../map';
+import { DebugCollisionMenu } from '../../debug/DebugCollisionMenu';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { EditorBorder } from '../../gameObjects/editor/EditorBorder';
+import { EditorField } from '../../gameObjects/editor/EditorField';
+import { EditorMap } from '../../gameObjects/editor/EditorMap';
+import { EditorMapInputContext } from '../../input/EditorMapInputContext';
+import { MapConfig } from '../../map/MapConfig';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

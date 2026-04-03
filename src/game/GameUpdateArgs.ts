@@ -1,16 +1,15 @@
-import {
-  AudioLoader,
-  CollisionSystem,
-  ColorSpriteFontGenerator,
-  ImageLoader,
-  RectFontLoader,
-  SpriteFontLoader,
-  SpriteLoader,
-  State,
-} from '../core';
-import { InputHintSettings, InputManager } from '../input';
-import { MapLoader } from '../map';
-import { PointsHighscoreManager } from '../points';
+import { State } from '../core/State';
+import { CollisionSystem } from '../core/collision/CollisionSystem';
+import { ColorSpriteFontGenerator } from '../core/graphics/ColorSpriteFontGenerator';
+import { AudioLoader } from '../core/loaders/AudioLoader';
+import { ImageLoader } from '../core/loaders/ImageLoader';
+import { RectFontLoader } from '../core/loaders/RectFontLoader';
+import { SpriteFontLoader } from '../core/loaders/SpriteFontLoader';
+import { SpriteLoader } from '../core/loaders/SpriteLoader';
+import { InputHintSettings } from '../input/InputHintSettings';
+import { InputManager } from '../input/InputManager';
+import { MapLoader } from '../map/MapLoader';
+import { PointsHighscoreManager } from '../points/PointsHighscoreManager';
 
 import { AudioManager } from './AudioManager';
 import { GameState } from './GameState';

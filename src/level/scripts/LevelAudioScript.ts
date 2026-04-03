@@ -1,10 +1,14 @@
-import { Sound, State } from '../../core';
-import { AudioManager, GameContext, GameState } from '../../game';
-import { InputManager, LevelPlayInputContext } from '../../input';
-import { PowerupType } from '../../powerup';
+import { Sound } from '../../core/Sound';
+import { State } from '../../core/State';
+import { AudioManager } from '../../game/AudioManager';
+import { GameState } from '../../game/GameState';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { InputManager } from '../../input/InputManager';
+import { LevelPlayInputContext } from '../../input/LevelPlayInputContext';
+import { PowerupType } from '../../powerup/PowerupType';
 
 import { LevelScript } from '../LevelScript';
-import { LevelPowerupPickedEvent } from '../events';
+import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
 
 const MOVE_CONTROLS = [
   ...LevelPlayInputContext.MoveUp,

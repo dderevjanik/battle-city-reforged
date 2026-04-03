@@ -1,15 +1,15 @@
-import { GameObject, SpritePainter } from '../../core';
-import { GameContext, Rotation } from '../../game';
-import {
-  TankColor,
-  TankParty,
-  TankSpriteId,
-  TankTier,
-  TankType,
-} from '../../tank';
+import { GameObject } from '../../core/GameObject';
+import { SpritePainter } from '../../core/painters/SpritePainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Rotation } from '../../game/Rotation';
+import { TankColor } from '../../tank/TankColor';
+import { TankParty } from '../../tank/TankParty';
+import { TankSpriteId } from '../../tank/TankSpriteId';
+import { TankTier } from '../../tank/TankTier';
+import { TankType } from '../../tank/TankType';
 import * as config from '../../config';
 
-import { SpriteText } from '../text';
+import { SpriteText } from '../text/SpriteText';
 
 export class ScoreTableTierIcon extends GameObject {
   private tier: TankTier;

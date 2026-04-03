@@ -1,8 +1,12 @@
-import { Logger } from '../../core';
-import { GameContext, Session } from '../../game';
-import { AlertModal, Curtain, LevelTitle } from '../../gameObjects';
-import { InputHintSettings } from '../../input';
-import { MapConfig, MapLoader } from '../../map';
+import { Logger } from '../../core/Logger';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { Curtain } from '../../gameObjects/Curtain';
+import { AlertModal } from '../../gameObjects/modals/AlertModal';
+import { LevelTitle } from '../../gameObjects/text/LevelTitle';
+import { InputHintSettings } from '../../input/InputHintSettings';
+import { MapConfig } from '../../map/MapConfig';
+import { MapLoader } from '../../map/MapLoader';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

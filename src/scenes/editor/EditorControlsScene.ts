@@ -1,7 +1,10 @@
-import { GameObject, RectPainter } from '../../core';
-import { GameContext } from '../../game';
-import { EditorInputHint, SceneInputHint, SpriteText } from '../../gameObjects';
-import { EditorControlsInputContext } from '../../input';
+import { GameObject } from '../../core/GameObject';
+import { RectPainter } from '../../core/painters/RectPainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { EditorInputHint } from '../../gameObjects/EditorInputHint';
+import { SceneInputHint } from '../../gameObjects/text/SceneInputHint';
+import { SpriteText } from '../../gameObjects/text/SpriteText';
+import { EditorControlsInputContext } from '../../input/EditorControlsInputContext';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

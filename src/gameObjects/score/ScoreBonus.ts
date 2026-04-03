@@ -1,7 +1,7 @@
-import { GameObject } from '../../core';
+import { GameObject } from '../../core/GameObject';
 import * as config from '../../config';
 
-import { SpriteText } from '../text';
+import { SpriteText } from '../text/SpriteText';
 
 export class ScoreBonus extends GameObject {
   private title: SpriteText;

@@ -1,11 +1,13 @@
-import { Animation, GameObject, RectPainter, SpritePainter } from '../../core';
-import { GameContext, Rotation } from '../../game';
-import {
-  TankAnimationFrame,
-  TankColor,
-  TankType,
-  TankIdleAnimation,
-} from '../../tank';
+import { Animation } from '../../core/Animation';
+import { GameObject } from '../../core/GameObject';
+import { RectPainter } from '../../core/painters/RectPainter';
+import { SpritePainter } from '../../core/painters/SpritePainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Rotation } from '../../game/Rotation';
+import { TankAnimationFrame } from '../../tank/TankAnimationFrame';
+import { TankColor } from '../../tank/TankColor';
+import { TankIdleAnimation } from '../../tank/TankIdleAnimation';
+import { TankType } from '../../tank/TankType';
 import * as config from '../../config';
 
 export class EditorEnemyPreview extends GameObject {

@@ -1,4 +1,4 @@
-import { Timer } from '../../core';
+import { Timer } from '../../core/Timer';
 import * as config from '../../config';
 
 import { SpriteText } from './SpriteText';

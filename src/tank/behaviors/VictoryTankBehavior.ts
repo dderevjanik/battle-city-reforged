@@ -1,5 +1,6 @@
-import { Subject, Timer } from '../../core';
-import { Tank } from '../../gameObjects';
+import { Subject } from '../../core/Subject';
+import { Timer } from '../../core/Timer';
+import { Tank } from '../../gameObjects/Tank';
 
 import { TankBehavior } from '../TankBehavior';
 

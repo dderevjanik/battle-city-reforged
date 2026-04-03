@@ -1,6 +1,9 @@
-import { Logger, RandomUtils, Timer, Vector } from '../../core';
-import { Rotation } from '../../game';
-import { Tank } from '../../gameObjects';
+import { Logger } from '../../core/Logger';
+import { Timer } from '../../core/Timer';
+import { Vector } from '../../core/Vector';
+import { RandomUtils } from '../../core/utils/RandomUtils';
+import { Rotation } from '../../game/Rotation';
+import { Tank } from '../../gameObjects/Tank';
 import * as config from '../../config';
 
 import { TankBehavior } from '../TankBehavior';

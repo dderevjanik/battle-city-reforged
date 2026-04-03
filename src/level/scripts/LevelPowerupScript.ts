@@ -1,16 +1,17 @@
-import { Rect, Timer } from '../../core';
-import { DebugLevelPowerupMenu } from '../../debug';
-import { Powerup } from '../../gameObjects';
-import { PowerupFactory, PowerupGrid, PowerupType } from '../../powerup';
-import { TerrainType } from '../../terrain';
+import { Rect } from '../../core/Rect';
+import { Timer } from '../../core/Timer';
+import { DebugLevelPowerupMenu } from '../../debug/DebugLevelPowerupMenu';
+import { Powerup } from '../../gameObjects/Powerup';
+import { PowerupFactory } from '../../powerup/PowerupFactory';
+import { PowerupGrid } from '../../powerup/PowerupGrid';
+import { PowerupType } from '../../powerup/PowerupType';
+import { TerrainType } from '../../terrain/TerrainType';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import {
-  LevelEnemyHitEvent,
-  LevelEnemySpawnCompletedEvent,
-  LevelMapTileDestroyedEvent,
-} from '../events';
+import { LevelEnemyHitEvent } from '../events/LevelEnemyHitEvent';
+import { LevelEnemySpawnCompletedEvent } from '../events/LevelEnemySpawnCompletedEvent';
+import { LevelMapTileDestroyedEvent } from '../events/LevelMapTIleDestroyedEvent';
 
 export class LevelPowerupScript extends LevelScript {
   private timer: Timer;

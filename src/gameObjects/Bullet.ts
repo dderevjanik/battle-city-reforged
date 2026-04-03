@@ -1,13 +1,13 @@
-import {
-  Collision,
-  GameObject,
-  Sound,
-  SpritePainter,
-  Subject,
-  SweptBoxCollider,
-} from '../core';
-import { GameContext, Rotation, Tag } from '../game';
-import { TankBulletWallDamage } from '../tank';
+import { GameObject } from '../core/GameObject';
+import { Sound } from '../core/Sound';
+import { Subject } from '../core/Subject';
+import { Collision } from '../core/collision/Collision';
+import { SweptBoxCollider } from '../core/collision/SweptBoxCollider';
+import { SpritePainter } from '../core/painters/SpritePainter';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Rotation } from '../game/Rotation';
+import { Tag } from '../game/Tag';
+import { TankBulletWallDamage } from '../tank/TankBulletWallDamage';
 import * as config from '../config';
 
 import { SmallExplosion } from './SmallExplosion';

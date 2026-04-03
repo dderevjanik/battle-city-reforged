@@ -1,9 +1,10 @@
-import { GameObject, Subject } from '../../core';
-import { GameContext } from '../../game';
-import { MenuInputContext } from '../../input';
+import { GameObject } from '../../core/GameObject';
+import { Subject } from '../../core/Subject';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { MenuInputContext } from '../../input/MenuInputContext';
 import * as config from '../../config';
 
-import { SpriteText } from '../text';
+import { SpriteText } from '../text/SpriteText';
 
 import { MenuItem } from './MenuItem';
 

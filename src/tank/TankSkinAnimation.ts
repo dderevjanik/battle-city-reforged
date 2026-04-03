@@ -1,6 +1,7 @@
-import { SpriteLoader } from '../core';
-import { Rotation, RotationMap } from '../game';
-import { Tank, TankState } from '../gameObjects';
+import { SpriteLoader } from '../core/loaders/SpriteLoader';
+import { Rotation } from '../game/Rotation';
+import { RotationMap } from '../game/RotationMap';
+import { Tank, TankState } from '../gameObjects/Tank';
 
 import { TankIdleAnimation } from './TankIdleAnimation';
 import { TankMoveAnimation } from './TankMoveAnimation';

@@ -1,5 +1,6 @@
-import { GameObject, RectPainter } from '../../core';
-import { SpriteText } from '../../gameObjects';
+import { GameObject } from '../../core/GameObject';
+import { RectPainter } from '../../core/painters/RectPainter';
+import { SpriteText } from '../text/SpriteText';
 import * as config from '../../config';
 
 export class InputButtonCaptureModal extends GameObject {

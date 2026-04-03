@@ -1,5 +1,5 @@
-import { GameContext } from '../game';
-import { Tank } from '../gameObjects';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Tank } from '../gameObjects/Tank';
 
 export abstract class TankBehavior {
   public setup(tank: Tank, context?: GameContext): void {

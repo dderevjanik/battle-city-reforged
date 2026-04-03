@@ -1,14 +1,11 @@
-import {
-  DividerMenuItem,
-  EditorEnemyPreview,
-  SceneMenu,
-  SceneMenuTitle,
-  SelectorMenuItem,
-  SelectorMenuItemChoice,
-  TextMenuItem,
-} from '../../gameObjects';
-import { MapConfig } from '../../map';
-import { TankType } from '../../tank';
+import { EditorEnemyPreview } from '../../gameObjects/editor/EditorEnemyPreview';
+import { DividerMenuItem } from '../../gameObjects/menu/DividerMenuItem';
+import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
+import { SelectorMenuItem, SelectorMenuItemChoice } from '../../gameObjects/menu/SelectorMenuItem';
+import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
+import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
+import { MapConfig } from '../../map/MapConfig';
+import { TankType } from '../../tank/TankType';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

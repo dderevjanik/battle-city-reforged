@@ -1,4 +1,4 @@
-import { SpriteFont, SpriteFontConfig, SpriteFontOptions } from '../text';
+import { SpriteFont, SpriteFontConfig, SpriteFontOptions } from '../text/SpriteFont';
 
 import { ImageLoader } from './ImageLoader';
 

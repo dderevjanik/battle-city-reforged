@@ -1,6 +1,7 @@
-import { GameObject, SpritePainter } from '../../core';
-import { GameContext } from '../../game';
-import { InputControl } from '../../input';
+import { GameObject } from '../../core/GameObject';
+import { SpritePainter } from '../../core/painters/SpritePainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { InputControl } from '../../input/InputControl';
 
 import { GameScene } from '../GameScene';
 

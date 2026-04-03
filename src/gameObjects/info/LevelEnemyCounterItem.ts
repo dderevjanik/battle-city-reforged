@@ -1,5 +1,6 @@
-import { GameObject, SpritePainter } from '../../core';
-import { GameContext } from '../../game';
+import { GameObject } from '../../core/GameObject';
+import { SpritePainter } from '../../core/painters/SpritePainter';
+import { GameContext } from '../../game/GameUpdateArgs';
 
 export class LevelEnemyCounterItem extends GameObject {
   public readonly painter = new SpritePainter();

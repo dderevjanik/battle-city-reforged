@@ -1,4 +1,4 @@
-import { Image } from '../graphics';
+import { Image } from '../graphics/Image';
 
 import { Logger } from '../Logger';
 

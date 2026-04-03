@@ -1,9 +1,7 @@
-import {
-  MenuDescription,
-  SceneMenuTitle,
-  SceneMenu,
-  TextMenuItem,
-} from '../../gameObjects';
+import { MenuDescription } from '../../gameObjects/menu/MenuDescription';
+import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
+import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
+import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

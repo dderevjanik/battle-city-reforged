@@ -1,5 +1,5 @@
-import { SpriteFontLoader } from '../loaders';
-import { SpriteFont } from '../text';
+import { SpriteFontLoader } from '../loaders/SpriteFontLoader';
+import { SpriteFont } from '../text/SpriteFont';
 
 import { Rect } from '../Rect';
 

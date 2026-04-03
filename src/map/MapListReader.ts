@@ -1,4 +1,4 @@
-import { Subject } from '../core';
+import { Subject } from '../core/Subject';
 
 import { MapConfig } from './MapConfig';
 

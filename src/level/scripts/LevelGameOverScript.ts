@@ -1,5 +1,5 @@
-import { Timer } from '../../core';
-import { GameOverNotice } from '../../gameObjects';
+import { Timer } from '../../core/Timer';
+import { GameOverNotice } from '../../gameObjects/GameOverNotice';
 
 import { LevelScript } from '../LevelScript';
 

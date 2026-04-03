@@ -1,14 +1,18 @@
-import { GameObject, RectPainter, SpritePainter, TextAlignment } from '../core';
-import { GameContext, Rotation } from '../game';
-import {
-  InputBindingType,
-  InputManager,
-  LevelPlayInputContext,
-} from '../input';
-import { TankColor, TankSpriteId, TankType } from '../tank';
+import { GameObject } from '../core/GameObject';
+import { RectPainter } from '../core/painters/RectPainter';
+import { SpritePainter } from '../core/painters/SpritePainter';
+import { TextAlignment } from '../core/text/Text';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Rotation } from '../game/Rotation';
+import { InputBindingType } from '../input/InputBindingType';
+import { InputManager } from '../input/InputManager';
+import { LevelPlayInputContext } from '../input/LevelPlayInputContext';
+import { TankColor } from '../tank/TankColor';
+import { TankSpriteId } from '../tank/TankSpriteId';
+import { TankType } from '../tank/TankType';
 import * as config from '../config';
 
-import { SpriteText } from './text';
+import { SpriteText } from './text/SpriteText';
 
 export class LevelInputHint extends GameObject {
   public zIndex = 0;

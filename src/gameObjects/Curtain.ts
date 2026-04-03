@@ -1,4 +1,5 @@
-import { GameObject, RectPainter } from '../core';
+import { GameObject } from '../core/GameObject';
+import { RectPainter } from '../core/painters/RectPainter';
 import * as config from '../config';
 
 enum State {

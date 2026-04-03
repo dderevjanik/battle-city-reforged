@@ -1,9 +1,9 @@
-import { Base } from '../../gameObjects';
-import { PowerupType } from '../../powerup';
+import { Base } from '../../gameObjects/Base';
+import { PowerupType } from '../../powerup/PowerupType';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import { LevelPowerupPickedEvent } from '../events';
+import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
 
 export class LevelBaseScript extends LevelScript {
   private base: Base;

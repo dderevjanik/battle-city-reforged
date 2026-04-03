@@ -1,5 +1,8 @@
-import { BoxCollider, GameObject, RectPainter } from '../core';
-import { GameContext, Tag } from '../game';
+import { GameObject } from '../core/GameObject';
+import { BoxCollider } from '../core/collision/BoxCollider';
+import { RectPainter } from '../core/painters/RectPainter';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Tag } from '../game/Tag';
 import * as config from '../config';
 
 export class BorderWall extends GameObject {

@@ -1,4 +1,5 @@
-import { InputMethod, Timer } from '../core';
+import { Timer } from '../core/Timer';
+import { InputMethod } from '../core/input/InputMethod';
 
 type InputHoldThrottleCb = () => any;
 

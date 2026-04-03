@@ -1,4 +1,4 @@
-import { LocalStorage } from '../core';
+import { LocalStorage } from '../core/storage/LocalStorage';
 
 export class GameStorage extends LocalStorage {
   public setBoolean(key: string, value: boolean): void {

@@ -1,4 +1,5 @@
-import { InputBinding, KeyboardButtonCode } from '../core';
+import { InputBinding } from '../core/input/InputBinding';
+import { KeyboardButtonCode } from '../core/input/KeyboardButtonCode';
 
 import { InputControl } from './InputControl';
 

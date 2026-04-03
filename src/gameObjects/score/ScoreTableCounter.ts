@@ -1,8 +1,10 @@
-import { GameObject, Sound, Timer } from '../../core';
-import { GameContext } from '../../game';
+import { GameObject } from '../../core/GameObject';
+import { Sound } from '../../core/Sound';
+import { Timer } from '../../core/Timer';
+import { GameContext } from '../../game/GameUpdateArgs';
 import * as config from '../../config';
 
-import { SpriteText } from '../text';
+import { SpriteText } from '../text/SpriteText';
 
 enum State {
   Idle,

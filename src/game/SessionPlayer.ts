@@ -1,8 +1,8 @@
-import { Subject } from '../core';
-import { InputVariant } from '../input';
-import { PointsRecord } from '../points';
-import { PowerupType } from '../powerup';
-import { TankTier } from '../tank';
+import { Subject } from '../core/Subject';
+import { InputVariant } from '../input/InputVariant';
+import { PointsRecord } from '../points/PointsRecord';
+import { PowerupType } from '../powerup/PowerupType';
+import { TankTier } from '../tank/TankTier';
 import * as config from '../config';
 
 export class SessionPlayer {

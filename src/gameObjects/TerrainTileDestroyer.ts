@@ -1,6 +1,9 @@
-import { BoxCollider, Collision, GameObject } from '../core';
-import { GameContext, Tag } from '../game';
-import { TankBulletWallDamage } from '../tank';
+import { GameObject } from '../core/GameObject';
+import { BoxCollider } from '../core/collision/BoxCollider';
+import { Collision } from '../core/collision/Collision';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Tag } from '../game/Tag';
+import { TankBulletWallDamage } from '../tank/TankBulletWallDamage';
 import * as config from '../config';
 
 import { TerrainTile } from './TerrainTile';

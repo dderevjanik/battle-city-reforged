@@ -1,17 +1,14 @@
-import { GameObject, RectPainter } from '../../core';
-import { GameContext, Session } from '../../game';
-import {
-  LevelInputHint,
-  SceneInputHint,
-  SelectorMenuItem,
-  SelectorMenuItemChoice,
-  SpriteText,
-} from '../../gameObjects';
-import {
-  InputDeviceType,
-  InputVariant,
-  LevelControlsInputContext,
-} from '../../input';
+import { GameObject } from '../../core/GameObject';
+import { RectPainter } from '../../core/painters/RectPainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { LevelInputHint } from '../../gameObjects/LevelInputHint';
+import { SelectorMenuItem, SelectorMenuItemChoice } from '../../gameObjects/menu/SelectorMenuItem';
+import { SceneInputHint } from '../../gameObjects/text/SceneInputHint';
+import { SpriteText } from '../../gameObjects/text/SpriteText';
+import { InputDeviceType } from '../../input/InputDeviceType';
+import { InputVariant } from '../../input/InputVariant';
+import { LevelControlsInputContext } from '../../input/LevelControlsInputContext';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

@@ -1,7 +1,8 @@
-import { GameObject, RectPainter } from '../../core';
+import { GameObject } from '../../core/GameObject';
+import { RectPainter } from '../../core/painters/RectPainter';
 import * as config from '../../config';
 
-import { SpriteText } from '../text';
+import { SpriteText } from '../text/SpriteText';
 
 export class MenuDescription extends GameObject {
   public painter = new RectPainter(config.COLOR_GRAY, config.COLOR_YELLOW);

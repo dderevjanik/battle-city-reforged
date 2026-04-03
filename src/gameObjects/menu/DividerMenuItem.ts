@@ -1,6 +1,6 @@
 import * as config from '../../config';
 
-import { SpriteTextOptions } from '../text';
+import { SpriteTextOptions } from '../text/SpriteText';
 
 import { TextMenuItem } from './TextMenuItem';
 

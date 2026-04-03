@@ -1,13 +1,12 @@
-import { Subject } from '../core';
-import { GameContext, Tag } from '../game';
-import {
-  TankAttributesFactory,
-  TankColor,
-  TankColorFactory,
-  TankSkinAnimation,
-  TankTier,
-  TankType,
-} from '../tank';
+import { Subject } from '../core/Subject';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Tag } from '../game/Tag';
+import { TankAttributesFactory } from '../tank/TankAttributesFactory';
+import { TankColor } from '../tank/TankColor';
+import { TankColorFactory } from '../tank/TankColorFactory';
+import { TankSkinAnimation } from '../tank/TankSkinAnimation';
+import { TankTier } from '../tank/TankTier';
+import { TankType } from '../tank/TankType';
 import * as config from '../config';
 
 import { Tank } from './Tank';

@@ -1,6 +1,8 @@
-import { EnemyTank, PlayerTank } from '../gameObjects';
+import { EnemyTank } from '../gameObjects/EnemyTank';
+import { PlayerTank } from '../gameObjects/PlayerTank';
 
-import { AiTankBehavior, PlayerTankBehavior } from './behaviors';
+import { AiTankBehavior } from './behaviors/AiTankBehavior';
+import { PlayerTankBehavior } from './behaviors/PlayerTankBehavior';
 import { TankBehavior } from './TankBehavior';
 import { TankType } from './TankType';
 

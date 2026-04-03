@@ -1,6 +1,12 @@
-import { BoxCollider, GameObject, SpritePainter } from '../../core';
-import { GameContext, Rotation, Tag } from '../../game';
-import { TankColor, TankType, TankSpriteId } from '../../tank';
+import { GameObject } from '../../core/GameObject';
+import { BoxCollider } from '../../core/collision/BoxCollider';
+import { SpritePainter } from '../../core/painters/SpritePainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Rotation } from '../../game/Rotation';
+import { Tag } from '../../game/Tag';
+import { TankColor } from '../../tank/TankColor';
+import { TankSpriteId } from '../../tank/TankSpriteId';
+import { TankType } from '../../tank/TankType';
 
 export class EditorTankDummy extends GameObject {
   public collider = new BoxCollider(this);

@@ -1,11 +1,9 @@
-import {
-  GamepadInputDevice,
-  InputBinding,
-  InputDevice,
-  InputMethod,
-  KeyboardInputDevice,
-} from '../core';
-import { GameStorage } from '../game';
+import { GamepadInputDevice } from '../core/input/GamepadInputDevice';
+import { InputBinding } from '../core/input/InputBinding';
+import { InputDevice } from '../core/input/InputDevice';
+import { InputMethod } from '../core/input/InputMethod';
+import { KeyboardInputDevice } from '../core/input/KeyboardInputDevice';
+import { GameStorage } from '../game/GameStorage';
 import * as config from '../config';
 
 import { PrimaryGamepadInputBinding } from './PrimaryGamepadInputBinding';

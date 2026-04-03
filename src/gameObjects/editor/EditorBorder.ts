@@ -1,5 +1,5 @@
-import { GameObject } from '../../core';
-import { Tag } from '../../game';
+import { GameObject } from '../../core/GameObject';
+import { Tag } from '../../game/Tag';
 import * as config from '../../config';
 
 import { BorderWall } from '../BorderWall';

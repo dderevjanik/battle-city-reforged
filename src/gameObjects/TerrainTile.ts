@@ -1,5 +1,7 @@
-import { GameObject, Subject, Vector } from '../core';
-import { TerrainType } from '../terrain';
+import { GameObject } from '../core/GameObject';
+import { Subject } from '../core/Subject';
+import { Vector } from '../core/Vector';
+import { TerrainType } from '../terrain/TerrainType';
 
 export abstract class TerrainTile extends GameObject {
   public abstract type: TerrainType;

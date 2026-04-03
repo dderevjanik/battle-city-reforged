@@ -1,8 +1,12 @@
-import { GameObject } from '../../core';
-import { GameContext, Session } from '../../game';
-import { MainHeading, Menu, SpriteText, TextMenuItem } from '../../gameObjects';
-import { MenuInputContext } from '../../input';
-import { PointsHighscoreManager } from '../../points';
+import { GameObject } from '../../core/GameObject';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { Menu } from '../../gameObjects/menu/Menu';
+import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
+import { MainHeading } from '../../gameObjects/text/MainHeading';
+import { SpriteText } from '../../gameObjects/text/SpriteText';
+import { MenuInputContext } from '../../input/MenuInputContext';
+import { PointsHighscoreManager } from '../../points/PointsHighscoreManager';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

@@ -1,14 +1,13 @@
-import {
-  Animation,
-  BoxCollider,
-  Collision,
-  GameObject,
-  Sprite,
-  SpritePainter,
-  Subject,
-} from '../core';
-import { GameContext, Tag } from '../game';
-import { PowerupType } from '../powerup';
+import { Animation } from '../core/Animation';
+import { GameObject } from '../core/GameObject';
+import { Subject } from '../core/Subject';
+import { BoxCollider } from '../core/collision/BoxCollider';
+import { Collision } from '../core/collision/Collision';
+import { Sprite } from '../core/graphics/Sprite';
+import { SpritePainter } from '../core/painters/SpritePainter';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Tag } from '../game/Tag';
+import { PowerupType } from '../powerup/PowerupType';
 import * as config from '../config';
 
 import { PlayerTank } from './PlayerTank';

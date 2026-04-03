@@ -1,7 +1,9 @@
-import { GameContext, Rotation } from '../../game';
-import { PlayerTank, TankState } from '../../gameObjects';
-import { InputManager } from '../../input';
-import { LevelPlayInputContext } from '../../input';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Rotation } from '../../game/Rotation';
+import { PlayerTank } from '../../gameObjects/PlayerTank';
+import { TankState } from '../../gameObjects/Tank';
+import { InputManager } from '../../input/InputManager';
+import { LevelPlayInputContext } from '../../input/LevelPlayInputContext';
 
 import { TankBehavior } from '../TankBehavior';
 

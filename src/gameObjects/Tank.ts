@@ -1,28 +1,26 @@
-import {
-  Animation,
-  BoundingBox,
-  Collision,
-  CollisionContact,
-  CollisionSystem,
-  GameObject,
-  SpriteAlignment,
-  SpritePainter,
-  State,
-  Subject,
-  SweptBoxCollider,
-  Timer,
-  Vector,
-} from '../core';
-import { GameContext, GameState, Rotation, Tag } from '../game';
-import {
-  TankAnimationFrame,
-  TankAttributes,
-  TankAttributesFactory,
-  TankBehavior,
-  TankDeathReason,
-  TankSkinAnimation,
-  TankType,
-} from '../tank';
+import { Animation } from '../core/Animation';
+import { BoundingBox } from '../core/BoundingBox';
+import { GameObject } from '../core/GameObject';
+import { SpriteAlignment } from '../core/SpriteAlignment';
+import { State } from '../core/State';
+import { Subject } from '../core/Subject';
+import { Timer } from '../core/Timer';
+import { Vector } from '../core/Vector';
+import { Collision } from '../core/collision/Collision';
+import { CollisionContact } from '../core/collision/CollisionContact';
+import { CollisionSystem } from '../core/collision/CollisionSystem';
+import { SweptBoxCollider } from '../core/collision/SweptBoxCollider';
+import { SpritePainter } from '../core/painters/SpritePainter';
+import { GameState } from '../game/GameState';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Rotation } from '../game/Rotation';
+import { Tag } from '../game/Tag';
+import { TankAnimationFrame } from '../tank/TankAnimationFrame';
+import { TankAttributes, TankAttributesFactory } from '../tank/TankAttributesFactory';
+import { TankBehavior } from '../tank/TankBehavior';
+import { TankDeathReason } from '../tank/TankDeathReason';
+import { TankSkinAnimation } from '../tank/TankSkinAnimation';
+import { TankType } from '../tank/TankType';
 import * as config from '../config';
 
 import { Bullet } from './Bullet';

@@ -1,5 +1,6 @@
-import { GameObject, Subject } from '../../core';
-import { GameContext } from '../../game';
+import { GameObject } from '../../core/GameObject';
+import { Subject } from '../../core/Subject';
+import { GameContext } from '../../game/GameUpdateArgs';
 
 export abstract class MenuItem extends GameObject {
   public focused = new Subject();

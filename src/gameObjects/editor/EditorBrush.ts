@@ -1,5 +1,7 @@
-import { GameObject, Rect } from '../../core';
-import { TerrainFactory, TerrainType } from '../../terrain';
+import { GameObject } from '../../core/GameObject';
+import { Rect } from '../../core/Rect';
+import { TerrainFactory } from '../../terrain/TerrainFactory';
+import { TerrainType } from '../../terrain/TerrainType';
 import * as config from '../../config';
 
 export class EditorBrush extends GameObject {

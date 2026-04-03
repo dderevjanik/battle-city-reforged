@@ -1,13 +1,13 @@
-import {
-  BoxCollider,
-  Collision,
-  GameObject,
-  Sprite,
-  SpritePainter,
-  Subject,
-} from '../core';
-import { GameContext, Tag } from '../game';
-import { Bullet, Explosion } from '../gameObjects';
+import { GameObject } from '../core/GameObject';
+import { Subject } from '../core/Subject';
+import { BoxCollider } from '../core/collision/BoxCollider';
+import { Collision } from '../core/collision/Collision';
+import { Sprite } from '../core/graphics/Sprite';
+import { SpritePainter } from '../core/painters/SpritePainter';
+import { GameContext } from '../game/GameUpdateArgs';
+import { Tag } from '../game/Tag';
+import { Bullet } from './Bullet';
+import { Explosion } from './Explosion';
 import * as config from '../config';
 
 export class BaseHeart extends GameObject {

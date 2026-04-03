@@ -1,13 +1,14 @@
-import { RectPainter, Timer } from '../../core';
-import { AudioManager, GameContext, Session } from '../../game';
-import {
-  LevelTitle,
-  ScoreBonus,
-  ScoreTable,
-  SpriteText,
-} from '../../gameObjects';
-import { LevelScoreInputContext } from '../../input';
-import { PointsHighscoreManager } from '../../points';
+import { Timer } from '../../core/Timer';
+import { RectPainter } from '../../core/painters/RectPainter';
+import { AudioManager } from '../../game/AudioManager';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { ScoreBonus } from '../../gameObjects/score/ScoreBonus';
+import { ScoreTable } from '../../gameObjects/score/ScoreTable';
+import { LevelTitle } from '../../gameObjects/text/LevelTitle';
+import { SpriteText } from '../../gameObjects/text/SpriteText';
+import { LevelScoreInputContext } from '../../input/LevelScoreInputContext';
+import { PointsHighscoreManager } from '../../points/PointsHighscoreManager';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

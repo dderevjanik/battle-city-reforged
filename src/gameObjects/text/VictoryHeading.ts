@@ -1,5 +1,6 @@
-import { GameObject, Timer } from '../../core';
-import { TerrainType } from '../../terrain';
+import { GameObject } from '../../core/GameObject';
+import { Timer } from '../../core/Timer';
+import { TerrainType } from '../../terrain/TerrainType';
 
 import { TerrainText } from './TerrainText';
 

@@ -1,5 +1,5 @@
-import { Vector } from '../../core';
-import { TankType } from '../../tank';
+import { Vector } from '../../core/Vector';
+import { TankType } from '../../tank/TankType';
 
 export interface LevelEnemySpawnRequestedEvent {
   type: TankType;

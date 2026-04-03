@@ -1,5 +1,5 @@
-import { GameObject } from '../../core';
-import { GameContext } from '../../game';
+import { GameObject } from '../../core/GameObject';
+import { GameContext } from '../../game/GameUpdateArgs';
 import * as config from '../../config';
 
 import { LevelEnemyCounter } from './LevelEnemyCounter';

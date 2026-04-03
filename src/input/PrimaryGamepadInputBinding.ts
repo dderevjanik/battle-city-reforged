@@ -1,4 +1,5 @@
-import { GamepadButtonCode, InputBinding } from '../core';
+import { GamepadButtonCode } from '../core/input/GamepadButtonCode';
+import { InputBinding } from '../core/input/InputBinding';
 
 import { InputControl } from './InputControl';
 

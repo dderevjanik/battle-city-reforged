@@ -1,21 +1,17 @@
-import { InputBinding, InputDevice } from '../../core';
-import { GameContext } from '../../game';
-import {
-  DividerMenuItem,
-  InputButtonCaptureModal,
-  SceneMenu,
-  SceneMenuTitle,
-  SelectorMenuItem,
-  SelectorMenuItemChoice,
-  TextMenuItem,
-} from '../../gameObjects';
-import {
-  InputBindingType,
-  InputButtonCodePresenter,
-  InputControl,
-  InputControlPresenter,
-  InputManager,
-} from '../../input';
+import { InputBinding } from '../../core/input/InputBinding';
+import { InputDevice } from '../../core/input/InputDevice';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { DividerMenuItem } from '../../gameObjects/menu/DividerMenuItem';
+import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
+import { SelectorMenuItem, SelectorMenuItemChoice } from '../../gameObjects/menu/SelectorMenuItem';
+import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
+import { InputButtonCaptureModal } from '../../gameObjects/modals/InputButtonCaptureModal';
+import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
+import { InputBindingType } from '../../input/InputBindingType';
+import { InputButtonCodePresenter } from '../../input/InputButtonCodePresenter';
+import { InputControl } from '../../input/InputControl';
+import { InputControlPresenter } from '../../input/InputControlPresenter';
+import { InputManager } from '../../input/InputManager';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';

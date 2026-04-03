@@ -1,4 +1,4 @@
-import { Tank } from '../../gameObjects';
+import { Tank } from '../../gameObjects/Tank';
 
 import { TankBehavior } from '../TankBehavior';
 

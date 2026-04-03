@@ -1,6 +1,7 @@
-import { Subject } from '../core';
-import { LevelWorld } from '../level';
-import { PowerupGrid, PowerupType } from '../powerup';
+import { Subject } from '../core/Subject';
+import { LevelWorld } from '../level/LevelWorld';
+import { PowerupGrid } from '../powerup/PowerupGrid';
+import { PowerupType } from '../powerup/PowerupType';
 import * as config from '../config';
 
 import { DebugGrid } from './DebugGrid';

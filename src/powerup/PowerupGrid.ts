@@ -1,4 +1,6 @@
-import { RandomUtils, Rect, Vector } from '../core';
+import { Rect } from '../core/Rect';
+import { Vector } from '../core/Vector';
+import { RandomUtils } from '../core/utils/RandomUtils';
 import * as config from '../config';
 
 // Grid for calculating zones where powerup can spawn. It should not spawn

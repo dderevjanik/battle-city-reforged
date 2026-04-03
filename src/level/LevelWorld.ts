@@ -1,5 +1,6 @@
-import { GameObject } from '../core';
-import { Field, PlayerTank } from '../gameObjects';
+import { GameObject } from '../core/GameObject';
+import { Field } from '../gameObjects/Field';
+import { PlayerTank } from '../gameObjects/PlayerTank';
 
 export class LevelWorld {
   public sceneRoot: GameObject;

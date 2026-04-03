@@ -1,10 +1,13 @@
-import { GameObject, Subject, Timer } from '../../core';
-import { GameContext, Session } from '../../game';
-import { PointsRecord } from '../../points';
+import { GameObject } from '../../core/GameObject';
+import { Subject } from '../../core/Subject';
+import { Timer } from '../../core/Timer';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { PointsRecord } from '../../points/PointsRecord';
 import { TankTier } from '../../tank/TankTier'; // TODO: circular dep?
 import * as config from '../../config';
 
-import { SpriteText } from '../text';
+import { SpriteText } from '../text/SpriteText';
 
 import { ScoreTableCounter } from './ScoreTableCounter';
 import { ScoreTableTierIcon } from './ScoreTableTierIcon';

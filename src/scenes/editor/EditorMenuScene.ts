@@ -1,20 +1,18 @@
-import { FileOpener, FileSaver } from '../../core';
-import { GameContext, Session } from '../../game';
-import {
-  AlertModal,
-  ConfirmModal,
-  DividerMenuItem,
-  SceneMenu,
-  SceneMenuTitle,
-  TextMenuItem,
-} from '../../gameObjects';
-import { InputHintSettings } from '../../input';
-import {
-  MapConfig,
-  MapFileReader,
-  MapLoader,
-  MemoryMapListReader,
-} from '../../map';
+import { FileOpener } from '../../core/file/FileOpener';
+import { FileSaver } from '../../core/file/FileSaver';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { DividerMenuItem } from '../../gameObjects/menu/DividerMenuItem';
+import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
+import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
+import { AlertModal } from '../../gameObjects/modals/AlertModal';
+import { ConfirmModal } from '../../gameObjects/modals/ConfirmModal';
+import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
+import { InputHintSettings } from '../../input/InputHintSettings';
+import { MapConfig } from '../../map/MapConfig';
+import { MapFileReader } from '../../map/MapFileReader';
+import { MapLoader } from '../../map/MapLoader';
+import { MemoryMapListReader } from '../../map/MemoryMapListReader';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

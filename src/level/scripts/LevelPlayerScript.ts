@@ -1,16 +1,16 @@
-import { Timer, Vector } from '../../core';
-import { DebugLevelPlayerMenu } from '../../debug';
-import { GameContext } from '../../game';
-import { PlayerTank } from '../../gameObjects';
-import { PowerupType } from '../../powerup';
-import { TankFactory, TankParty } from '../../tank';
+import { Timer } from '../../core/Timer';
+import { Vector } from '../../core/Vector';
+import { DebugLevelPlayerMenu } from '../../debug/DebugLevelPlayerMenu';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { PlayerTank } from '../../gameObjects/PlayerTank';
+import { PowerupType } from '../../powerup/PowerupType';
+import { TankFactory } from '../../tank/TankFactory';
+import { TankParty } from '../../tank/TankParty';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import {
-  LevelPlayerSpawnCompletedEvent,
-  LevelPowerupPickedEvent,
-} from '../events';
+import { LevelPlayerSpawnCompletedEvent } from '../events/LevelPlayerSpawnCompletedEvent';
+import { LevelPowerupPickedEvent } from '../events/LevelPowerupPickedEvent';
 
 export class LevelPlayerScript extends LevelScript {
   private positions: Vector[] = [];

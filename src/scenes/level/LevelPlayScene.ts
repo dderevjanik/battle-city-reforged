@@ -1,34 +1,34 @@
-import { DebugCollisionMenu } from '../../debug';
-import { GameContext, GameState, Session } from '../../game';
-import { Border } from '../../gameObjects';
-import { InputManager } from '../../input';
-import { PowerupType } from '../../powerup';
-import { TankDeathReason } from '../../tank';
-import { TerrainFactory } from '../../terrain';
+import { DebugCollisionMenu } from '../../debug/DebugCollisionMenu';
+import { GameState } from '../../game/GameState';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Session } from '../../game/Session';
+import { Border } from '../../gameObjects/Border';
+import { InputManager } from '../../input/InputManager';
+import { PowerupType } from '../../powerup/PowerupType';
+import { TankDeathReason } from '../../tank/TankDeathReason';
+import { TerrainFactory } from '../../terrain/TerrainFactory';
 import * as config from '../../config';
 
-import { LevelEventBus, LevelScript, LevelWorld } from '../../level';
-import {
-  LevelEnemyDiedEvent,
-  LevelPlayerDiedEvent,
-  LevelPowerupPickedEvent,
-} from '../../level/events';
-import {
-  LevelAudioScript,
-  LevelBaseScript,
-  LevelEnemyScript,
-  LevelExplosionScript,
-  LevelGameOverScript,
-  LevelInfoScript,
-  LevelIntroScript,
-  LevelPauseScript,
-  LevelPlayerOverScript,
-  LevelPlayerScript,
-  LevelPointsScript,
-  LevelPowerupScript,
-  LevelSpawnScript,
-  LevelWinScript,
-} from '../../level/scripts';
+import { LevelEventBus } from '../../level/LevelEventBus';
+import { LevelScript } from '../../level/LevelScript';
+import { LevelWorld } from '../../level/LevelWorld';
+import { LevelEnemyDiedEvent } from '../../level/events/LevelEnemyDiedEvent';
+import { LevelPlayerDiedEvent } from '../../level/events/LevelPlayerDiedEvent';
+import { LevelPowerupPickedEvent } from '../../level/events/LevelPowerupPickedEvent';
+import { LevelAudioScript } from '../../level/scripts/LevelAudioScript';
+import { LevelBaseScript } from '../../level/scripts/LevelBaseScript';
+import { LevelEnemyScript } from '../../level/scripts/LevelEnemyScript';
+import { LevelExplosionScript } from '../../level/scripts/LevelExplosionScript';
+import { LevelGameOverScript } from '../../level/scripts/LevelGameOverScript';
+import { LevelInfoScript } from '../../level/scripts/LevelInfoScript';
+import { LevelIntroScript } from '../../level/scripts/LevelIntroScript';
+import { LevelPauseScript } from '../../level/scripts/LevelPauseScript';
+import { LevelPlayerOverScript } from '../../level/scripts/LevelPlayerOverScript';
+import { LevelPlayerScript } from '../../level/scripts/LevelPlayerScript';
+import { LevelPointsScript } from '../../level/scripts/LevelPointsScript';
+import { LevelPowerupScript } from '../../level/scripts/LevelPowerupScript';
+import { LevelSpawnScript } from '../../level/scripts/LevelSpawnScript';
+import { LevelWinScript } from '../../level/scripts/LevelWinScript';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

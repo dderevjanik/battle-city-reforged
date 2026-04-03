@@ -1,7 +1,9 @@
-import { State } from '../../core';
-import { GameContext, GameState } from '../../game';
-import { PauseNotice } from '../../gameObjects';
-import { InputManager, LevelPlayInputContext } from '../../input';
+import { State } from '../../core/State';
+import { GameState } from '../../game/GameState';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { PauseNotice } from '../../gameObjects/PauseNotice';
+import { InputManager } from '../../input/InputManager';
+import { LevelPlayInputContext } from '../../input/LevelPlayInputContext';
 
 import { LevelScript } from '../LevelScript';
 

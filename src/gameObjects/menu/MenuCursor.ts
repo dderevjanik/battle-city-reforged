@@ -1,16 +1,13 @@
-import {
-  Animation,
-  GameObject,
-  SpriteAlignment,
-  SpritePainter,
-} from '../../core';
-import { GameContext, Rotation } from '../../game';
-import {
-  TankAnimationFrame,
-  TankColor,
-  TankType,
-  TankMoveAnimation,
-} from '../../tank';
+import { Animation } from '../../core/Animation';
+import { GameObject } from '../../core/GameObject';
+import { SpriteAlignment } from '../../core/SpriteAlignment';
+import { SpritePainter } from '../../core/painters/SpritePainter';
+import { GameContext } from '../../game/GameUpdateArgs';
+import { Rotation } from '../../game/Rotation';
+import { TankAnimationFrame } from '../../tank/TankAnimationFrame';
+import { TankColor } from '../../tank/TankColor';
+import { TankMoveAnimation } from '../../tank/TankMoveAnimation';
+import { TankType } from '../../tank/TankType';
 
 export class MenuCursor extends GameObject {
   public readonly painter = new SpritePainter();

@@ -50,7 +50,7 @@ export class EditorControlsScene extends GameScene<EditorLocationParams> {
     this.root.add(this.continueHint);
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -61,6 +61,6 @@ export class EditorControlsScene extends GameScene<EditorLocationParams> {
       return;
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
   }
 }

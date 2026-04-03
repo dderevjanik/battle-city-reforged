@@ -65,7 +65,7 @@ export class LevelLoadScene extends GameScene {
     this.mapLoader.loadAsync(levelNumber);
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     if (this.state === State.Alert) {
       this.alertModal.traverse((node) => {
         node.invokeUpdate(this.context, deltaTime);

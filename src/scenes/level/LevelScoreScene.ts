@@ -107,7 +107,7 @@ export class LevelScoreScene extends GameScene {
     this.scoreTable.start();
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -136,7 +136,7 @@ export class LevelScoreScene extends GameScene {
       this.postTimer.update(deltaTime);
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
   }
 
   private getCommonHighscoreText(): string {

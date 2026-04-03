@@ -109,7 +109,7 @@ export class SettingsKeybindingScene extends GameScene {
     }
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     // Capture user input from currently selected device
     if (this.state === State.WaitingInput) {
       const device = this.getSelectedDevice();
@@ -126,7 +126,7 @@ export class SettingsKeybindingScene extends GameScene {
       return;
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
   }
 
   private getSelectedBinding(): InputBinding {

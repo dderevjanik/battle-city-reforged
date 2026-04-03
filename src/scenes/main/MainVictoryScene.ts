@@ -54,7 +54,7 @@ export class MainVictoryScene extends GameScene {
     this.audioManager.playLoop('tank.move');
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { collisionSystem, inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -64,7 +64,7 @@ export class MainVictoryScene extends GameScene {
       return;
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
 
     // Update all transforms before checking collisions
     this.root.updateWorldMatrix(false, true);

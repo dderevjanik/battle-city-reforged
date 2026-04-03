@@ -182,7 +182,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.eventBus.levelWinCompleted.addListener(this.handleLevelWinCompleted);
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { collisionSystem, gameState } = this.context;
 
     this.alwaysUpdateScripts.forEach((script) => {

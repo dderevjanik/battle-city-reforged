@@ -118,7 +118,7 @@ export class MainMenuScene extends GameScene {
     this.root.add(this.group);
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -144,12 +144,12 @@ export class MainMenuScene extends GameScene {
         this.menu.showCursor();
         this.session.setSeenIntro(true);
       } else {
-        super.update(deltaTime);
+        super.onUpdate(deltaTime);
       }
       return;
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
   }
 
   private getPrimaryPointsText(): string {

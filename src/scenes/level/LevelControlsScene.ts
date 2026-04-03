@@ -171,7 +171,7 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
     this.root.add(this.continueHint);
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -181,7 +181,7 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
       return;
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
 
     // Usually it is handled by menu, but here we are using it outside menu
     if (this.params.canSelectVariant) {

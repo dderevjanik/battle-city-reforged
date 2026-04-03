@@ -27,7 +27,7 @@ export class MainGameOverScene extends GameScene {
     this.audioManager.play('game-over');
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -37,7 +37,7 @@ export class MainGameOverScene extends GameScene {
       return;
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
 
     this.timer.update(deltaTime);
   }

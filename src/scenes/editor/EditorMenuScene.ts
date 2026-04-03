@@ -136,7 +136,7 @@ export class EditorMenuScene extends GameScene<EditorLocationParams> {
     this.root.add(this.confirmModal);
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     if (this.menuState === MenuState.Alert) {
       this.alertModal.traverse((node) => {
         node.invokeUpdate(this.context, deltaTime);

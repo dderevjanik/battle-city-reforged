@@ -62,7 +62,7 @@ export class MainHighscoreScene extends GameScene {
     highscoreSound.play();
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -72,7 +72,7 @@ export class MainHighscoreScene extends GameScene {
       return;
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
   }
 
   private handleAudioEnded = (): void => {

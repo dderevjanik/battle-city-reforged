@@ -1,52 +1,51 @@
-import { SceneRouter } from '../core/scene/SceneRouter';
+import Phaser from 'phaser';
 
-import { EditorControlsScene } from './editor/EditorControlsScene';
-import { EditorEnemyScene } from './editor/EditorEnemyScene';
-import { EditorMapScene } from './editor/EditorMapScene';
-import { EditorMenuScene } from './editor/EditorMenuScene';
-import { LevelControlsScene } from './level/LevelControlsScene';
-import { LevelLoadScene } from './level/LevelLoadScene';
-import { LevelPlayScene } from './level/LevelPlayScene';
-import { LevelScoreScene } from './level/LevelScoreScene';
-import { LevelSelectionScene } from './level/LevelSelectionScene';
-import { MainAboutScene } from './main/MainAboutScene';
-import { MainGameOverScene } from './main/MainGameOverScene';
-import { MainHighscoreScene } from './main/MainHighscoreScene';
-import { MainMenuScene } from './main/MainMenuScene';
-import { MainVictoryScene } from './main/MainVictoryScene';
-import { ModesCustomScene } from './modes/ModesCustomScene';
-import { ModesMenuScene } from './modes/ModesMenuScene';
-import { SettingsAudioScene } from './settings/SettingsAudioScene';
-import { SettingsInterfaceScene } from './settings/SettingsInterfaceScene';
-import { SettingsKeybindingScene } from './settings/SettingsKeybindingScene';
-import { SettingsMenuScene } from './settings/SettingsMenuScene';
-import { GameScene } from './GameScene';
+import { SceneNavigator, SceneParams } from '../core/scene/Scene';
+
 import { GameSceneType } from './GameSceneType';
 
-// Composition root for game scenes
-export class GameSceneRouter extends SceneRouter<GameScene> {
-  public constructor() {
-    super();
+export class GameSceneRouter implements SceneNavigator {
+  private scenePlugin: Phaser.Scenes.ScenePlugin | null = null;
+  private readonly stack: { type: GameSceneType; params: SceneParams }[] = [];
 
-    this.register(GameSceneType.EditorEnemy, EditorEnemyScene);
-    this.register(GameSceneType.EditorControls, EditorControlsScene);
-    this.register(GameSceneType.EditorMap, EditorMapScene);
-    this.register(GameSceneType.EditorMenu, EditorMenuScene);
-    this.register(GameSceneType.MainAbout, MainAboutScene);
-    this.register(GameSceneType.MainGameOver, MainGameOverScene);
-    this.register(GameSceneType.MainHighscore, MainHighscoreScene);
-    this.register(GameSceneType.MainMenu, MainMenuScene);
-    this.register(GameSceneType.MainVictory, MainVictoryScene);
-    this.register(GameSceneType.ModesMenu, ModesMenuScene);
-    this.register(GameSceneType.ModesCustom, ModesCustomScene);
-    this.register(GameSceneType.LevelControls, LevelControlsScene);
-    this.register(GameSceneType.LevelLoad, LevelLoadScene);
-    this.register(GameSceneType.LevelSelection, LevelSelectionScene);
-    this.register(GameSceneType.LevelScore, LevelScoreScene);
-    this.register(GameSceneType.LevelPlay, LevelPlayScene);
-    this.register(GameSceneType.SettingsAudio, SettingsAudioScene);
-    this.register(GameSceneType.SettingsInterface, SettingsInterfaceScene);
-    this.register(GameSceneType.SettingsMenu, SettingsMenuScene);
-    this.register(GameSceneType.SettingsKeybinding, SettingsKeybindingScene);
+  /**
+   * Called by each GameScene.create() so the router always holds the active
+   * scene's plugin, enabling it to launch the next scene.
+   */
+  public setScenePlugin(plugin: Phaser.Scenes.ScenePlugin): void {
+    this.scenePlugin = plugin;
+  }
+
+  /** Start the initial scene (clears the stack first). */
+  public start(type: GameSceneType, params?: SceneParams): void {
+    this.stack.length = 0;
+    this.push(type, params);
+  }
+
+  public push(type: GameSceneType, params?: SceneParams): void {
+    const safe = params ?? {};
+    this.stack.push({ type, params: safe });
+    this.scenePlugin.start(GameSceneType[type], safe);
+  }
+
+  public replace(type: GameSceneType, params?: SceneParams): void {
+    const safe = params ?? {};
+    this.stack.pop();
+    this.stack.push({ type, params: safe });
+    this.scenePlugin.start(GameSceneType[type], safe);
+  }
+
+  public back(): void {
+    if (this.stack.length <= 1) {
+      return;
+    }
+    this.stack.pop();
+    const prev = this.stack[this.stack.length - 1];
+    this.scenePlugin.start(GameSceneType[prev.type], prev.params);
+  }
+
+  public clearAndPush(type: GameSceneType, params?: SceneParams): void {
+    this.stack.length = 0;
+    this.push(type, params);
   }
 }

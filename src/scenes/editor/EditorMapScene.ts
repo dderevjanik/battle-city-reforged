@@ -49,7 +49,7 @@ export class EditorMapScene extends GameScene<EditorLocationParams> {
     this.root.add(this.field);
   }
 
-  protected update(deltaTime: number): void {
+  protected onUpdate(deltaTime: number): void {
     const { collisionSystem, inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -59,7 +59,7 @@ export class EditorMapScene extends GameScene<EditorLocationParams> {
       return;
     }
 
-    super.update(deltaTime);
+    super.onUpdate(deltaTime);
 
     // Update all transforms before checking collisions
     this.root.updateWorldMatrix(false, true);

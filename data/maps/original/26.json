@@ -9,102 +9,85 @@
       "maxAliveCount": 4,
       "list": [
         {
-          "drop": false,
           "ai": "classic",
           "type": "fast"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "fast"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "fast"
         },
         {
-          "drop": true,
+          "drop": "random",
           "ai": "classic",
           "type": "fast"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "fast"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "fast"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "heavy"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "heavy"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "heavy"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "heavy"
         },
         {
-          "drop": true,
+          "drop": "random",
           "ai": "classic",
           "type": "heavy"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "heavy"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "basic"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "basic"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "basic"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "basic"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "basic"
         },
         {
-          "drop": true,
+          "drop": "random",
           "ai": "classic",
           "type": "medium"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "medium"
         },
         {
-          "drop": false,
           "ai": "classic",
           "type": "medium"
         }

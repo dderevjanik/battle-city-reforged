@@ -1,5 +1,7 @@
 import { Rect } from '../../core/Rect';
 import { Timer } from '../../core/Timer';
+import { RandomUtils } from '../../core/utils';
+import { TankDrop } from '../../tank/TankTypes';
 import { DebugLevelPowerupMenu } from '../../debug/DebugLevelPowerupMenu';
 import { Powerup } from '../../gameObjects/Powerup';
 import { PowerupFactory } from '../../powerup/PowerupFactory';
@@ -14,6 +16,15 @@ import {
   LevelEnemySpawnCompletedEvent,
   LevelMapTileDestroyedEvent,
 } from '../LevelEvents';
+
+function resolveDropType(drop: TankDrop): PowerupType | null {
+  const candidates = Array.isArray(drop) ? drop : [drop];
+  const specific = candidates.filter((d) => d !== 'random') as PowerupType[];
+  if (specific.length > 0) {
+    return RandomUtils.arrayElement(specific);
+  }
+  return null; // 'random' — let PowerupFactory.createRandom() decide
+}
 
 export class LevelPowerupScript extends LevelScript {
   private timer!: Timer;
@@ -53,11 +64,11 @@ export class LevelPowerupScript extends LevelScript {
     const { type: tankType } = event;
 
     // Ignore if tank does not have droppable powerup
-    if (!tankType.hasDrop) {
+    if (tankType.drop === null) {
       return;
     }
 
-    this.spawn();
+    this.spawn(resolveDropType(tankType.drop!));
   };
 
   // Remove active powerup whenever new enemy spawns with drop
@@ -67,7 +78,7 @@ export class LevelPowerupScript extends LevelScript {
     const { type: tankType } = event;
 
     // Tanks without drops don't affect powerups
-    if (!tankType.hasDrop) {
+    if (tankType.drop === null) {
       return;
     }
 

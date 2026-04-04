@@ -20,7 +20,7 @@ export class EnemyTank extends Tank {
     this.hitSound = audioLoader.load('hit.enemy');
 
     // Tanks with drop should be blinking when paused
-    if (this.type.hasDrop) {
+    if (this.type.drop !== null) {
       this.ignorePause = true;
     }
 
@@ -108,7 +108,7 @@ export class EnemyTank extends Tank {
   }
 
   public discardDrop(): this {
-    this.type.hasDrop = false;
+    this.type.drop = null;
     this.ignorePause = false;
 
     // Remove drop animation frames

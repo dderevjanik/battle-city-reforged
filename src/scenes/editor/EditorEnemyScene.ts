@@ -18,10 +18,10 @@ const ENEMY_TYPES = [
   TankType.EnemyB(),
   TankType.EnemyC(),
   TankType.EnemyD(),
-  TankType.EnemyA().setHasDrop(true),
-  TankType.EnemyB().setHasDrop(true),
-  TankType.EnemyC().setHasDrop(true),
-  TankType.EnemyD().setHasDrop(true),
+  TankType.EnemyA().setDrop('random'),
+  TankType.EnemyB().setDrop('random'),
+  TankType.EnemyC().setDrop('random'),
+  TankType.EnemyD().setDrop('random'),
 ];
 
 const PER_PAGE = 5;
@@ -55,7 +55,7 @@ export class EditorEnemyScene extends GameScene<EditorLocationParams> {
     const selectorChoices = ENEMY_TYPES.map((type, index) => {
       const kindText = type.kind.toString().toUpperCase();
       let text = `TYPE ${kindText}`;
-      if (type.hasDrop) {
+      if (type.drop !== null) {
         text += ' +';
       }
 

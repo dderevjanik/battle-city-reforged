@@ -1,6 +1,10 @@
 import { Sprite } from '../core/graphics/Sprite';
 import { SpriteLoader } from '../core/loaders/SpriteLoader';
 import { Rotation } from '../game/Rotation';
+import { PowerupType } from '../powerup/PowerupType';
+
+export type TankDropType = 'random' | PowerupType;
+export type TankDrop = TankDropType | TankDropType[];
 
 export enum TankParty {
   Player = 'player',
@@ -34,16 +38,16 @@ export enum TankColor {
 export class TankType {
   public party: TankParty;
   public kind: TankKind;
-  public hasDrop: boolean;
+  public drop: TankDrop | null;
 
-  constructor(party: TankParty, kind: TankKind, hasDrop = false) {
+  constructor(party: TankParty, kind: TankKind, drop: TankDrop | null = null) {
     this.party = party;
     this.kind = kind;
-    this.hasDrop = hasDrop;
+    this.drop = drop;
   }
 
-  public setHasDrop(hasDrop: boolean): this {
-    this.hasDrop = hasDrop;
+  public setDrop(drop: TankDrop | null): this {
+    this.drop = drop;
 
     return this;
   }
@@ -83,12 +87,12 @@ export class TankType {
     return (
       this.party === other.party &&
       this.kind === other.kind &&
-      this.hasDrop === other.hasDrop
+      this.drop === other.drop
     );
   }
 
   public serialize(): string {
-    return `${this.party}-${this.kind}-${this.hasDrop}`;
+    return `${this.party}-${this.kind}-${this.drop}`;
   }
 
   public toString(): string {

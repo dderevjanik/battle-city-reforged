@@ -1,14 +1,17 @@
 import Joi from 'joi';
 
 import { TankAiMode } from '../tank/TankAiMode';
-import { TankKind } from '../tank/TankTypes';
+import { TankDrop, TankKind } from '../tank/TankTypes';
 import { TerrainType } from '../terrain/TerrainType';
 import { TilesetId } from '../terrain/TilesetId';
+import { PowerupType } from '../powerup/PowerupType';
+
+const VALID_DROP_VALUES: string[] = ['random', ...Object.values(PowerupType)];
 
 export interface MapDtoSpawnEnemyListItem {
   type: TankKind;
   ai?: TankAiMode;
-  drop?: boolean;
+  drop?: TankDrop;
 }
 
 export interface MapDtoSpawnLocation {
@@ -80,7 +83,10 @@ export const MapDtoSchema = Joi.object<MapDto>({
               .valid(...Object.values(TankKind))
               .required(),
             ai: Joi.string().valid(...Object.values(TankAiMode)),
-            drop: Joi.boolean(),
+            drop: Joi.alternatives().try(
+              Joi.string().valid(...VALID_DROP_VALUES),
+              Joi.array().items(Joi.string().valid(...VALID_DROP_VALUES)).min(1),
+            ),
           }),
         )
         .default([]),

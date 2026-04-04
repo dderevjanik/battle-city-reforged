@@ -44,7 +44,7 @@ export class TankMoveAnimation extends Animation<TankAnimationFrame> {
   // Tank might lose his drop, use it remove drop animation frames
   public updateFrames(): void {
     const frames = [...this.regularFrames];
-    if (this.type.hasDrop) {
+    if (this.type.drop !== null) {
       frames.push(...this.dropFrames);
     }
 

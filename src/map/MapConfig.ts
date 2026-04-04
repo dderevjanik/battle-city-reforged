@@ -124,7 +124,7 @@ export class MapConfig {
 
   public getEnemySpawnList(): TankType[] {
     return this.dto.spawn.enemy.list!.map((item) => {
-      return new TankType(TankParty.Enemy, item.type, item.drop);
+      return new TankType(TankParty.Enemy, item.type, item.drop ?? null);
     });
   }
 
@@ -140,7 +140,7 @@ export class MapConfig {
     for (let i = 0; i < config.ENEMY_MAX_TOTAL_COUNT; i += 1) {
       this.dto.spawn.enemy.list![i] = {
         type: type.kind,
-        drop: type.hasDrop,
+        drop: type.drop ?? undefined,
       };
     }
   }
@@ -148,7 +148,7 @@ export class MapConfig {
   public setEnemySpawnListItem(index: number, type: TankType): void {
     this.dto.spawn.enemy.list![index] = {
       type: type.kind,
-      drop: type.hasDrop,
+      drop: type.drop ?? undefined,
     };
   }
 

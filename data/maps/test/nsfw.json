@@ -3,6 +3,9 @@
   "version": 1,
   "spawn": {
     "enemy": {
+      "spawnDelay": 3,
+      "maxAliveCount": 4,
+      "list": [],
       "locations": [
         {
           "x": 384,
@@ -16,8 +19,7 @@
           "x": 0,
           "y": 0
         }
-      ],
-      "list": []
+      ]
     },
     "player": {
       "locations": [

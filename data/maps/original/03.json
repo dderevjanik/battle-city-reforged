@@ -3,20 +3,8 @@
   "version": 1,
   "spawn": {
     "enemy": {
-      "locations": [
-        {
-          "x": 384,
-          "y": 0
-        },
-        {
-          "x": 768,
-          "y": 0
-        },
-        {
-          "x": 0,
-          "y": 0
-        }
-      ],
+      "spawnDelay": 3,
+      "maxAliveCount": 4,
       "list": [
         {
           "drop": false,
@@ -117,6 +105,20 @@
           "drop": false,
           "ai": "classic",
           "type": "heavy"
+        }
+      ],
+      "locations": [
+        {
+          "x": 384,
+          "y": 0
+        },
+        {
+          "x": 768,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
         }
       ]
     },

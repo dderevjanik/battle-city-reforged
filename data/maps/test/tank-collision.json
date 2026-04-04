@@ -3,24 +3,8 @@
   "version": 1,
   "spawn": {
     "enemy": {
-      "locations": [
-        {
-          "x": 0,
-          "y": 0
-        },
-        {
-          "x": 96,
-          "y": 0
-        },
-        {
-          "x": 192,
-          "y": 0
-        },
-        {
-          "x": 256,
-          "y": 0
-        }
-      ],
+      "spawnDelay": 3,
+      "maxAliveCount": 4,
       "list": [
         {
           "ai": "classic",
@@ -53,6 +37,24 @@
         {
           "ai": "classic",
           "type": "basic"
+        }
+      ],
+      "locations": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 96,
+          "y": 0
+        },
+        {
+          "x": 192,
+          "y": 0
+        },
+        {
+          "x": 256,
+          "y": 0
         }
       ]
     },

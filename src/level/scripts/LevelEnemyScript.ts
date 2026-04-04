@@ -61,7 +61,7 @@ export class LevelEnemyScript extends LevelScript {
     this.requestSpawn();
 
     // Start timer to spawn next enemy
-    this.spawnTimer.reset(config.ENEMY_SPAWN_DELAY);
+    this.spawnTimer.reset(this.mapConfig.getEnemySpawnDelay());
   };
 
   private handleSpawnCompleted = (
@@ -111,7 +111,7 @@ export class LevelEnemyScript extends LevelScript {
       // If timer was stopped because max count of alive enemies has been
       // reached, restart it, because one of alive tanks has just been killed
       if (!this.spawnTimer.isActive()) {
-        this.spawnTimer.reset(config.ENEMY_SPAWN_DELAY);
+        this.spawnTimer.reset(this.mapConfig.getEnemySpawnDelay());
       }
 
       if (this.areAllDead()) {
@@ -196,9 +196,6 @@ export class LevelEnemyScript extends LevelScript {
   };
 
   private getMaxAliveCount(): number {
-    if (this.session.isMultiplayer()) {
-      return config.ENEMY_MAX_ALIVE_COUNT_MULTIPLAYER;
-    }
-    return config.ENEMY_MAX_ALIVE_COUNT;
+    return this.mapConfig.getEnemyMaxAliveCount();
   }
 }

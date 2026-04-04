@@ -17,6 +17,8 @@ export interface MapDtoSpawnLocation {
 }
 
 export interface MapDtoSpawnEnemy {
+  spawnDelay: number;
+  maxAliveCount: number;
   list?: MapDtoSpawnEnemyListItem[];
   locations: MapDtoSpawnLocation[];
 }
@@ -56,6 +58,8 @@ export const MapDtoSchema = Joi.object<MapDto>({
   tileset: Joi.string().valid(...Object.values(TilesetId)).default(TilesetId.Classic),
   spawn: Joi.object({
     enemy: Joi.object({
+      spawnDelay: Joi.number().required(),
+      maxAliveCount: Joi.number().integer().min(1).required(),
       locations: Joi.array()
         .items(
           Joi.object({

@@ -2,9 +2,11 @@
   "tileset": "classic",
   "spawn": {
     "enemy": {
+      "spawnDelay": 3,
+      "maxAliveCount": 4,
       "list": [
         {
-          "ai": "classic",
+          "ai": "hunter",
           "type": "heavy"
         }
       ],

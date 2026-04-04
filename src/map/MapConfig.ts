@@ -23,7 +23,12 @@ export class MapConfig {
   constructor() {
     this.dto = this.fillAndValidate({
       spawn: {
-        enemy: { locations: config.ENEMY_DEFAULT_SPAWN_POSITIONS, list: [] },
+        enemy: {
+          spawnDelay: config.ENEMY_SPAWN_DELAY,
+          maxAliveCount: config.ENEMY_MAX_ALIVE_COUNT,
+          locations: config.ENEMY_DEFAULT_SPAWN_POSITIONS,
+          list: [],
+        },
         player: { locations: config.PLAYER_DEFAULT_SPAWN_POSITIONS },
       },
     });
@@ -91,6 +96,14 @@ export class MapConfig {
     return this.dto.spawn.player.locations.map(
       (location) => new Vector(location.x, location.y),
     );
+  }
+
+  public getEnemySpawnDelay(): number {
+    return this.dto.spawn.enemy.spawnDelay;
+  }
+
+  public getEnemyMaxAliveCount(): number {
+    return this.dto.spawn.enemy.maxAliveCount;
   }
 
   public getEnemySpawnPositions(): Vector[] {

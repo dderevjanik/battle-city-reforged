@@ -2,38 +2,40 @@
   "tileset": "classic",
   "spawn": {
     "enemy": {
+      "spawnDelay": 3,
+      "maxAliveCount": 4,
       "list": [
         {
-          "ai": "classic",
+          "ai": "attack_base",
           "type": "basic"
         },
         {
-          "ai": "classic",
+          "ai": "attack_base",
           "type": "basic"
         },
         {
-          "ai": "classic",
+          "ai": "attack_base",
           "type": "basic"
         },
         {
           "drop": true,
-          "ai": "classic",
+          "ai": "attack_base",
           "type": "basic"
         },
         {
-          "ai": "classic",
+          "ai": "attack_base",
           "type": "basic"
         },
         {
-          "ai": "classic",
+          "ai": "attack_base",
           "type": "basic"
         },
         {
-          "ai": "classic",
+          "ai": "attack_base",
           "type": "basic"
         },
         {
-          "ai": "classic",
+          "ai": "attack_base",
           "type": "basic"
         },
         {

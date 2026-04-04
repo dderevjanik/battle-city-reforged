@@ -1,6 +1,6 @@
 import { Points } from '../../gameObjects/Points';
 import { PointsValue } from '../../points/PointsValue';
-import { TankDeathReason, TankTier, TankType } from '../../tank/TankTypes';
+import { TankDeathReason, TankKind, TankType } from '../../tank/TankTypes';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
@@ -37,14 +37,14 @@ export class LevelPointsScript extends LevelScript {
   };
 
   private getEnemyTankPointsValue(type: TankType): PointsValue {
-    switch (type.tier) {
-      case TankTier.A:
+    switch (type.kind) {
+      case TankKind.Basic:
         return PointsValue.V100;
-      case TankTier.B:
+      case TankKind.Fast:
         return PointsValue.V200;
-      case TankTier.C:
+      case TankKind.Medium:
         return PointsValue.V300;
-      case TankTier.D:
+      case TankKind.Heavy:
         return PointsValue.V400;
       default:
         return PointsValue.V100;

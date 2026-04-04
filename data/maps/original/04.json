@@ -1,5 +1,5 @@
-{"
-  "tileset": "modern",
+{
+  "tileset": "classic",
   "version": 1,
   "spawn": {
     "enemy": {
@@ -19,84 +19,104 @@
       ],
       "list": [
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": true
+          "drop": true,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "c",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "medium"
         },
         {
-          "tier": "b",
-          "drop": true
+          "drop": true,
+          "ai": "classic",
+          "type": "fast"
         },
         {
-          "tier": "b",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "fast"
         },
         {
-          "tier": "b",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "fast"
         },
         {
-          "tier": "b",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "fast"
         },
         {
-          "tier": "b",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "fast"
         },
         {
-          "tier": "a",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "d",
-          "drop": true
+          "drop": true,
+          "ai": "classic",
+          "type": "heavy"
         },
         {
-          "tier": "d",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "heavy"
         },
         {
-          "tier": "d",
-          "drop": false
+          "drop": false,
+          "ai": "classic",
+          "type": "heavy"
         }
       ]
     },

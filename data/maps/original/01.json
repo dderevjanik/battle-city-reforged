@@ -1,70 +1,90 @@
-{"
-  "tileset": "modern",
+{
+  "tileset": "classic",
   "spawn": {
     "enemy": {
       "list": [
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a",
-          "drop": true
+          "drop": true,
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a",
-          "drop": true
+          "drop": true,
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a"
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "a",
-          "drop": true
+          "drop": true,
+          "ai": "classic",
+          "type": "basic"
         },
         {
-          "tier": "b"
+          "ai": "classic",
+          "type": "fast"
         },
         {
-          "tier": "b"
+          "ai": "classic",
+          "type": "fast"
         }
       ],
       "locations": [

@@ -117,8 +117,8 @@ export class LevelPlayerScript extends LevelScript {
     // If tank dies - it loses all this tiers, so it applies only to first
     // spawn.
     if (playerSession.isLevelFirstSpawn()) {
-      const carryoverTier = playerSession.getTankTier();
-      tank.upgrade(carryoverTier, false);
+      const carryoverKind = playerSession.getTankKind();
+      tank.upgrade(carryoverKind, false);
     }
 
     tank.died.addListener(() => {
@@ -134,7 +134,7 @@ export class LevelPlayerScript extends LevelScript {
 
       this.timers[partyIndex].reset(config.PLAYER_SPAWN_DELAY);
 
-      playerSession.resetTankTier();
+      playerSession.resetTankKind();
     });
 
     tank.fired.addListener(() => {
@@ -142,7 +142,7 @@ export class LevelPlayerScript extends LevelScript {
     });
 
     tank.upgraded.addListener((event) => {
-      playerSession.setTankTier(event.tier);
+      playerSession.setTankKind(event.kind);
     });
 
     tank.slided.addListener(() => {

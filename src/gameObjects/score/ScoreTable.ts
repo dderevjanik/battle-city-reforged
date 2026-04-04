@@ -4,7 +4,7 @@ import { Timer } from '../../core/Timer';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { PointsRecord } from '../../points/PointsRecord';
-import { TankTier } from '../../tank/TankTypes'; // TODO: circular dep?
+import { TankKind } from '../../tank/TankTypes'; // TODO: circular dep?
 import * as config from '../../config';
 
 import { SpriteText } from '../text/SpriteText';
@@ -20,7 +20,7 @@ enum State {
   Done,
 }
 
-const TIERS = [TankTier.A, TankTier.B, TankTier.C, TankTier.D];
+const KINDS = [TankKind.Basic, TankKind.Fast, TankKind.Medium, TankKind.Heavy];
 const TRANSITION_DELAY = 0.4;
 
 export class ScoreTable extends GameObject {
@@ -83,7 +83,7 @@ export class ScoreTable extends GameObject {
       this.add(this.secondaryGamePoints);
     }
 
-    TIERS.forEach((tier, tierIndex) => {
+    KINDS.forEach((tier, tierIndex) => {
       const icon = new ScoreTableTierIcon(tier, this.session.isMultiplayer());
       icon.updateMatrix();
       icon.setCenter(this.getSelfCenter());
@@ -91,8 +91,8 @@ export class ScoreTable extends GameObject {
       this.add(icon);
 
       const primaryRecord = this.getPrimaryRecord();
-      const primaryCost = primaryRecord.getTierKillCost(tier);
-      const primaryKills = primaryRecord.getTierKillCount(tier);
+      const primaryCost = primaryRecord.getKindKillCost(tier);
+      const primaryKills = primaryRecord.getKindKillCount(tier);
       const primaryCounter = new ScoreTableCounter(primaryKills, primaryCost);
       primaryCounter.position.set(4, 152 + 100 * tierIndex);
       this.counters[tierIndex] = this.counters[tierIndex] || [];
@@ -101,8 +101,8 @@ export class ScoreTable extends GameObject {
 
       if (this.session.isMultiplayer()) {
         const secondaryRecord = this.getSecondaryRecord();
-        const secondaryCost = secondaryRecord.getTierKillCost(tier);
-        const secondaryKills = secondaryRecord.getTierKillCount(tier);
+        const secondaryCost = secondaryRecord.getKindKillCost(tier);
+        const secondaryKills = secondaryRecord.getKindKillCount(tier);
         const secondaryCounter = new ScoreTableCounter(
           secondaryKills,
           secondaryCost,

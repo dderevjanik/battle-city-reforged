@@ -2,7 +2,7 @@ import { Sound } from '../core/Sound';
 import { GameState } from '../game/GameState';
 import { GameContext } from '../game/GameUpdateArgs';
 import { Tag } from '../game/Tag';
-import { TankColor, TankTier } from '../tank/TankTypes';
+import { TankColor, TankKind } from '../tank/TankTypes';
 import { TankSkinAnimation } from '../tank/TankSkinAnimation';
 import * as config from '../config';
 
@@ -25,7 +25,7 @@ export class EnemyTank extends Tank {
     }
 
     // Currently only tier D tank has more than 1 health
-    if (this.type.tier === TankTier.D) {
+    if (this.type.kind === TankKind.Heavy) {
       this.healthSkinAnimations.set(
         4,
         new TankSkinAnimation(spriteLoader, this.type, [

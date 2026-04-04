@@ -1,10 +1,11 @@
-{"
-  "tileset": "modern",
+{
+  "tileset": "classic",
   "spawn": {
     "enemy": {
       "list": [
         {
-          "tier": "d"
+          "ai": "classic",
+          "type": "heavy"
         }
       ],
       "locations": [
@@ -24,8 +25,14 @@
     },
     "player": {
       "locations": [
-        { "x": 256, "y": 768 },
-        { "x": 512, "y": 768 }
+        {
+          "x": 256,
+          "y": 768
+        },
+        {
+          "x": 512,
+          "y": 768
+        }
       ]
     }
   },

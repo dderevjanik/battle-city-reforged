@@ -1,4 +1,4 @@
-import { TankBulletWallDamage, TankParty, TankTier, TankType } from './TankTypes';
+import { TankBulletWallDamage, TankKind, TankParty, TankType } from './TankTypes';
 import { TankAiMode } from './TankAiMode';
 import tankManifest from '../../data/tank.manifest.json';
 
@@ -15,7 +15,7 @@ export interface TankAttributes {
 
 export interface TankAttributesListSelector {
   party: TankParty;
-  tier: TankTier;
+  kind: TankKind;
 }
 
 interface TankAttributesListItem {
@@ -27,13 +27,13 @@ interface TankAttributesConfig {
   list: TankAttributesListItem[];
 }
 
-const config = tankManifest as TankAttributesConfig;
+const config = tankManifest as unknown as TankAttributesConfig;
 
 export class TankAttributesFactory {
   public static create(type: TankType): TankAttributes {
     const foundItem = config.list.find((item) => {
       const { selector } = item;
-      return selector.party === type.party && selector.tier === type.tier;
+      return selector.party === type.party && selector.kind === type.kind;
     });
 
     if (foundItem === undefined) {

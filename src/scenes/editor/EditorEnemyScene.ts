@@ -53,8 +53,8 @@ export class EditorEnemyScene extends GameScene<EditorLocationParams> {
     this.root.add(this.preview);
 
     const selectorChoices = ENEMY_TYPES.map((type, index) => {
-      const tierText = type.tier.toString().toUpperCase();
-      let text = `TIER ${tierText}`;
+      const kindText = type.kind.toString().toUpperCase();
+      let text = `TYPE ${kindText}`;
       if (type.hasDrop) {
         text += ' +';
       }

@@ -2,13 +2,13 @@ import { GameObject } from '../../core/GameObject';
 import { SpritePainter } from '../../core/painters/SpritePainter';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Rotation } from '../../game/Rotation';
-import { TankColor, TankParty, TankSpriteId, TankTier, TankType } from '../../tank/TankTypes';
+import { TankColor, TankKind, TankParty, TankSpriteId, TankType } from '../../tank/TankTypes';
 import * as config from '../../config';
 
 import { SpriteText } from '../text/SpriteText';
 
 export class ScoreTableTierIcon extends GameObject {
-  private tier: TankTier;
+  private tier: TankKind;
   private showRight: boolean;
   private leftIcon = new SpriteText('←', {
     color: config.COLOR_WHITE,
@@ -18,7 +18,7 @@ export class ScoreTableTierIcon extends GameObject {
   });
   private tank = new GameObject(64, 64);
 
-  constructor(tier: TankTier, showRight = false) {
+  constructor(tier: TankKind, showRight = false) {
     super(128, 64);
 
     this.tier = tier;

@@ -17,11 +17,11 @@ export enum TankBulletWallDamage {
   High = 2,
 }
 
-export enum TankTier {
-  A = 'a',
-  B = 'b',
-  C = 'c',
-  D = 'd',
+export enum TankKind {
+  Basic = 'basic',
+  Fast = 'fast',
+  Medium = 'medium',
+  Heavy = 'heavy',
 }
 
 export enum TankColor {
@@ -33,12 +33,12 @@ export enum TankColor {
 
 export class TankType {
   public party: TankParty;
-  public tier: TankTier;
+  public kind: TankKind;
   public hasDrop: boolean;
 
-  constructor(party: TankParty, tier: TankTier, hasDrop = false) {
+  constructor(party: TankParty, kind: TankKind, hasDrop = false) {
     this.party = party;
-    this.tier = tier;
+    this.kind = kind;
     this.hasDrop = hasDrop;
   }
 
@@ -49,25 +49,25 @@ export class TankType {
   }
 
   public clone(): TankType {
-    return new TankType(this.party, this.tier);
+    return new TankType(this.party, this.kind);
   }
 
-  public increaseTier(targetTier: TankTier | null = null): this {
-    if (targetTier !== null) {
-      this.tier = targetTier;
+  public increaseKind(targetKind: TankKind | null = null): this {
+    if (targetKind !== null) {
+      this.kind = targetKind;
 
       return this;
     }
 
-    switch (this.tier) {
-      case TankTier.A:
-        this.tier = TankTier.B;
+    switch (this.kind) {
+      case TankKind.Basic:
+        this.kind = TankKind.Fast;
         break;
-      case TankTier.B:
-        this.tier = TankTier.C;
+      case TankKind.Fast:
+        this.kind = TankKind.Medium;
         break;
-      case TankTier.C:
-        this.tier = TankTier.D;
+      case TankKind.Medium:
+        this.kind = TankKind.Heavy;
       default:
         break;
     }
@@ -75,20 +75,20 @@ export class TankType {
     return this;
   }
 
-  public isMaxTier(): boolean {
-    return this.tier === TankTier.D;
+  public isMaxKind(): boolean {
+    return this.kind === TankKind.Heavy;
   }
 
   public equals(other: TankType): boolean {
     return (
       this.party === other.party &&
-      this.tier === other.tier &&
+      this.kind === other.kind &&
       this.hasDrop === other.hasDrop
     );
   }
 
   public serialize(): string {
-    return `${this.party}-${this.tier}-${this.hasDrop}`;
+    return `${this.party}-${this.kind}-${this.hasDrop}`;
   }
 
   public toString(): string {
@@ -96,28 +96,28 @@ export class TankType {
   }
 
   public static PlayerA(): TankType {
-    return new TankType(TankParty.Player, TankTier.A);
+    return new TankType(TankParty.Player, TankKind.Basic);
   }
   public static PlayerB(): TankType {
-    return new TankType(TankParty.Player, TankTier.B);
+    return new TankType(TankParty.Player, TankKind.Fast);
   }
   public static PlayerC(): TankType {
-    return new TankType(TankParty.Player, TankTier.C);
+    return new TankType(TankParty.Player, TankKind.Medium);
   }
   public static PlayerD(): TankType {
-    return new TankType(TankParty.Player, TankTier.D);
+    return new TankType(TankParty.Player, TankKind.Heavy);
   }
   public static EnemyA(): TankType {
-    return new TankType(TankParty.Enemy, TankTier.A);
+    return new TankType(TankParty.Enemy, TankKind.Basic);
   }
   public static EnemyB(): TankType {
-    return new TankType(TankParty.Enemy, TankTier.B);
+    return new TankType(TankParty.Enemy, TankKind.Fast);
   }
   public static EnemyC(): TankType {
-    return new TankType(TankParty.Enemy, TankTier.C);
+    return new TankType(TankParty.Enemy, TankKind.Medium);
   }
   public static EnemyD(): TankType {
-    return new TankType(TankParty.Enemy, TankTier.D);
+    return new TankType(TankParty.Enemy, TankKind.Heavy);
   }
 }
 
@@ -135,7 +135,7 @@ export class TankSpriteId {
       SPRITE_TANK_PREFIX,
       type.party.toString(),
       color.toString(),
-      type.tier.toString(),
+      type.kind.toString(),
       this.getRotationString(rotation),
       frameNumber.toString(),
     ];

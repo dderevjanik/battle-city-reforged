@@ -1,22 +1,22 @@
 import { PowerupType } from '../powerup/PowerupType';
-import { TankTier } from '../tank/TankTypes';
+import { TankKind } from '../tank/TankTypes';
 import * as config from '../config';
 
-const TANK_POINTS_MAP = {
-  [TankTier.A]: 100,
-  [TankTier.B]: 200,
-  [TankTier.C]: 300,
-  [TankTier.D]: 400,
+const TANK_POINTS_MAP: Record<TankKind, number> = {
+  [TankKind.Basic]: 100,
+  [TankKind.Fast]: 200,
+  [TankKind.Medium]: 300,
+  [TankKind.Heavy]: 400,
 };
 
 const POWERUP_POINTS = 500;
 
 export class PointsRecord {
-  private kills: TankTier[] = [];
+  private kills: TankKind[] = [];
   private powerups: PowerupType[] = [];
   private bonus = false;
 
-  public addKill(tier: TankTier): this {
+  public addKill(tier: TankKind): this {
     this.kills.push(tier);
 
     return this;
@@ -38,7 +38,7 @@ export class PointsRecord {
     return this.bonus === true;
   }
 
-  public getTierKillCost(tier: TankTier): number {
+  public getKindKillCost(tier: TankKind): number {
     return TANK_POINTS_MAP[tier];
   }
 
@@ -50,21 +50,21 @@ export class PointsRecord {
     return this.kills.length;
   }
 
-  public getTierKillCount(tierToFind: TankTier): number {
+  public getKindKillCount(tierToFind: TankKind): number {
     const kills = this.kills.filter((tier) => tier === tierToFind);
     const count = kills.length;
 
     return count;
   }
 
-  public getTierPoints(tierToFind: TankTier): number {
+  public getKindPoints(tierToFind: TankKind): number {
     let total = 0;
 
     this.kills.forEach((tier) => {
       if (tier !== tierToFind) {
         return;
       }
-      total += this.getTierKillCost(tier);
+      total += this.getKindKillCost(tier);
     });
 
     return total;
@@ -74,7 +74,7 @@ export class PointsRecord {
     let total = 0;
 
     this.kills.forEach((tier) => {
-      total += this.getTierKillCost(tier);
+      total += this.getKindKillCost(tier);
     });
 
     return total;

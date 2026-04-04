@@ -1,3 +1,7 @@
 {
-  "list": [{ "file": "data/maps/test/enemy-tanks.json" }]
+  "list": [
+    {
+      "file": "data/maps/test/enemy-tanks.json"
+    }
+  ]
 }

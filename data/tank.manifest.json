@@ -1,7 +1,10 @@
 {
   "list": [
     {
-      "selector": { "party": "player", "tier": "a" },
+      "selector": {
+        "party": "player",
+        "kind": "basic"
+      },
       "attributes": {
         "bulletMaxCount": 1,
         "bulletRapidFireDelay": 0.16,
@@ -13,7 +16,10 @@
       }
     },
     {
-      "selector": { "party": "player", "tier": "b" },
+      "selector": {
+        "party": "player",
+        "kind": "fast"
+      },
       "attributes": {
         "bulletMaxCount": 1,
         "bulletRapidFireDelay": 0.16,
@@ -25,7 +31,10 @@
       }
     },
     {
-      "selector": { "party": "player", "tier": "c" },
+      "selector": {
+        "party": "player",
+        "kind": "medium"
+      },
       "attributes": {
         "bulletMaxCount": 2,
         "bulletRapidFireDelay": 0.04,
@@ -37,7 +46,10 @@
       }
     },
     {
-      "selector": { "party": "player", "tier": "d" },
+      "selector": {
+        "party": "player",
+        "kind": "heavy"
+      },
       "attributes": {
         "bulletMaxCount": 2,
         "bulletRapidFireDelay": 0.04,
@@ -49,7 +61,10 @@
       }
     },
     {
-      "selector": { "party": "enemy", "tier": "a" },
+      "selector": {
+        "party": "enemy",
+        "kind": "basic"
+      },
       "attributes": {
         "ai": "classic",
         "bulletMaxCount": 1,
@@ -62,7 +77,10 @@
       }
     },
     {
-      "selector": { "party": "enemy", "tier": "b" },
+      "selector": {
+        "party": "enemy",
+        "kind": "fast"
+      },
       "attributes": {
         "ai": "classic",
         "bulletMaxCount": 1,
@@ -75,7 +93,10 @@
       }
     },
     {
-      "selector": { "party": "enemy", "tier": "c" },
+      "selector": {
+        "party": "enemy",
+        "kind": "medium"
+      },
       "attributes": {
         "ai": "classic",
         "bulletMaxCount": 1,
@@ -88,7 +109,10 @@
       }
     },
     {
-      "selector": { "party": "enemy", "tier": "d" },
+      "selector": {
+        "party": "enemy",
+        "kind": "heavy"
+      },
       "attributes": {
         "ai": "classic",
         "bulletMaxCount": 1,

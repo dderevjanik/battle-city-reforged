@@ -2,7 +2,7 @@ import { Subject } from '../core/Subject';
 import { InputVariant } from '../input/InputVariant';
 import { PointsRecord } from '../points/PointsRecord';
 import { PowerupType } from '../powerup/PowerupType';
-import { TankTier } from '../tank/TankTypes';
+import { TankKind } from '../tank/TankTypes';
 import * as config from '../config';
 
 export class SessionPlayer {
@@ -15,7 +15,7 @@ export class SessionPlayer {
   private lastGamePoints: number | null = null;
   private lives!: number;
   private nextLifePointThreshold!: number;
-  private tankTier!: TankTier;
+  private tankKind!: TankKind;
   private levelFirstSpawned!: boolean;
   // Should be used for multiplayer only
   private inputVariant: InputVariant | null = null;
@@ -30,13 +30,13 @@ export class SessionPlayer {
     this.lastGamePoints = null as null;
     this.lives = config.PLAYER_INITIAL_LIVES;
     this.nextLifePointThreshold = config.PLAYER_EXTRA_LIVE_POINTS;
-    this.tankTier = TankTier.A;
+    this.tankKind = TankKind.Basic;
     this.levelFirstSpawned = true;
     this.inputVariant = null as null;
   }
 
-  public addKillPoints(tier: TankTier): void {
-    this.levelPointsRecord.addKill(tier);
+  public addKillPoints(kind: TankKind): void {
+    this.levelPointsRecord.addKill(kind);
     this.checkLifeup();
   }
 
@@ -94,16 +94,16 @@ export class SessionPlayer {
     return this.lives > 0;
   }
 
-  public getTankTier(): TankTier {
-    return this.tankTier;
+  public getTankKind(): TankKind {
+    return this.tankKind;
   }
 
-  public setTankTier(tankTier: TankTier): void {
-    this.tankTier = tankTier;
+  public setTankKind(tankKind: TankKind): void {
+    this.tankKind = tankKind;
   }
 
-  public resetTankTier(): void {
-    this.tankTier = TankTier.A;
+  public resetTankKind(): void {
+    this.tankKind = TankKind.Basic;
   }
 
   public isLevelFirstSpawn(): boolean {

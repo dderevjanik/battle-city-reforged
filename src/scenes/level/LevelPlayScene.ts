@@ -260,7 +260,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
 
     const playerSession = this.session.getPlayer(event.hitterPartyIndex!);
 
-    playerSession.addKillPoints(event.type.tier);
+    playerSession.addKillPoints(event.type.kind);
   };
 
   private handlePowerupPicked = (event: LevelPowerupPickedEvent): void => {

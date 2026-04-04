@@ -1,5 +1,5 @@
-{"
-  "tileset": "modern",
+{
+  "tileset": "classic",
   "version": 1,
   "spawn": {
     "enemy": {
@@ -22,14 +22,38 @@
         }
       ],
       "list": [
-        { "tier": "a" },
-        { "tier": "a" },
-        { "tier": "a" },
-        { "tier": "a" },
-        { "tier": "a" },
-        { "tier": "a" },
-        { "tier": "a" },
-        { "tier": "a" }
+        {
+          "ai": "classic",
+          "type": "basic"
+        },
+        {
+          "ai": "classic",
+          "type": "basic"
+        },
+        {
+          "ai": "classic",
+          "type": "basic"
+        },
+        {
+          "ai": "classic",
+          "type": "basic"
+        },
+        {
+          "ai": "classic",
+          "type": "basic"
+        },
+        {
+          "ai": "classic",
+          "type": "basic"
+        },
+        {
+          "ai": "classic",
+          "type": "basic"
+        },
+        {
+          "ai": "classic",
+          "type": "basic"
+        }
       ]
     },
     "player": {

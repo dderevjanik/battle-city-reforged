@@ -1,11 +1,13 @@
 import Joi from 'joi';
 
-import { TankTier } from '../tank/TankTypes';
+import { TankAiMode } from '../tank/TankAiMode';
+import { TankKind } from '../tank/TankTypes';
 import { TerrainType } from '../terrain/TerrainType';
 import { TilesetId } from '../terrain/TilesetId';
 
 export interface MapDtoSpawnEnemyListItem {
-  tier: TankTier;
+  type: TankKind;
+  ai?: TankAiMode;
   drop?: boolean;
 }
 
@@ -66,9 +68,10 @@ export const MapDtoSchema = Joi.object<MapDto>({
       list: Joi.array()
         .items(
           Joi.object({
-            tier: Joi.string()
-              .valid(...Object.values(TankTier))
+            type: Joi.string()
+              .valid(...Object.values(TankKind))
               .required(),
+            ai: Joi.string().valid(...Object.values(TankAiMode)),
             drop: Joi.boolean(),
           }),
         )

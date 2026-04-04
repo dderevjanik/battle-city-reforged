@@ -197,8 +197,6 @@ export class Bullet extends GameObject {
           this.hitBrickSound.play();
         }
       } else if (isSteelWall || isBorderWall) {
-        // TODO: when tank is grade 4, it can destroy steel walls, and in that
-        // case they make the same sound as brick walls
         // Only player bullets make sound
         if (this.tags.includes(Tag.Player)) {
           this.hitSteelSound.play();

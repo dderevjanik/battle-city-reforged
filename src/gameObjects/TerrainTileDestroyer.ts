@@ -48,7 +48,6 @@ export class TerrainTileDestroyer extends GameObject {
       const isBrickWall = tile.tags.includes(Tag.Brick);
       const isSteelWall = tile.tags.includes(Tag.Steel);
 
-      // TODO: this check should be a part of bullet attributes model
       const canDestroySteelWall = this.damage === TankBulletWallDamage.High;
 
       if (isBrickWall || (isSteelWall && canDestroySteelWall)) {

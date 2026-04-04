@@ -1,42 +1,27 @@
+import Phaser from 'phaser';
+
+const EVENT_KEY = 'e';
 
 export class Subject<T> {
-  private listeners: ((event: T) => any)[] = [];
+  private emitter = new Phaser.Events.EventEmitter();
 
-  public addListener(listenerToAdd: (event: T) => any): () => void {
-    this.listeners.push(listenerToAdd);
-
-    const unsubscribe = (): void => {
-      this.removeListener(listenerToAdd);
-    };
-
-    return unsubscribe;
+  public addListener(listener: (event: T) => any): () => void {
+    this.emitter.on(EVENT_KEY, listener);
+    return () => this.emitter.off(EVENT_KEY, listener);
   }
 
-  public addListenerOnce(listenerToAdd: (event: T) => any): () => void {
-    const wrappedListener = (event: T): void => {
-      this.removeListener(wrappedListener);
-      listenerToAdd(event);
-    };
-
-    const unsubscribe = this.addListener(wrappedListener);
-
-    return unsubscribe;
+  public addListenerOnce(listener: (event: T) => any): () => void {
+    this.emitter.once(EVENT_KEY, listener);
+    return () => this.emitter.off(EVENT_KEY, listener);
   }
 
-  public removeListener(listenerToRemove: (event: T) => any): this {
-    this.listeners = this.listeners.filter((listener) => {
-      return listener !== listenerToRemove;
-    });
-
+  public removeListener(listener: (event: T) => any): this {
+    this.emitter.off(EVENT_KEY, listener);
     return this;
   }
 
   public notify = (event: T): this => {
-    this.listeners.forEach((listener) => {
-      // TODO: handle errors
-      listener(event);
-    });
-
+    this.emitter.emit(EVENT_KEY, event);
     return this;
   };
 }

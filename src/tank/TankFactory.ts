@@ -3,6 +3,8 @@ import { PlayerTank } from '../gameObjects/PlayerTank';
 
 import { AiTankBehavior } from './behaviors/AiTankBehavior';
 import { PlayerTankBehavior } from './behaviors/PlayerTankBehavior';
+import { TankAiMode } from './TankAiMode';
+import { TankAttributesFactory } from './TankAttributesFactory';
 import { TankBehavior } from './TankBehavior';
 import { TankType } from './TankTypes';
 
@@ -22,8 +24,18 @@ export class TankFactory {
   public static createEnemy(
     partyIndex: number,
     type: TankType = TankType.EnemyA(),
-    behavior: TankBehavior = new AiTankBehavior(),
+    behavior?: TankBehavior,
   ): EnemyTank {
-    return new EnemyTank(type, behavior, partyIndex);
+    const resolvedBehavior = behavior ?? TankFactory.createBehaviorForType(type);
+    return new EnemyTank(type, resolvedBehavior, partyIndex);
+  }
+
+  private static createBehaviorForType(type: TankType): TankBehavior {
+    const { ai } = TankAttributesFactory.create(type);
+    switch (ai) {
+      case TankAiMode.Classic:
+      default:
+        return new AiTankBehavior();
+    }
   }
 }

@@ -15,19 +15,21 @@ import * as config from '../config';
 
 import { TerrainRegionConfig } from './TerrainRegionConfig';
 import { TerrainType } from './TerrainType';
+import { TilesetId } from './TilesetId';
 
 export class TerrainFactory {
   // Pass in regions for entire map at once so collision blocks can be
   // calculated correctly.
   public static createMapFromRegionConfigs(
     regionConfigs: TerrainRegionConfig[],
+    tilesetId: TilesetId = TilesetId.Classic,
   ): TerrainTile[] {
     const rectsByType = this.mapRegionConfigsByType(regionConfigs);
 
     const tiles: TerrainTile[] = [];
 
     rectsByType.forEach((regionRects, type) => {
-      const regionTiles = this.createMapFromRegions(type, regionRects);
+      const regionTiles = this.createMapFromRegions(type, regionRects, tilesetId);
       tiles.push(...regionTiles);
     });
 
@@ -39,15 +41,16 @@ export class TerrainFactory {
   public static createMapFromRegions(
     type: TerrainType,
     regionRects: Rect[],
+    tilesetId: TilesetId = TilesetId.Classic,
   ): TerrainTile[] {
     if (type === TerrainType.Brick) {
-      return this.createMapFromBrickRegions(regionRects);
+      return this.createMapFromBrickRegions(regionRects, tilesetId);
     }
 
     const tiles: TerrainTile[] = [];
 
     regionRects.forEach((regionRect) => {
-      const regionTiles = this.createFromRegion(type, regionRect);
+      const regionTiles = this.createFromRegion(type, regionRect, tilesetId);
       tiles.push(...regionTiles);
     });
 
@@ -58,13 +61,14 @@ export class TerrainFactory {
   // will be disabled. To create collisions use createMapXXX.
   public static createFromRegionConfigs(
     regionConfigs: TerrainRegionConfig[],
+    tilesetId: TilesetId = TilesetId.Classic,
   ): TerrainTile[] {
     const rectsByType = this.mapRegionConfigsByType(regionConfigs);
 
     const tiles: TerrainTile[] = [];
 
     rectsByType.forEach((regionRects, type) => {
-      const regionTiles = this.createFromRegions(type, regionRects);
+      const regionTiles = this.createFromRegions(type, regionRects, tilesetId);
       tiles.push(...regionTiles);
     });
 
@@ -76,11 +80,12 @@ export class TerrainFactory {
   public static createFromRegions(
     type: TerrainType,
     regionRects: Rect[],
+    tilesetId: TilesetId = TilesetId.Classic,
   ): TerrainTile[] {
     const tiles: TerrainTile[] = [];
 
     regionRects.forEach((regionRect) => {
-      const regionTiles = this.createFromRegion(type, regionRect);
+      const regionTiles = this.createFromRegion(type, regionRect, tilesetId);
       tiles.push(...regionTiles);
     });
 
@@ -136,6 +141,7 @@ export class TerrainFactory {
   private static createFromRegion(
     type: TerrainType,
     regionRect: Rect,
+    tilesetId: TilesetId,
   ): TerrainTile[] {
     const { x, y, width, height } = regionRect;
 
@@ -145,7 +151,7 @@ export class TerrainFactory {
 
     for (let i = x; i < x + width; i += tileSize.width) {
       for (let j = y; j < y + height; j += tileSize.height) {
-        const tile = this.createTile(type);
+        const tile = this.createTile(type, tilesetId);
         tile.position.set(i, j);
         tiles.push(tile);
       }
@@ -154,7 +160,10 @@ export class TerrainFactory {
     return tiles;
   }
 
-  private static createMapFromBrickRegions(regionRects: Rect[]): TerrainTile[] {
+  private static createMapFromBrickRegions(
+    regionRects: Rect[],
+    tilesetId: TilesetId,
+  ): TerrainTile[] {
     const superTileSize = config.BRICK_SUPER_TILE_SIZE;
     const superTileCount = config.FIELD_SIZE / superTileSize;
 
@@ -208,7 +217,7 @@ export class TerrainFactory {
           const x = localColIndex * subTileSize;
           const y = localRowIndex * subTileSize;
 
-          const subTile = new BrickTerrainTile();
+          const subTile = new BrickTerrainTile(tilesetId);
           subTile.position.set(x, y);
 
           superGrid[superRowIndex][superColIndex].push(subTile);
@@ -263,18 +272,18 @@ export class TerrainFactory {
     return rectsByType;
   }
 
-  private static createTile(type: TerrainType): TerrainTile {
+  private static createTile(type: TerrainType, tilesetId: TilesetId): TerrainTile {
     switch (type) {
       case TerrainType.Brick:
-        return new BrickTerrainTile();
+        return new BrickTerrainTile(tilesetId);
       case TerrainType.Steel:
-        return new SteelTerrainTile();
+        return new SteelTerrainTile(tilesetId);
       case TerrainType.Jungle:
-        return new JungleTerrainTile();
+        return new JungleTerrainTile(tilesetId);
       case TerrainType.Water:
-        return new WaterTerrainTile();
+        return new WaterTerrainTile(tilesetId);
       case TerrainType.Ice:
-        return new IceTerrainTile();
+        return new IceTerrainTile(tilesetId);
       case TerrainType.MenuBrick:
         return new MenuBrickTerrainTile();
       case TerrainType.InverseBrick:

@@ -4,6 +4,7 @@ import { SpritePainter } from '../../core/painters/SpritePainter';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Tag } from '../../game/Tag';
 import { TerrainType } from '../../terrain/TerrainType';
+import { TilesetId } from '../../terrain/TilesetId';
 import * as config from '../../config';
 
 import { TerrainTile } from '../TerrainTile';
@@ -19,8 +20,9 @@ export class BrickTerrainTile extends TerrainTile {
   public readonly painter = new SpritePainter();
   protected sprites!: Sprite[];
 
-  constructor() {
+  constructor(tilesetId: TilesetId = TilesetId.Classic) {
     super(config.BRICK_TILE_SIZE, config.BRICK_TILE_SIZE);
+    this.tilesetId = tilesetId;
   }
 
   public destroy(): void {
@@ -40,6 +42,9 @@ export class BrickTerrainTile extends TerrainTile {
   }
 
   protected getSpriteIds(): string[] {
+    if (this.tilesetId === TilesetId.Modern) {
+      return ['terrain.brick.modern.1', 'terrain.brick.modern.2'];
+    }
     return ['terrain.brick.1', 'terrain.brick.2'];
   }
 

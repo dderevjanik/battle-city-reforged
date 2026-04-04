@@ -2,6 +2,7 @@ import Joi from 'joi';
 
 import { TankTier } from '../tank/TankTypes';
 import { TerrainType } from '../terrain/TerrainType';
+import { TilesetId } from '../terrain/TilesetId';
 
 export interface MapDtoSpawnEnemyListItem {
   tier: TankTier;
@@ -15,16 +16,16 @@ export interface MapDtoSpawnLocation {
 
 export interface MapDtoSpawnEnemy {
   list?: MapDtoSpawnEnemyListItem[];
-  locations?: MapDtoSpawnLocation[];
+  locations: MapDtoSpawnLocation[];
 }
 
 export interface MapDtoSpawnPlayer {
-  locations?: MapDtoSpawnLocation[];
+  locations: MapDtoSpawnLocation[];
 }
 
 export interface MapDtoSpawn {
-  enemy?: MapDtoSpawnEnemy;
-  player?: MapDtoSpawnPlayer;
+  enemy: MapDtoSpawnEnemy;
+  player: MapDtoSpawnPlayer;
 }
 
 export interface MapDtoTerrainRegion {
@@ -41,7 +42,8 @@ export interface MapDtoTerrain {
 
 export interface MapDto {
   version?: number;
-  spawn?: MapDtoSpawn;
+  tileset?: TilesetId;
+  spawn: MapDtoSpawn;
   terrain?: MapDtoTerrain;
 }
 
@@ -49,6 +51,7 @@ const DEFAULT_VERSION = 1;
 
 export const MapDtoSchema = Joi.object<MapDto>({
   version: Joi.number().default(DEFAULT_VERSION),
+  tileset: Joi.string().valid(...Object.values(TilesetId)).default(TilesetId.Classic),
   spawn: Joi.object({
     enemy: Joi.object({
       locations: Joi.array()
@@ -58,7 +61,8 @@ export const MapDtoSchema = Joi.object<MapDto>({
             y: Joi.number().required(),
           }),
         )
-        .default([]),
+        .min(1)
+        .required(),
       list: Joi.array()
         .items(
           Joi.object({
@@ -69,7 +73,7 @@ export const MapDtoSchema = Joi.object<MapDto>({
           }),
         )
         .default([]),
-    }).default(),
+    }).required(),
     player: Joi.object({
       locations: Joi.array()
         .items(
@@ -78,9 +82,10 @@ export const MapDtoSchema = Joi.object<MapDto>({
             y: Joi.number().required(),
           }),
         )
-        .default([]),
-    }).default(),
-  }).default(),
+        .min(1)
+        .required(),
+    }).required(),
+  }).required(),
   terrain: Joi.object({
     regions: Joi.array()
       .items(

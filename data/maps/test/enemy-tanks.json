@@ -1,4 +1,5 @@
-{
+{"
+  "tileset": "modern",
   "spawn": {
     "enemy": {
       "list": [
@@ -22,7 +23,10 @@
       ]
     },
     "player": {
-      "locations": []
+      "locations": [
+        { "x": 256, "y": 768 },
+        { "x": 512, "y": 768 }
+      ]
     }
   },
   "terrain": {

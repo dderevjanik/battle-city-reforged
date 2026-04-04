@@ -94,7 +94,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     const { mapConfig } = this.params;
 
     const terrainRegions = mapConfig.getTerrainRegions();
-    const tiles = TerrainFactory.createMapFromRegionConfigs(terrainRegions);
+    const tiles = TerrainFactory.createMapFromRegionConfigs(terrainRegions, mapConfig.getTileset());
 
     for (const tile of tiles) {
       tile.destroyed.addListener(() => {

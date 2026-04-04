@@ -1,7 +1,9 @@
 import { TankBulletWallDamage, TankParty, TankTier, TankType } from './TankTypes';
+import { TankAiMode } from './TankAiMode';
 import tankManifest from '../../data/tank.manifest.json';
 
 export interface TankAttributes {
+  ai?: TankAiMode;
   bulletMaxCount: number;
   bulletRapidFireDelay: number;
   bulletSpeed: number;

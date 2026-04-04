@@ -6,6 +6,7 @@ import { TerrainRegionConfig } from '../terrain/TerrainRegionConfig';
 import * as config from '../config';
 
 import { MapDto, MapDtoSchema } from './MapDto';
+import { TilesetId } from '../terrain/TilesetId';
 
 export interface MapConfigToJsonOptions {
   pretty?: boolean;
@@ -19,7 +20,12 @@ export class MapConfig {
   private dto: MapDto;
 
   constructor() {
-    this.dto = this.fillAndValidate({});
+    this.dto = this.fillAndValidate({
+      spawn: {
+        enemy: { locations: config.ENEMY_DEFAULT_SPAWN_POSITIONS, list: [] },
+        player: { locations: config.PLAYER_DEFAULT_SPAWN_POSITIONS },
+      },
+    });
   }
 
   public getDto(): MapDto {
@@ -72,58 +78,40 @@ export class MapConfig {
     }
   }
 
+  public getTileset(): TilesetId {
+    return this.dto.tileset ?? TilesetId.Classic;
+  }
+
   public getTerrainRegions(): TerrainRegionConfig[] {
     return this.dto.terrain!.regions!;
   }
 
   public getPlayerSpawnPositions(): Vector[] {
-    const dtoLocations = this.dto.spawn!.player!.locations!;
-
-    let locations = config.PLAYER_DEFAULT_SPAWN_POSITIONS;
-
-    // Allow overriding spawn location in map config
-    if (dtoLocations.length > 0) {
-      locations = dtoLocations;
-    }
-
-    const positions = locations.map((location) => {
-      return new Vector(location.x, location.y);
-    });
-
-    return positions;
+    return this.dto.spawn.player.locations.map(
+      (location) => new Vector(location.x, location.y),
+    );
   }
 
   public getEnemySpawnPositions(): Vector[] {
-    const dtoLocations = this.dto.spawn!.enemy!.locations!;
-
-    let locations = config.ENEMY_DEFAULT_SPAWN_POSITIONS;
-
-    // Allow overriding spawn location in map config
-    if (dtoLocations.length > 0) {
-      locations = dtoLocations;
-    }
-
-    const positions = locations.map((location) => {
-      return new Vector(location.x, location.y);
-    });
-
-    return positions;
+    return this.dto.spawn.enemy.locations.map(
+      (location) => new Vector(location.x, location.y),
+    );
   }
 
   public getEnemySpawnList(): TankType[] {
-    const types = this.dto.spawn!.enemy!.list!.map((item) => {
+    const types = this.dto.spawn.enemy.list!.map((item) => {
       return new TankType(TankParty.Enemy, item.tier, item.drop);
     });
     return types;
   }
 
   public isEnemySpawnListEmpty(): boolean {
-    return this.dto.spawn!.enemy!.list!.length === 0;
+    return this.dto.spawn.enemy.list!.length === 0;
   }
 
   public fillEnemySpawnList(type: TankType): void {
     for (let i = 0; i < config.ENEMY_MAX_TOTAL_COUNT; i += 1) {
-      this.dto.spawn!.enemy!.list![i] = {
+      this.dto.spawn.enemy.list![i] = {
         tier: type.tier,
         drop: type.hasDrop,
       };
@@ -131,7 +119,7 @@ export class MapConfig {
   }
 
   public setEnemySpawnListItem(index: number, type: TankType): void {
-    this.dto.spawn!.enemy!.list![index] = {
+    this.dto.spawn.enemy.list![index] = {
       tier: type.tier,
       drop: type.hasDrop,
     };

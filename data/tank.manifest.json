@@ -51,6 +51,7 @@
     {
       "selector": { "party": "enemy", "tier": "a" },
       "attributes": {
+        "ai": "classic",
         "bulletMaxCount": 1,
         "bulletRapidFireDelay": 0.16,
         "bulletSpeed": 600,
@@ -63,6 +64,7 @@
     {
       "selector": { "party": "enemy", "tier": "b" },
       "attributes": {
+        "ai": "classic",
         "bulletMaxCount": 1,
         "bulletRapidFireDelay": 0.16,
         "bulletSpeed": 600,
@@ -75,6 +77,7 @@
     {
       "selector": { "party": "enemy", "tier": "c" },
       "attributes": {
+        "ai": "classic",
         "bulletMaxCount": 1,
         "bulletRapidFireDelay": 0.16,
         "bulletSpeed": 900,
@@ -87,6 +90,7 @@
     {
       "selector": { "party": "enemy", "tier": "d" },
       "attributes": {
+        "ai": "classic",
         "bulletMaxCount": 1,
         "bulletRapidFireDelay": 0.16,
         "bulletSpeed": 600,

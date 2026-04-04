@@ -163,6 +163,34 @@
     "file": "data/graphics/sprite.png",
     "rect": [1180, 128, 32, 32]
   },
+  "terrain.brick.modern.1": {
+    "file": "data/graphics/sprite.png",
+    "rect": [1052, 0, 16, 16]
+  },
+  "terrain.brick.modern.2": {
+    "file": "data/graphics/sprite.png",
+    "rect": [1068, 0, 16, 16]
+  },
+  "terrain.steel.modern": {
+    "file": "data/graphics/sprite.png",
+    "rect": [1052, 64, 32, 32]
+  },
+  "terrain.jungle.modern": {
+    "file": "data/graphics/sprite.png",
+    "rect": [1116, 128, 32, 32]
+  },
+  "terrain.water.modern.1": {
+    "file": "data/graphics/sprite.png",
+    "rect": [1052, 192, 32, 32]
+  },
+  "terrain.water.modern.2": {
+    "file": "data/graphics/sprite.png",
+    "rect": [1116, 192, 32, 32]
+  },
+  "terrain.ice.modern": {
+    "file": "data/graphics/sprite.png",
+    "rect": [1180, 128, 32, 32]
+  },
   "terrain.menu-brick.1": {
     "file": "data/graphics/menu-brick.png",
     "rect": [0, 0, 16, 16]

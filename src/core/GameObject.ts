@@ -1,8 +1,16 @@
+import Phaser from 'phaser';
+
 import { BoundingBox } from './BoundingBox';
 import { Collider } from './collision/Collider';
 import { Collision } from './collision/Collision';
 import { Matrix3 } from './Matrix3';
 import { Painter } from './painters/Painter';
+import { SpritePainter } from './painters/SpritePainter';
+import { RectPainter } from './painters/RectPainter';
+import { LinePainter } from './painters/LinePainter';
+import { SpriteTextPainter } from './painters/SpriteTextPainter';
+import { SpriteAlignment } from './SpriteAlignment';
+import { Rect } from './Rect';
 import { Size } from './Size';
 import { MathUtils } from './utils';
 import { Vector } from './Vector';
@@ -10,6 +18,170 @@ import { Vector } from './Vector';
 // -1 is because coordinate system start is at top left
 const X_AXIS = new Vector(1, 0);
 const Y_AXIS = new Vector(0, -1);
+
+// ---------------------------------------------------------------------------
+// Module-level renderer state (shared across all GameObjects in the active
+// scene — re-initialised each time a new GameScene starts via initRenderer()).
+// ---------------------------------------------------------------------------
+
+interface SpriteManifest {
+  [id: string]: { file: string; rect: number[] };
+}
+
+let _rendererScene: Phaser.Scene | null = null;
+let _srcToTextureKey = new Map<string, string>();
+let _rectToFrameKey = new Map<string, string>();
+let _canvasIdMap = new WeakMap<HTMLCanvasElement, number>();
+let _canvasIdCounter = 0;
+let _canvasTextureCache = new Map<string, string>();
+let _canvasDimensionCache = new Map<number, { w: number; h: number }>();
+let _fallbackTextureCounter = 0;
+
+/**
+ * Called once per GameScene.create() to bind the renderer to the new scene
+ * and rebuild manifest-based texture/frame lookup maps.
+ */
+export function initRenderer(scene: Phaser.Scene, manifest: SpriteManifest): void {
+  _rendererScene = scene;
+  _srcToTextureKey = new Map();
+  _rectToFrameKey = new Map();
+  _canvasIdMap = new WeakMap();
+  _canvasIdCounter = 0;
+  _canvasTextureCache = new Map();
+  _canvasDimensionCache = new Map();
+  _fallbackTextureCounter = 0;
+
+  for (const [id, item] of Object.entries(manifest)) {
+    const absoluteUrl = new URL(item.file, window.location.href).href;
+    if (!_srcToTextureKey.has(absoluteUrl)) {
+      _srcToTextureKey.set(absoluteUrl, item.file);
+    }
+    const [x, y, w, h] = item.rect;
+    _rectToFrameKey.set(`${item.file}:${x}:${y}:${w}:${h}`, id);
+  }
+}
+
+function getOrCreateTextureKey(element: HTMLImageElement): string {
+  let key = _srcToTextureKey.get(element.src);
+  if (key !== undefined) return key;
+  key = `img_fallback:${_fallbackTextureCounter++}`;
+  _rendererScene!.textures.addImage(key, element);
+  _srcToTextureKey.set(element.src, key);
+  return key;
+}
+
+function getOrCreateFrameKey(textureKey: string, sourceRect: Rect): string {
+  const rectKey = `${textureKey}:${sourceRect.x}:${sourceRect.y}:${sourceRect.width}:${sourceRect.height}`;
+  let frameKey = _rectToFrameKey.get(rectKey);
+  if (frameKey !== undefined) return frameKey;
+  frameKey = `frame:${sourceRect.x}:${sourceRect.y}:${sourceRect.width}:${sourceRect.height}`;
+  const texture = _rendererScene!.textures.get(textureKey);
+  if (texture && !texture.has(frameKey)) {
+    texture.add(frameKey, 0, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+  }
+  _rectToFrameKey.set(rectKey, frameKey);
+  return frameKey;
+}
+
+function ensureCanvasTexture(
+  canvas: HTMLCanvasElement,
+  sourceRect: Rect,
+): { textureKey: string; frameKey: string } {
+  let canvasId = _canvasIdMap.get(canvas);
+  if (canvasId === undefined) {
+    canvasId = _canvasIdCounter++;
+    _canvasIdMap.set(canvas, canvasId);
+  }
+
+  const currentDims = { w: canvas.width, h: canvas.height };
+  const cachedDims = _canvasDimensionCache.get(canvasId);
+
+  if (!cachedDims || cachedDims.w !== currentDims.w || cachedDims.h !== currentDims.h) {
+    const prefix = `canvas:${canvasId}:`;
+    for (const k of _canvasTextureCache.keys()) {
+      if (k.startsWith(prefix)) _canvasTextureCache.delete(k);
+    }
+    const baseKey = `canvas_base:${canvasId}`;
+    if (_rendererScene!.textures.exists(baseKey)) _rendererScene!.textures.remove(baseKey);
+    _canvasDimensionCache.set(canvasId, { ...currentDims });
+  }
+
+  const frameKey = `frame:${sourceRect.x}:${sourceRect.y}:${sourceRect.width}:${sourceRect.height}`;
+  const cacheKey = `canvas:${canvasId}:${sourceRect.x}:${sourceRect.y}:${sourceRect.width}:${sourceRect.height}`;
+
+  const cachedTextureKey = _canvasTextureCache.get(cacheKey);
+  if (cachedTextureKey !== undefined) {
+    const texture = _rendererScene!.textures.get(cachedTextureKey);
+    if (texture && texture.source.length > 0) (texture.source[0] as any).update();
+    return { textureKey: cachedTextureKey, frameKey };
+  }
+
+  const baseKey = `canvas_base:${canvasId}`;
+  if (!_rendererScene!.textures.exists(baseKey)) {
+    _rendererScene!.textures.addCanvas(baseKey, canvas);
+  }
+  const texture = _rendererScene!.textures.get(baseKey);
+  if (texture && !texture.has(frameKey)) {
+    texture.add(frameKey, 0, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+  }
+  _canvasTextureCache.set(cacheKey, baseKey);
+  return { textureKey: baseKey, frameKey };
+}
+
+function cssColorToHex(color: string): number {
+  if (color.startsWith('#')) {
+    let hex = color.slice(1);
+    if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    return parseInt(hex, 16);
+  }
+  if (color.startsWith('rgb')) {
+    const match = color.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (match) {
+      return (parseInt(match[1], 10) << 16) | (parseInt(match[2], 10) << 8) | parseInt(match[3], 10);
+    }
+  }
+  const named: Record<string, number> = {
+    black: 0x000000, white: 0xffffff, red: 0xff0000, green: 0x00ff00, blue: 0x0000ff,
+  };
+  return named[color] ?? 0x000000;
+}
+
+function getVisualChild(
+  container: Phaser.GameObjects.Container,
+  expectedType: string,
+): Phaser.GameObjects.GameObject | null {
+  const expectedName = `__visual_${expectedType}__`;
+  for (const child of container.list) {
+    const go = child as Phaser.GameObjects.GameObject & { name?: string };
+    if (go.name?.startsWith('__visual_')) {
+      if (go.name !== expectedName) {
+        container.remove(go, true);
+        return null;
+      }
+      return go;
+    }
+  }
+  return null;
+}
+
+function setVisualChild(
+  container: Phaser.GameObjects.Container,
+  visual: Phaser.GameObjects.GameObject,
+): void {
+  clearVisualChild(container);
+  container.add(visual);
+}
+
+function clearVisualChild(container: Phaser.GameObjects.Container): void {
+  for (let i = container.list.length - 1; i >= 0; i--) {
+    const child = container.list[i] as Phaser.GameObjects.GameObject & { name?: string };
+    if (child.name?.startsWith('__visual_')) container.remove(child, true);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// GameObject
+// ---------------------------------------------------------------------------
 
 /**
  * Base class for all game entities. Combines:
@@ -64,6 +236,9 @@ export class GameObject {
 
     this.children.splice(index, 1);
 
+    // Destroy the Phaser display node so it doesn't linger in the scene
+    childToRemove._destroyDisplayTree();
+
     return true;
   }
 
@@ -78,6 +253,10 @@ export class GameObject {
   }
 
   public removeAllChildren(): this {
+    for (const child of this.children) {
+      child.isRemoved = true;
+      child._destroyDisplayTree();
+    }
     this.children = [];
     return this;
   }
@@ -450,6 +629,9 @@ export class GameObject {
   public setVisible(visible: boolean): void {
     this.visible = visible;
     this.updateWorldVisible(true);
+    if (this._phaserNode !== null && this._phaserNode.active) {
+      this._phaserNode.setVisible(visible !== false);
+    }
   }
 
   public getVisible(): boolean {
@@ -510,6 +692,242 @@ export class GameObject {
   public setNeedsPaint(): void {}
   public doesNeedPaint(): boolean { return false; }
   public resetNeedsPaint(): void {}
+
+  // --- Phaser display node ---
+
+  private _phaserNode: Phaser.GameObjects.Container | null = null;
+
+  /**
+   * Destroy the Phaser display container for this node and all descendants.
+   * Called when a node is removed from the tree so stale containers don't
+   * linger in the scene.
+   */
+  private _destroyDisplayTree(): void {
+    if (this._phaserNode !== null) {
+      this._phaserNode.destroy(true);
+      this._phaserNode = null;
+    }
+    for (const child of this.children) {
+      child._destroyDisplayTree();
+    }
+  }
+
+  /**
+   * Sync this object's painter to its Phaser display node.
+   * Called once per frame from GameScene after world matrices are updated.
+   * Assumes worldBoundingBox, worldVisible, and worldZIndex are up to date.
+   */
+  public _syncPainter(): void {
+    if (_rendererScene === null) return;
+
+    // Lazily create, or recreate if the container was destroyed by a scene transition
+    if (this._phaserNode === null || !this._phaserNode.active) {
+      this._phaserNode = _rendererScene.add.container(0, 0);
+    }
+
+    // Sync transform from world bounding box (already updated by caller)
+    const worldBox = this.worldBoundingBox;
+    this._phaserNode.setPosition(worldBox.min.x, worldBox.min.y);
+    this._phaserNode.setVisible(this.worldVisible !== false);
+    this._phaserNode.setDepth(this.worldZIndex ?? 0);
+
+    // Sync painter
+    const painter = this.painter;
+    if (painter === null || !this.canRender()) {
+      clearVisualChild(this._phaserNode);
+      return;
+    }
+
+    if (painter instanceof SpritePainter) {
+      this._syncSpritePainter(this._phaserNode, painter);
+    } else if (painter instanceof RectPainter) {
+      this._syncRectPainter(this._phaserNode, painter);
+    } else if (painter instanceof LinePainter) {
+      this._syncLinePainter(this._phaserNode, painter);
+    } else if (painter instanceof SpriteTextPainter) {
+      this._syncSpriteTextPainter(this._phaserNode, painter);
+    }
+  }
+
+  private _syncSpritePainter(
+    phaserNode: Phaser.GameObjects.Container,
+    painter: SpritePainter,
+  ): void {
+    if (painter.sprite === null || !painter.sprite.isImageLoaded()) {
+      clearVisualChild(phaserNode);
+      return;
+    }
+
+    const sprite = painter.sprite;
+    const sourceRect = sprite.sourceRect;
+    const element = sprite.image.getElement();
+
+    let textureKey: string;
+    let frameKey: string;
+
+    if (element instanceof HTMLImageElement) {
+      textureKey = getOrCreateTextureKey(element);
+      frameKey = getOrCreateFrameKey(textureKey, sourceRect);
+    } else if (element instanceof HTMLCanvasElement) {
+      const result = ensureCanvasTexture(element, sourceRect);
+      textureKey = result.textureKey;
+      frameKey = result.frameKey;
+    } else {
+      clearVisualChild(phaserNode);
+      return;
+    }
+
+    let image = getVisualChild(phaserNode, 'sprite') as Phaser.GameObjects.Image | null;
+    if (image === null) {
+      image = _rendererScene!.add.image(0, 0, textureKey, frameKey);
+      image.name = '__visual_sprite__';
+      image.setOrigin(0, 0);
+      setVisualChild(phaserNode, image);
+    } else {
+      if (image.texture.key !== textureKey || String(image.frame.name) !== String(frameKey)) {
+        image.setTexture(textureKey, frameKey);
+      }
+    }
+
+    const worldBox = this.worldBoundingBox;
+    const boxW = worldBox.max.x - worldBox.min.x;
+    const boxH = worldBox.max.y - worldBox.min.y;
+    const destRect = sprite.destinationRect;
+
+    if (painter.alignment === SpriteAlignment.Stretch) {
+      image.setPosition(0, 0);
+      image.setDisplaySize(boxW, boxH);
+    } else if (painter.alignment === SpriteAlignment.TopLeft) {
+      image.setPosition(0, 0);
+      image.setDisplaySize(destRect.width, destRect.height);
+    } else if (painter.alignment === SpriteAlignment.MiddleCenter) {
+      image.setPosition(
+        boxW / 2 - destRect.width / 2,
+        boxH / 2 - destRect.height / 2,
+      );
+      image.setDisplaySize(destRect.width, destRect.height);
+    } else if (painter.alignment === SpriteAlignment.MiddleLeft) {
+      image.setPosition(0, boxH / 2 - destRect.height / 2);
+      image.setDisplaySize(destRect.width, destRect.height);
+    }
+
+    image.setAlpha(painter.opacity);
+  }
+
+  private _syncRectPainter(
+    phaserNode: Phaser.GameObjects.Container,
+    painter: RectPainter,
+  ): void {
+    let graphics = getVisualChild(phaserNode, 'rect') as Phaser.GameObjects.Graphics | null;
+    if (graphics === null) {
+      graphics = _rendererScene!.add.graphics();
+      graphics.name = '__visual_rect__';
+      setVisualChild(phaserNode, graphics);
+    }
+
+    graphics.clear();
+
+    const worldBox = this.worldBoundingBox;
+    const w = worldBox.max.x - worldBox.min.x;
+    const h = worldBox.max.y - worldBox.min.y;
+
+    if (painter.fillColor !== null) {
+      graphics.fillStyle(cssColorToHex(painter.fillColor), 1);
+      graphics.fillRect(0, 0, w, h);
+    }
+
+    if (painter.strokeColor !== null) {
+      const lw = painter.lineWidth;
+      graphics.lineStyle(lw, cssColorToHex(painter.strokeColor), 1);
+      graphics.strokeRect(lw / 2, lw / 2, w - lw, h - lw);
+    }
+  }
+
+  private _syncLinePainter(
+    phaserNode: Phaser.GameObjects.Container,
+    painter: LinePainter,
+  ): void {
+    if (painter.positions.length === 0) {
+      clearVisualChild(phaserNode);
+      return;
+    }
+
+    let graphics = getVisualChild(phaserNode, 'line') as Phaser.GameObjects.Graphics | null;
+    if (graphics === null) {
+      graphics = _rendererScene!.add.graphics();
+      graphics.name = '__visual_line__';
+      setVisualChild(phaserNode, graphics);
+    }
+
+    graphics.clear();
+    graphics.lineStyle(1, cssColorToHex(painter.strokeColor), 1);
+
+    const first = painter.positions[0];
+    graphics.beginPath();
+    graphics.moveTo(first.x, first.y);
+    for (let i = 1; i < painter.positions.length; i++) {
+      graphics.lineTo(painter.positions[i].x, painter.positions[i].y);
+    }
+    graphics.strokePath();
+  }
+
+  private _syncSpriteTextPainter(
+    phaserNode: Phaser.GameObjects.Container,
+    painter: SpriteTextPainter,
+  ): void {
+    if (painter.text === null) {
+      clearVisualChild(phaserNode);
+      return;
+    }
+
+    let textContainer = getVisualChild(phaserNode, 'spritetext') as Phaser.GameObjects.Container | null;
+    if (textContainer === null) {
+      textContainer = _rendererScene!.add.container(0, 0);
+      textContainer.name = '__visual_spritetext__';
+      setVisualChild(phaserNode, textContainer);
+    }
+
+    const glyphs = painter.text.build();
+
+    while (textContainer.list.length < glyphs.length) {
+      const placeholder = _rendererScene!.add.image(0, 0, '__DEFAULT');
+      placeholder.setOrigin(0, 0);
+      textContainer.add(placeholder);
+    }
+    while (textContainer.list.length > glyphs.length) {
+      const last = textContainer.list[textContainer.list.length - 1] as Phaser.GameObjects.Image;
+      textContainer.remove(last, true);
+    }
+
+    for (let i = 0; i < glyphs.length; i++) {
+      const glyph = glyphs[i];
+      const phaserGlyph = textContainer.list[i] as Phaser.GameObjects.Image;
+
+      const element = glyph.image.getElement();
+      let textureKey: string | null = null;
+      let frameKey: string | null = null;
+
+      if (element instanceof HTMLImageElement) {
+        textureKey = getOrCreateTextureKey(element);
+        frameKey = getOrCreateFrameKey(textureKey, glyph.sourceRect);
+      } else if (element instanceof HTMLCanvasElement) {
+        const result = ensureCanvasTexture(element, glyph.sourceRect);
+        textureKey = result.textureKey;
+        frameKey = result.frameKey;
+      }
+
+      if (textureKey !== null && frameKey !== null) {
+        if (phaserGlyph.texture.key !== textureKey || String(phaserGlyph.frame.name) !== frameKey) {
+          phaserGlyph.setTexture(textureKey, frameKey);
+        }
+      }
+
+      phaserGlyph.setPosition(glyph.destinationRect.x, glyph.destinationRect.y);
+      phaserGlyph.setDisplaySize(glyph.destinationRect.width, glyph.destinationRect.height);
+    }
+
+    textContainer.setAlpha(painter.opacity);
+  }
 
   // --- Game lifecycle ---
 

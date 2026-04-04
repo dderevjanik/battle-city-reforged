@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
-import { GameObject } from '../core/GameObject';
-import { PhaserRenderer } from '../core/render/PhaserRenderer';
+import { GameObject, initRenderer } from '../core/GameObject';
+import { setActiveScene } from '../core/scene/ActiveScene';
 import { SceneNavigator, SceneParams } from '../core/scene/Scene';
 import { GameContext } from '../game/GameUpdateArgs';
 import * as config from '../config';
@@ -18,8 +18,6 @@ export abstract class GameScene<
   protected context: GameContext;
   protected root: GameObject;
   protected navigator: SceneNavigator;
-
-  private gameRenderer: PhaserRenderer;
 
   // ---------------------------------------------------------------------------
   // Phaser lifecycle
@@ -44,10 +42,9 @@ export abstract class GameScene<
     router.setScenePlugin(this.scene);
     this.navigator = router;
 
-    this.gameRenderer = new PhaserRenderer(
-      this,
-      this.game.registry.get('spriteManifest'),
-    );
+    // Bind the module-level renderer state and sprite manifest to this scene.
+    setActiveScene(this);
+    initRenderer(this, this.game.registry.get('spriteManifest'));
 
     this.root = this.createRoot();
     this.setup(this.context);
@@ -56,7 +53,7 @@ export abstract class GameScene<
   public update(_time: number, delta: number): void {
     this.context.inputManager.update();
     this.onUpdate(delta / 1000);
-    this.gameRenderer.render(this.root);
+    this._renderScene();
     this.context.gameState.update();
   }
 
@@ -81,5 +78,17 @@ export abstract class GameScene<
     root.size.set(config.CANVAS_WIDTH, config.CANVAS_HEIGHT);
     root.updateMatrix();
     return root;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Rendering — walk the tree, update world matrices, sync each node's painter
+  // ---------------------------------------------------------------------------
+
+  private _renderScene(): void {
+    this.root.updateWorldMatrix(false, true);
+
+    this.root.traverseDescedants((node) => {
+      node._syncPainter();
+    });
   }
 }

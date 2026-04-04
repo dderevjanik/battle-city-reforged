@@ -1,5 +1,6 @@
 import { Rect } from '../core/Rect';
 import { Vector } from '../core/Vector';
+import { TankAiMode } from '../tank/TankAiMode';
 import { TankParty, TankType } from '../tank/TankTypes';
 import { TerrainFactory } from '../terrain/TerrainFactory';
 import { TerrainRegionConfig } from '../terrain/TerrainRegionConfig';
@@ -99,10 +100,13 @@ export class MapConfig {
   }
 
   public getEnemySpawnList(): TankType[] {
-    const types = this.dto.spawn.enemy.list!.map((item) => {
+    return this.dto.spawn.enemy.list!.map((item) => {
       return new TankType(TankParty.Enemy, item.type, item.drop);
     });
-    return types;
+  }
+
+  public getEnemyAiModes(): (TankAiMode | undefined)[] {
+    return this.dto.spawn.enemy.list!.map((item) => item.ai);
   }
 
   public isEnemySpawnListEmpty(): boolean {

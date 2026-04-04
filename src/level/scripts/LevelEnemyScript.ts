@@ -3,6 +3,7 @@ import { Vector } from '../../core/Vector';
 import { Rotation } from '../../game/Rotation';
 import { EnemyTank } from '../../gameObjects/EnemyTank';
 import { PowerupType } from '../../powerup/PowerupType';
+import { TankAiMode } from '../../tank/TankAiMode';
 import { TankDeathReason, TankParty, TankType } from '../../tank/TankTypes';
 import { TankFactory } from '../../tank/TankFactory';
 import * as config from '../../config';
@@ -15,6 +16,7 @@ import {
 
 export class LevelEnemyScript extends LevelScript {
   private list: TankType[] = [];
+  private aiModes: (TankAiMode | undefined)[] = [];
   private listIndex = 0;
   private aliveTanks: EnemyTank[] = [];
   private positions: Vector[] = [];
@@ -28,6 +30,7 @@ export class LevelEnemyScript extends LevelScript {
     this.eventBus.powerupPicked.addListener(this.handlePowerupPicked);
 
     this.list = this.mapConfig.getEnemySpawnList();
+    this.aiModes = this.mapConfig.getEnemyAiModes();
 
     this.positions = this.mapConfig.getEnemySpawnPositions();
 
@@ -72,7 +75,9 @@ export class LevelEnemyScript extends LevelScript {
       return;
     }
 
-    const tank = TankFactory.createEnemy(event.partyIndex, type);
+    const ai = this.aiModes[event.partyIndex];
+    const behavior = TankFactory.createBehaviorForAiMode(ai ?? TankAiMode.Classic);
+    const tank = TankFactory.createEnemy(event.partyIndex, type, behavior);
     tank.updateMatrix(); // Origin should be in before setting center
     tank.rotate(Rotation.Down);
     tank.setCenter(event.centerPosition);

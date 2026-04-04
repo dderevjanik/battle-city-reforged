@@ -1,5 +1,4 @@
-import { FileOpener } from '../../core/file/FileOpener';
-import { FileSaver } from '../../core/file/FileSaver';
+import { FileOpener, FileSaver } from '../../core/file/FileDialogs';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { DividerMenuItem } from '../../gameObjects/menu/DividerMenuItem';

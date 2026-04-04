@@ -1,0 +1,100 @@
+{
+  "list": [
+    {
+      "selector": { "party": "player", "tier": "a" },
+      "attributes": {
+        "bulletMaxCount": 1,
+        "bulletRapidFireDelay": 0.16,
+        "bulletSpeed": 600,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 1,
+        "health": 1,
+        "moveSpeed": 180
+      }
+    },
+    {
+      "selector": { "party": "player", "tier": "b" },
+      "attributes": {
+        "bulletMaxCount": 1,
+        "bulletRapidFireDelay": 0.16,
+        "bulletSpeed": 900,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 1,
+        "health": 1,
+        "moveSpeed": 180
+      }
+    },
+    {
+      "selector": { "party": "player", "tier": "c" },
+      "attributes": {
+        "bulletMaxCount": 2,
+        "bulletRapidFireDelay": 0.04,
+        "bulletSpeed": 900,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 1,
+        "health": 1,
+        "moveSpeed": 180
+      }
+    },
+    {
+      "selector": { "party": "player", "tier": "d" },
+      "attributes": {
+        "bulletMaxCount": 2,
+        "bulletRapidFireDelay": 0.04,
+        "bulletSpeed": 900,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 2,
+        "health": 1,
+        "moveSpeed": 180
+      }
+    },
+    {
+      "selector": { "party": "enemy", "tier": "a" },
+      "attributes": {
+        "bulletMaxCount": 1,
+        "bulletRapidFireDelay": 0.16,
+        "bulletSpeed": 600,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 1,
+        "health": 1,
+        "moveSpeed": 120
+      }
+    },
+    {
+      "selector": { "party": "enemy", "tier": "b" },
+      "attributes": {
+        "bulletMaxCount": 1,
+        "bulletRapidFireDelay": 0.16,
+        "bulletSpeed": 600,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 1,
+        "health": 1,
+        "moveSpeed": 240
+      }
+    },
+    {
+      "selector": { "party": "enemy", "tier": "c" },
+      "attributes": {
+        "bulletMaxCount": 1,
+        "bulletRapidFireDelay": 0.16,
+        "bulletSpeed": 900,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 1,
+        "health": 1,
+        "moveSpeed": 120
+      }
+    },
+    {
+      "selector": { "party": "enemy", "tier": "d" },
+      "attributes": {
+        "bulletMaxCount": 1,
+        "bulletRapidFireDelay": 0.16,
+        "bulletSpeed": 600,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 2,
+        "health": 4,
+        "moveSpeed": 120
+      }
+    }
+  ]
+}

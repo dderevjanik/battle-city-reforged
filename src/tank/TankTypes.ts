@@ -42,7 +42,7 @@ export class TankType {
     this.hasDrop = hasDrop;
   }
 
-  public setHasDrop(hasDrop): this {
+  public setHasDrop(hasDrop: boolean): this {
     this.hasDrop = hasDrop;
 
     return this;
@@ -52,7 +52,7 @@ export class TankType {
     return new TankType(this.party, this.tier);
   }
 
-  public increaseTier(targetTier: TankTier = null): this {
+  public increaseTier(targetTier: TankTier | null = null): this {
     if (targetTier !== null) {
       this.tier = targetTier;
 
@@ -178,7 +178,7 @@ export class TankAnimationFrame {
     });
   }
 
-  public getSprite(index: number): Sprite {
+  public getSprite(index: number): Sprite | null {
     const sprite = this.sprites[index];
     if (sprite === undefined) {
       return null;

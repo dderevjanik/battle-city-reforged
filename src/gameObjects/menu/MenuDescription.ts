@@ -6,7 +6,7 @@ import { SpriteText } from '../text/SpriteText';
 
 export class MenuDescription extends GameObject {
   public painter = new RectPainter(config.COLOR_GRAY, config.COLOR_YELLOW);
-  private text: SpriteText;
+  private text!: SpriteText;
   private message: string;
 
   constructor(message = '') {

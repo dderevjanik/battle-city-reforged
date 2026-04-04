@@ -28,14 +28,14 @@ const PER_PAGE = 5;
 const TOTAL_PAGES = config.ENEMY_MAX_TOTAL_COUNT / PER_PAGE;
 
 export class EditorEnemyScene extends GameScene<EditorLocationParams> {
-  private mapConfig: MapConfig;
-  private title: SceneMenuTitle;
-  private menu: SceneMenu;
-  private preview: EditorEnemyPreview;
+  private mapConfig!: MapConfig;
+  private title!: SceneMenuTitle;
+  private menu!: SceneMenu;
+  private preview!: EditorEnemyPreview;
   private selectorsItems: SelectorMenuItem<number>[] = [];
-  private nextItem: TextMenuItem;
-  private prevItem: TextMenuItem;
-  private backItem: TextMenuItem;
+  private nextItem!: TextMenuItem;
+  private prevItem!: TextMenuItem;
+  private backItem!: TextMenuItem;
   private pageIndex = 0;
 
   protected setup(): void {
@@ -209,7 +209,7 @@ export class EditorEnemyScene extends GameScene<EditorLocationParams> {
     const selectorItem = this.selectorsItems[selectorIndex];
 
     const value = selectorItem.getValue();
-    const enemyType = ENEMY_TYPES[value];
+    const enemyType = ENEMY_TYPES[value!];
 
     this.preview.show(enemyType);
   };

@@ -43,7 +43,7 @@ export class InputHintSettings {
     this.storage.save();
   }
 
-  public getShowLevelHint(): boolean {
+  public getShowLevelHint(): boolean | null {
     // If not set - null is returned. Three values (true, false, null) needed
     // to create default behavior when user has not made changes to these
     // settings yet.
@@ -58,7 +58,7 @@ export class InputHintSettings {
     this.storage.save();
   }
 
-  public getShowEditorHint(): boolean {
+  public getShowEditorHint(): boolean | null {
     // If not set - null is returned. Three values (true, false, null) needed
     // to create default behavior when user has not made changes to these
     // settings yet.
@@ -73,7 +73,7 @@ export class InputHintSettings {
     this.storage.save();
   }
 
-  public getSeenLevelHint(): boolean {
+  public getSeenLevelHint(): boolean | null {
     return this.storage.getBoolean(
       config.STORAGE_KEY_SETTINGS_SEEN_LEVEL_HINT,
       false,
@@ -85,7 +85,7 @@ export class InputHintSettings {
     this.storage.save();
   }
 
-  public getSeenEditorHint(): boolean {
+  public getSeenEditorHint(): boolean | null {
     return this.storage.getBoolean(
       config.STORAGE_KEY_SETTINGS_SEEN_EDITOR_HINT,
       false,

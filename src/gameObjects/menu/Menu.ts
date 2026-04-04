@@ -26,13 +26,13 @@ export class Menu extends GameObject {
   private options: MenuOptions;
   private cursor: MenuCursor = new MenuCursor();
   private focusedIndex = -1;
-  private context: GameContext;
+  private context!: GameContext;
 
   constructor(options: MenuOptions = {}) {
     super();
 
     this.options = Object.assign({}, DEFAULT_OPTIONS, options);
-    this.focusedIndex = this.options.initialIndex;
+    this.focusedIndex = this.options.initialIndex!;
   }
 
   protected setup(context: GameContext): void {
@@ -42,7 +42,7 @@ export class Menu extends GameObject {
   public setItems(items: MenuItem[]): void {
     this.items = items;
     // TODO: dynamic width and height
-    this.size.set(480, items.length * this.options.itemHeight);
+    this.size.set(480, items.length * this.options.itemHeight!);
     this.updateMatrix();
 
     this.removeAllChildren();
@@ -50,7 +50,7 @@ export class Menu extends GameObject {
     this.items.forEach((menuItem, index) => {
       menuItem.position.set(
         CURSOR_OFFSET,
-        index * this.options.itemHeight + ITEM_OFFSET,
+        index * this.options.itemHeight! + ITEM_OFFSET,
       );
       this.add(menuItem);
     });

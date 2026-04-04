@@ -11,14 +11,14 @@ import { Explosion } from './Explosion';
 import * as config from '../config';
 
 export class BaseHeart extends GameObject {
-  public collider = new BoxCollider(this, true);
+  public collider: BoxCollider = new BoxCollider(this, true);
   public tags = [Tag.BlockMove];
   public painter = new SpritePainter();
   public zIndex = config.BASE_HEART_Z_INDEX;
   public died = new Subject();
   private isDead = false;
-  private aliveSprite: Sprite;
-  private deadSprite: Sprite;
+  private aliveSprite!: Sprite;
+  private deadSprite!: Sprite;
 
   constructor() {
     super(64, 64);

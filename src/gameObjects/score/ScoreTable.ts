@@ -25,7 +25,7 @@ const TRANSITION_DELAY = 0.4;
 
 export class ScoreTable extends GameObject {
   public done = new Subject();
-  private session: Session;
+  private session!: Session;
   private primaryPlayerLabel = new SpriteText('Ⅰ-PLAYER', {
     color: config.COLOR_RED,
   });

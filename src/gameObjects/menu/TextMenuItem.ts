@@ -36,9 +36,9 @@ export class TextMenuItem extends MenuItem {
 
   protected update(): void {
     if (this.focusable) {
-      this.text.setColor(this.options.color);
+      this.text.setColor(this.options.color!);
     } else {
-      this.text.setColor(this.options.unfocusableColor);
+      this.text.setColor(this.options.unfocusableColor!);
     }
   }
 }

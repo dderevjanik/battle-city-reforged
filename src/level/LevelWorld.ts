@@ -5,7 +5,7 @@ import { PlayerTank } from '../gameObjects/PlayerTank';
 export class LevelWorld {
   public sceneRoot: GameObject;
   public field: Field;
-  private playerTanks: PlayerTank[] = [];
+  private playerTanks: (PlayerTank | null)[] = [];
 
   constructor(sceneRoot: GameObject) {
     this.sceneRoot = sceneRoot;
@@ -30,7 +30,7 @@ export class LevelWorld {
     this.playerTanks[playerIndex] = null;
   }
 
-  public getPlayerTanks(): PlayerTank[] {
+  public getPlayerTanks(): (PlayerTank | null)[] {
     return this.playerTanks;
   }
 }

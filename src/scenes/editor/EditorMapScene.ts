@@ -13,10 +13,10 @@ import { GameSceneType } from '../GameSceneType';
 import { EditorLocationParams } from './EditorLocationParams';
 
 export class EditorMapScene extends GameScene<EditorLocationParams> {
-  private field: EditorField;
-  private map: EditorMap;
-  private mapConfig: MapConfig;
-  private debugCollisionMenu: DebugCollisionMenu;
+  private field!: EditorField;
+  private map!: EditorMap;
+  private mapConfig!: MapConfig;
+  private debugCollisionMenu!: DebugCollisionMenu;
 
   protected setup({ collisionSystem }: GameContext): void {
 

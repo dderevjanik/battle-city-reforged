@@ -125,10 +125,10 @@ export class Animation<T> {
 
   private isCurrentFrameComplete(): boolean {
     // By default each frame will have 1 tick guaranteed
-    const minFrameTime = 1 / this.options.fps;
+    const minFrameTime = 1 / this.options.fps!;
 
     // Delay adds up to default min time
-    const singleFrameTime = minFrameTime + this.options.delay;
+    const singleFrameTime = minFrameTime + this.options.delay!;
 
     // Sum time for all frames including current in one cycle
     const passedFramesTime =

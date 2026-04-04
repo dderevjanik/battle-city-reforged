@@ -69,7 +69,7 @@ export class RectFont implements Font<Rect[]> {
       return new Vector(scale, scale);
     }
 
-    return scale;
+    return scale!;
   }
 
   public getCharacterWidth(): number {

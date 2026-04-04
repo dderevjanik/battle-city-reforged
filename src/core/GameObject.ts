@@ -194,11 +194,11 @@ export class GameObject {
   // --- Tree (formerly Node) ---
 
   public children: this[] = [];
-  public parent: this = null;
+  public parent: this | null = null;
   public removedChildren: this[] = [];
   public isRemoved = false;
 
-  public add(...childrenToAdd): this {
+  public add(...childrenToAdd: any[]): this {
     for (const childToAdd of childrenToAdd) {
       if (childToAdd.parent !== null) {
         childToAdd.parent.remove(childToAdd, false);
@@ -222,7 +222,7 @@ export class GameObject {
     return this;
   }
 
-  public remove(childToRemove, addToRemoved = true): boolean {
+  public remove(childToRemove: any, addToRemoved = true): boolean {
     const index = this.children.indexOf(childToRemove);
 
     if (index === -1) {
@@ -309,7 +309,7 @@ export class GameObject {
   }
 
   public flatten(): this[] {
-    const nodes = [];
+    const nodes: this[] = [];
 
     this.traverse((node) => {
       nodes.push(node);
@@ -608,13 +608,13 @@ export class GameObject {
 
   // --- Render properties (formerly RenderObject) ---
 
-  public painter: Painter = null;
+  public painter: Painter | null = null;
 
-  protected zIndex: number = null;
-  protected worldZIndex: number = null;
+  protected zIndex: number | null = null;
+  protected worldZIndex: number | null = null;
 
-  protected visible: boolean = null;
-  protected worldVisible: boolean = null;
+  protected visible: boolean | null = null;
+  protected worldVisible: boolean | null = null;
 
   public canRender(): boolean {
     if (this.painter === null) {
@@ -626,7 +626,7 @@ export class GameObject {
     return true;
   }
 
-  public setVisible(visible: boolean): void {
+  public setVisible(visible: boolean | null): void {
     this.visible = visible;
     this.updateWorldVisible(true);
     if (this._phaserNode !== null && this._phaserNode.active) {
@@ -634,11 +634,11 @@ export class GameObject {
     }
   }
 
-  public getVisible(): boolean {
+  public getVisible(): boolean | null {
     return this.visible;
   }
 
-  public getWorldVisible(): boolean {
+  public getWorldVisible(): boolean | null {
     return this.worldVisible;
   }
 
@@ -663,11 +663,11 @@ export class GameObject {
     this.updateWorldZIndex(true);
   }
 
-  public getZIndex(): number {
+  public getZIndex(): number | null {
     return this.zIndex;
   }
 
-  public getWorldZIndex(): number {
+  public getWorldZIndex(): number | null {
     return this.worldZIndex;
   }
 
@@ -931,7 +931,7 @@ export class GameObject {
 
   // --- Game lifecycle ---
 
-  public collider: Collider = null;
+  public collider: Collider | null = null;
   public ignorePause = false;
   public tags: string[] = [];
 

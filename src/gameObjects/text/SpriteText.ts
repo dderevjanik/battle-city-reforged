@@ -8,7 +8,7 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import * as config from '../../config';
 
 export interface SpriteTextOptions extends TextOptions {
-  color?: string;
+  color?: string | null;
   letterSpacing?: number;
   opacity?: number;
 }
@@ -24,15 +24,15 @@ export class SpriteText extends GameObject {
   public painter = new SpriteTextPainter();
   private readonly text: Text<Sprite>;
   private options: SpriteTextOptions;
-  private colorSpriteFontGenerator: ColorSpriteFontGenerator = null;
+  private colorSpriteFontGenerator: ColorSpriteFontGenerator | null = null;
 
   constructor(text = '', options: SpriteTextOptions = {}) {
     super();
 
     this.options = Object.assign({}, DEFAULT_OPTIONS, options);
 
-    this.painter.color = this.options.color;
-    this.painter.opacity = this.options.opacity;
+    this.painter.color = this.options.color ?? null;
+    this.painter.opacity = this.options.opacity ?? 1;
 
     this.text = new Text(text, this.options);
   }

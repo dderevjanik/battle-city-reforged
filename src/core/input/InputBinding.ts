@@ -12,13 +12,13 @@ export class InputBinding {
 
   public get(control: number): number {
     if (this.custom.has(control)) {
-      return this.custom.get(control);
+      return this.custom.get(control)!;
     }
-    return this.default.get(control);
+    return this.default.get(control)!;
   }
 
-  public getControl(codeToFind: number): number {
-    let foundControl = null;
+  public getControl(codeToFind: number): number | null {
+    let foundControl: number | null = null;
 
     this.custom.forEach((code, control) => {
       if (foundControl === null && code === codeToFind) {
@@ -44,7 +44,7 @@ export class InputBinding {
   }
 
   public toJSON(): string {
-    const pairs = [];
+    const pairs: [number, number][] = [];
 
     // Save only custom bindings
     this.custom.forEach((code, control) => {

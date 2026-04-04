@@ -8,17 +8,17 @@ import * as config from '../config';
 export class SessionPlayer {
   public lifeup = new Subject();
 
-  private levelPointsRecord: PointsRecord;
+  private levelPointsRecord!: PointsRecord;
   // Total points for current session
-  private gamePoints: number;
+  private gamePoints!: number;
   // Total points from last session
-  private lastGamePoints: number;
-  private lives: number;
-  private nextLifePointThreshold: number;
-  private tankTier: TankTier;
-  private levelFirstSpawned: boolean;
+  private lastGamePoints: number | null = null;
+  private lives!: number;
+  private nextLifePointThreshold!: number;
+  private tankTier!: TankTier;
+  private levelFirstSpawned!: boolean;
   // Should be used for multiplayer only
-  private inputVariant: InputVariant;
+  private inputVariant: InputVariant | null = null;
 
   constructor() {
     this.reset();
@@ -27,12 +27,12 @@ export class SessionPlayer {
   public reset(): void {
     this.levelPointsRecord = new PointsRecord();
     this.gamePoints = 0;
-    this.lastGamePoints = null;
+    this.lastGamePoints = null as null;
     this.lives = config.PLAYER_INITIAL_LIVES;
     this.nextLifePointThreshold = config.PLAYER_EXTRA_LIVE_POINTS;
     this.tankTier = TankTier.A;
     this.levelFirstSpawned = true;
-    this.inputVariant = null;
+    this.inputVariant = null as null;
   }
 
   public addKillPoints(tier: TankTier): void {
@@ -70,7 +70,7 @@ export class SessionPlayer {
     this.lastGamePoints = lastGamePoints;
   }
 
-  public getLastGamePoints(): number {
+  public getLastGamePoints(): number | null {
     return this.lastGamePoints;
   }
 
@@ -132,7 +132,7 @@ export class SessionPlayer {
     this.inputVariant = inputVariant;
   }
 
-  public getInputVariant(): InputVariant {
+  public getInputVariant(): InputVariant | null {
     return this.inputVariant;
   }
 

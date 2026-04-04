@@ -7,8 +7,8 @@ import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
 export class MainHighscoreScene extends GameScene {
-  private heading: HighscoreHeading;
-  private audioManager: AudioManager;
+  private heading!: HighscoreHeading;
+  private audioManager!: AudioManager;
 
   protected setup({
     audioManager,

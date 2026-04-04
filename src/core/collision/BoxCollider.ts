@@ -4,8 +4,8 @@ import { Vector } from '../Vector';
 import { Collider } from './Collider';
 
 export class BoxCollider extends Collider {
-  private prevBox: BoundingBox;
-  private currentBox: BoundingBox;
+  private prevBox!: BoundingBox;
+  private currentBox!: BoundingBox;
 
   public init(): void {
     const box = this.object.getWorldBoundingBox();

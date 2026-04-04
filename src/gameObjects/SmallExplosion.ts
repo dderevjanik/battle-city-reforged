@@ -11,7 +11,7 @@ export class SmallExplosion extends GameObject {
   public zIndex = config.SMALL_EXPLOSION_Z_INDEX;
   public readonly painter = new SpritePainter();
   public readonly done = new Subject();
-  protected animation: Animation<Sprite>;
+  protected animation!: Animation<Sprite>;
 
   constructor() {
     super(64, 64);

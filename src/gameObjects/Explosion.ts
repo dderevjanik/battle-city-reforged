@@ -11,7 +11,7 @@ export class Explosion extends GameObject {
   public zIndex = config.LARGE_EXPLOSION_Z_INDEX;
   public readonly painter = new SpritePainter();
   public readonly completed = new Subject();
-  private animation: Animation<Sprite>;
+  private animation!: Animation<Sprite>;
 
   constructor() {
     super(136, 136);

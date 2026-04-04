@@ -19,9 +19,9 @@ const WALL_REGIONS = [
 export class Base extends GameObject {
   public died = new Subject();
   private heart = new BaseHeart();
-  private container: GameObject;
+  private container!: GameObject;
   private defenceTimer = new Timer();
-  private fadeAnimation: Animation<TerrainType>;
+  private fadeAnimation!: Animation<TerrainType>;
   private isFading = false;
   private lastFadeWallType: TerrainType = TerrainType.Steel;
 

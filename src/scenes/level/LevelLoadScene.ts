@@ -19,12 +19,12 @@ enum State {
 }
 
 export class LevelLoadScene extends GameScene {
-  private curtain: Curtain;
-  private title: LevelTitle;
-  private alertModal: AlertModal;
-  private mapLoader: MapLoader;
-  private session: Session;
-  private inputHintSettings: InputHintSettings;
+  private curtain!: Curtain;
+  private title!: LevelTitle;
+  private alertModal!: AlertModal;
+  private mapLoader!: MapLoader;
+  private session!: Session;
+  private inputHintSettings!: InputHintSettings;
   private state = State.Navigation;
   private log = new Logger(LevelLoadScene.name, Logger.Level.Warn);
 
@@ -117,7 +117,7 @@ export class LevelLoadScene extends GameScene {
     });
   };
 
-  private handleMapLoadError = (err): void => {
+  private handleMapLoadError = (err: any): void => {
     this.log.error('Failed to load the map', err);
     this.mapLoader.loaded.removeListener(this.handleMapLoaded);
 

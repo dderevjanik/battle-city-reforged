@@ -10,11 +10,11 @@ import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
 export class LevelSelectionScene extends GameScene {
-  private curtain: Curtain;
-  private selector: LevelSelector;
-  private continueHint: SceneInputHint;
-  private session: Session;
-  private mapLoader: MapLoader;
+  private curtain!: Curtain;
+  private selector!: LevelSelector;
+  private continueHint!: SceneInputHint;
+  private session!: Session;
+  private mapLoader!: MapLoader;
 
   protected setup({ inputManager, mapLoader, session }: GameContext): void {
     this.session = session;

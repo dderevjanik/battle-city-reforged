@@ -25,11 +25,11 @@ export class AlertModal extends GameObject {
   public accepted = new Subject();
   public zIndex = config.MODAL_Z_INDEX;
   private options: AlertModalOptions;
-  private container: GameObject;
-  private text: SpriteText = null;
-  private acceptItem: TextMenuItem;
-  private declineItem: TextMenuItem;
-  private menu: Menu;
+  private container!: GameObject;
+  private text: SpriteText | null = null;
+  private acceptItem!: TextMenuItem;
+  private declineItem!: TextMenuItem;
+  private menu!: Menu;
 
   constructor(options: AlertModalOptions = {}) {
     super();

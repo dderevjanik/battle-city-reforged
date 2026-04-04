@@ -6,10 +6,10 @@ import { LevelEventBus } from './LevelEventBus';
 import { LevelWorld } from './LevelWorld';
 
 export abstract class LevelScript {
-  protected world: LevelWorld;
-  protected eventBus: LevelEventBus;
-  protected session: Session;
-  protected mapConfig: MapConfig;
+  protected world!: LevelWorld;
+  protected eventBus!: LevelEventBus;
+  protected session!: Session;
+  protected mapConfig!: MapConfig;
   protected enabled = true;
   private needsSetup = true;
 

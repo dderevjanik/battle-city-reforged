@@ -13,10 +13,10 @@ import { GameSceneType } from '../GameSceneType';
 import { EditorLocationParams } from './EditorLocationParams';
 
 export class EditorControlsScene extends GameScene<EditorLocationParams> {
-  private background: GameObject;
-  private title: SpriteText;
-  private editorHint: EditorInputHint;
-  private continueHint: GameObject;
+  private background!: GameObject;
+  private title!: SpriteText;
+  private editorHint!: EditorInputHint;
+  private continueHint!: GameObject;
 
   protected setup({ inputHintSettings, inputManager }: GameContext): void {
     inputHintSettings.setSeenEditorHint();

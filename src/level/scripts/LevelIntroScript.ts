@@ -8,9 +8,9 @@ import { LevelScript } from '../LevelScript';
 
 export class LevelIntroScript extends LevelScript {
   public completed = new Subject();
-  private curtain: Curtain;
-  private title: LevelTitle;
-  private timer: Timer;
+  private curtain!: Curtain;
+  private title!: LevelTitle;
+  private timer!: Timer;
 
   protected setup(): void {
     this.timer = new Timer(config.LEVEL_START_DELAY);

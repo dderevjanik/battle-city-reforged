@@ -75,7 +75,7 @@ export class CollisionSystem {
     }
   }
 
-  public getCollisionByCollider(collider: Collider): Collision {
+  public getCollisionByCollider(collider: Collider): Collision | null {
     for (const collision of this.collisions) {
       if (collision.collider === collider) {
         return collision;

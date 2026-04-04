@@ -8,7 +8,7 @@ import * as config from '../../config';
 import { TerrainTile } from '../TerrainTile';
 
 export class IceTerrainTile extends TerrainTile {
-  public collider = new BoxCollider(this);
+  public collider: BoxCollider = new BoxCollider(this);
   public type = TerrainType.Ice;
   public painter = new SpritePainter();
   public tags = [Tag.Ice];

@@ -12,7 +12,7 @@ export class EnemyTank extends Tank {
   public tags = [Tag.Tank, Tag.Enemy];
   public zIndex = config.ENEMY_TANK_Z_INDEX;
   private healthSkinAnimations = new Map<number, TankSkinAnimation>();
-  private hitSound: Sound;
+  private hitSound!: Sound;
 
   protected setup(context: GameContext): void {
     const { audioLoader, spriteLoader } = context;
@@ -56,7 +56,7 @@ export class EnemyTank extends Tank {
       new TankSkinAnimation(spriteLoader, this.type, [TankColor.Default]),
     );
 
-    this.skinAnimation = this.healthSkinAnimations.get(this.attributes.health);
+    this.skinAnimation = this.healthSkinAnimations.get(this.attributes.health)!;
 
     super.setup(context);
   }
@@ -104,7 +104,7 @@ export class EnemyTank extends Tank {
     this.discardDrop();
 
     // Change skin based on number of health left
-    this.skinAnimation = this.healthSkinAnimations.get(this.attributes.health);
+    this.skinAnimation = this.healthSkinAnimations.get(this.attributes.health)!;
   }
 
   public discardDrop(): this {

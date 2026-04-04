@@ -15,8 +15,8 @@ const MOVE_CONTROLS = [
 ];
 
 export class PlayerTankBehavior extends TankBehavior {
-  private inputManager: InputManager;
-  private session: GameContext['session'];
+  private inputManager!: InputManager;
+  private session!: GameContext['session'];
 
   public setup(tank: PlayerTank, context: GameContext): void {
     this.inputManager = context.inputManager;
@@ -32,7 +32,7 @@ export class PlayerTankBehavior extends TankBehavior {
     if (session.isMultiplayer()) {
       const playerSession = session.getPlayer(tank.partyIndex);
       const playerInputVariant = playerSession.getInputVariant();
-      inputMethod = inputManager.getMethodByVariant(playerInputVariant);
+      inputMethod = inputManager.getMethodByVariant(playerInputVariant!);
     }
 
     // WARNING: order is important. Make sure to keep fire updates before

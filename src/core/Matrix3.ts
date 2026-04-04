@@ -230,7 +230,7 @@ export class Matrix3 {
     return this;
   }
 
-  public fromArray(array = []): this {
+  public fromArray(array: number[] = []): this {
     for (let i = 0; i < 9; i += 1) {
       this.elements[i] = array[i];
     }

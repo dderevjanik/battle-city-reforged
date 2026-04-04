@@ -6,12 +6,12 @@ import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
 export class SettingsMenuScene extends GameScene {
-  private title: SceneMenuTitle;
-  private keybindingItem: TextMenuItem;
-  private audioItem: TextMenuItem;
-  private interfaceItem: TextMenuItem;
-  private backItem: TextMenuItem;
-  private menu: SceneMenu;
+  private title!: SceneMenuTitle;
+  private keybindingItem!: TextMenuItem;
+  private audioItem!: TextMenuItem;
+  private interfaceItem!: TextMenuItem;
+  private backItem!: TextMenuItem;
+  private menu!: SceneMenu;
 
   protected setup(): void {
     this.title = new SceneMenuTitle('SETTINGS');

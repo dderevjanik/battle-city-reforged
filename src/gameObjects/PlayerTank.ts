@@ -39,7 +39,7 @@ export class PlayerTank extends Tank {
       new TankSkinAnimation(spriteLoader, TankType.PlayerD(), this.colors),
     );
 
-    this.skinAnimation = this.tierSkinAnimations.get(this.type.tier);
+    this.skinAnimation = this.tierSkinAnimations.get(this.type.tier)!;
 
     super.setup(context);
   }
@@ -48,7 +48,7 @@ export class PlayerTank extends Tank {
   // when transitioning to the next level.next
   // If not - then most likely powerup has been picked up and we simply need
   // to upgrade the tank one tier up.
-  public upgrade(targetTier: TankTier = null, notify = true): void {
+  public upgrade(targetTier: TankTier | null = null, notify = true): void {
     if (this.type.isMaxTier()) {
       return;
     }
@@ -56,7 +56,7 @@ export class PlayerTank extends Tank {
     this.type.increaseTier(targetTier);
 
     this.attributes = TankAttributesFactory.create(this.type);
-    this.skinAnimation = this.tierSkinAnimations.get(this.type.tier);
+    this.skinAnimation = this.tierSkinAnimations.get(this.type.tier)!;
 
     if (notify === true) {
       this.upgraded.notify({ tier: this.type.tier });

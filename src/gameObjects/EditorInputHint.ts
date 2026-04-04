@@ -15,18 +15,18 @@ import { SpriteText } from './text/SpriteText';
 export class EditorInputHint extends GameObject {
   public zIndex = 0;
   private bindingType: InputBindingType;
-  private inputManager: InputManager;
-  private spriteLoader: SpriteLoader;
-  private brushIcon: GameObject;
-  private moveUpHint: SpriteText;
-  private moveDownHint: SpriteText;
-  private moveLeftHint: SpriteText;
-  private moveRightHint: SpriteText;
-  private drawHint: SpriteText;
-  private eraseHint: SpriteText;
-  private nextBrushHint: SpriteText;
-  private prevBrushHint: SpriteText;
-  private backHint: SpriteText;
+  private inputManager!: InputManager;
+  private spriteLoader!: SpriteLoader;
+  private brushIcon!: GameObject;
+  private moveUpHint!: SpriteText;
+  private moveDownHint!: SpriteText;
+  private moveLeftHint!: SpriteText;
+  private moveRightHint!: SpriteText;
+  private drawHint!: SpriteText;
+  private eraseHint!: SpriteText;
+  private nextBrushHint!: SpriteText;
+  private prevBrushHint!: SpriteText;
+  private backHint!: SpriteText;
 
   constructor(bindingType: InputBindingType) {
     super(config.CANVAS_WIDTH, 570);

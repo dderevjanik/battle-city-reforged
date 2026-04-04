@@ -9,7 +9,7 @@ export class PauseNotice extends GameObject {
   public zIndex = config.PAUSE_NOTICE_Z_INDEX;
   public ignorePause = true;
   public readonly painter = new SpritePainter();
-  private animation: Animation<Sprite>;
+  private animation!: Animation<Sprite | null>;
 
   constructor() {
     super(156, 28);

@@ -16,9 +16,9 @@ import {
 } from '../LevelEvents';
 
 export class LevelPowerupScript extends LevelScript {
-  private timer: Timer;
-  private activePowerup: Powerup = null;
-  private grid: PowerupGrid;
+  private timer!: Timer;
+  private activePowerup: Powerup | null = null;
+  private grid!: PowerupGrid;
 
   protected setup(): void {
     this.eventBus.enemyHit.addListener(this.handleEnemyHit);
@@ -39,7 +39,7 @@ export class LevelPowerupScript extends LevelScript {
         top: 125,
       });
       debugMenu.attach();
-      debugMenu.spawnRequest.addListener((type: PowerupType) => {
+      debugMenu.spawnRequest.addListener((type: PowerupType | null) => {
         this.spawn(type);
       });
     }
@@ -94,7 +94,7 @@ export class LevelPowerupScript extends LevelScript {
     this.grid.freeRect(rect);
   };
 
-  private spawn(type: PowerupType = null): void {
+  private spawn(type: PowerupType | null = null): void {
     // Override previous powerup with newly picked up one
     this.revoke();
 
@@ -187,8 +187,8 @@ export class LevelPowerupScript extends LevelScript {
     );
   }
 
-  private createPlayerTankRects(): Rect[] {
-    const rects = [];
+  private createPlayerTankRects(): (Rect | null)[] {
+    const rects: (Rect | null)[] = [];
 
     const playerTanks = this.world.getPlayerTanks();
     playerTanks.forEach((playerTank) => {

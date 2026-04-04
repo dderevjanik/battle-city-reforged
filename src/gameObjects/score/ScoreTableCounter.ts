@@ -19,7 +19,7 @@ export class ScoreTableCounter extends GameObject {
   private pointsText = new SpriteText('', { color: config.COLOR_WHITE });
   private killsText = new SpriteText('', { color: config.COLOR_WHITE });
   private timer = new Timer();
-  private incrementSound: Sound;
+  private incrementSound!: Sound;
 
   private state = State.Idle;
   private currentKills = 0;

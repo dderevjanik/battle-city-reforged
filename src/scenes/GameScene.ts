@@ -14,10 +14,10 @@ export abstract class GameScene<
   // No explicit constructor — Phaser.Scene's default is used so Phaser can
   // instantiate scenes via scene.add(key, SceneClass).
 
-  protected params: T;
-  protected context: GameContext;
-  protected root: GameObject;
-  protected navigator: SceneNavigator;
+  protected params!: T;
+  protected context!: GameContext;
+  protected root!: GameObject;
+  protected navigator!: SceneNavigator;
 
   // ---------------------------------------------------------------------------
   // Phaser lifecycle
@@ -34,8 +34,8 @@ export abstract class GameScene<
     // Each Phaser scene has its own input plugin, so we must do this on every
     // scene transition (the previous scene's plugin is destroyed on shutdown).
     this.context.inputManager.initPhaserDevices(
-      this.input.keyboard,
-      this.input.gamepad,
+      this.input.keyboard!,
+      this.input.gamepad!,
     );
 
     const router = this.game.registry.get('sceneRouter') as GameSceneRouter;

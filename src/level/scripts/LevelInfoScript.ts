@@ -8,7 +8,7 @@ import {
 } from '../LevelEvents';
 
 export class LevelInfoScript extends LevelScript {
-  private info: LevelInfo;
+  private info!: LevelInfo;
 
   protected setup(): void {
     this.eventBus.playerDied.addListener(this.handlePlayerDied);

@@ -15,15 +15,15 @@ import { SpriteText } from './text/SpriteText';
 export class LevelInputHint extends GameObject {
   public zIndex = 0;
   private bindingType: InputBindingType;
-  private inputManager: InputManager;
-  private tankIcon: GameObject;
-  private moveUpHint: SpriteText;
-  private moveDownHint: SpriteText;
-  private moveLeftHint: SpriteText;
-  private moveRightHint: SpriteText;
-  private fireHint: SpriteText;
-  private rapidFireHint: SpriteText;
-  private pauseHint: SpriteText;
+  private inputManager!: InputManager;
+  private tankIcon!: GameObject;
+  private moveUpHint!: SpriteText;
+  private moveDownHint!: SpriteText;
+  private moveLeftHint!: SpriteText;
+  private moveRightHint!: SpriteText;
+  private fireHint!: SpriteText;
+  private rapidFireHint!: SpriteText;
+  private pauseHint!: SpriteText;
 
   constructor(bindingType: InputBindingType) {
     super(config.CANVAS_WIDTH, 510);

@@ -22,7 +22,7 @@ export class LevelPlayerOverScript extends LevelScript {
   // Disable by default
   protected enabled = false;
 
-  private notice: GameOverNotice;
+  private notice!: GameOverNotice;
   private timer = new Timer();
   private playerIndex = -1;
   private state = State.Idle;

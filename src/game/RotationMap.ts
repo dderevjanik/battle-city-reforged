@@ -10,10 +10,10 @@ export class RotationMap<T> {
   }
 
   public get(rotation: Rotation): T {
-    return this.map.get(this.round(rotation));
+    return this.map.get(this.round(rotation))!;
   }
 
-  public forEach(callbackFn): this {
+  public forEach(callbackFn: any): this {
     this.map.forEach(callbackFn);
 
     return this;

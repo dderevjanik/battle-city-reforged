@@ -17,7 +17,7 @@ import {
 export class LevelPlayerScript extends LevelScript {
   private positions: Vector[] = [];
   private timers: Timer[] = [];
-  private tanks: PlayerTank[] = [];
+  private tanks: (PlayerTank | null)[] = [];
 
   protected setup({ session }: GameContext): void {
     this.eventBus.playerSpawnCompleted.addListener(this.handleSpawnCompleted);
@@ -162,11 +162,11 @@ export class LevelPlayerScript extends LevelScript {
     const tank = this.tanks[partyIndex];
 
     if (powerupType === PowerupType.Shield) {
-      tank.activateShield(config.SHIELD_POWERUP_DURATION);
+      tank!.activateShield(config.SHIELD_POWERUP_DURATION);
     }
 
     if (powerupType === PowerupType.Upgrade) {
-      tank.upgrade();
+      tank!.upgrade();
     }
   };
 

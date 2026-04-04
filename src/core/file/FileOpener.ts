@@ -19,7 +19,7 @@ export class FileOpener {
     this.fileElement = document.createElement('input');
     this.fileElement.addEventListener('change', this.handleFileChange);
     this.fileElement.setAttribute('type', 'file');
-    this.fileElement.setAttribute('multiple', this.options.multiple.toString());
+    this.fileElement.setAttribute('multiple', (this.options.multiple ?? false).toString());
   }
 
   public openDialog(): void {
@@ -29,7 +29,7 @@ export class FileOpener {
   private handleFileChange = (): void => {
     const { files } = this.fileElement;
 
-    if (files.length === 0) {
+    if (files === null || files.length === 0) {
       return;
     }
 

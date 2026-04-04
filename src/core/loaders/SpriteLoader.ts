@@ -49,8 +49,8 @@ export class SpriteLoader {
     const defaultDestinationRect = new Rect(
       0,
       0,
-      sourceRect.width * this.options.scale,
-      sourceRect.height * this.options.scale,
+      sourceRect.width * this.options.scale!,
+      sourceRect.height * this.options.scale!,
     );
 
     const destinationRect = argDestinationRect ?? defaultDestinationRect;

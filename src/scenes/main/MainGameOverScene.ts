@@ -12,7 +12,7 @@ const SCENE_DURATION = 3;
 export class MainGameOverScene extends GameScene {
   private heading = new GameOverHeading();
   private timer = new Timer(SCENE_DURATION);
-  private audioManager: AudioManager;
+  private audioManager!: AudioManager;
 
   protected setup({ audioManager }: GameContext): void {
     this.audioManager = audioManager;

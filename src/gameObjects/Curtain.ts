@@ -14,9 +14,9 @@ const SLIDE_SPEED = 1500;
 export class Curtain extends GameObject {
   public zIndex = config.CURTAIN_Z_INDEX;
   private state: State;
-  private targetHeight: number;
-  private topPart: GameObject;
-  private bottomPart: GameObject;
+  private targetHeight!: number;
+  private topPart!: GameObject;
+  private bottomPart!: GameObject;
 
   constructor(width: number, height: number, isOpen = true) {
     super(width, height);

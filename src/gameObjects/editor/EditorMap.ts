@@ -10,10 +10,10 @@ import { EditorBrush } from './EditorBrush';
 import { EditorTool } from './EditorTool';
 
 export class EditorMap extends GameObject {
-  private container: GameObject;
-  private tool: EditorTool;
+  private container!: GameObject;
+  private tool!: EditorTool;
   private mapConfig: MapConfig;
-  private brushes: EditorBrush[];
+  private brushes!: EditorBrush[];
 
   constructor(mapConfig: MapConfig) {
     super(config.FIELD_SIZE, config.FIELD_SIZE);
@@ -67,7 +67,7 @@ export class EditorMap extends GameObject {
     const brush = this.tool.getSelectedBrush();
 
     const region: TerrainRegionConfig = {
-      type: brush.type,
+      type: brush!.type,
       x: this.tool.position.x,
       y: this.tool.position.y,
       width: this.tool.size.width,

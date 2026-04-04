@@ -20,21 +20,21 @@ enum State {
 }
 
 export class MainMenuScene extends GameScene {
-  private group: GameObject;
-  private heading: MainHeading;
-  private primaryPoints: SpriteText;
-  private secondaryPoints: SpriteText;
-  private commonHighscore: SpriteText;
-  private menu: Menu;
-  private singlePlayerItem: TextMenuItem;
-  private multiPlayerItem: TextMenuItem;
-  private modesItem: TextMenuItem;
-  private editorItem: TextMenuItem;
-  private settingsItem: TextMenuItem;
-  private aboutItem: TextMenuItem;
+  private group!: GameObject;
+  private heading!: MainHeading;
+  private primaryPoints!: SpriteText;
+  private secondaryPoints!: SpriteText;
+  private commonHighscore!: SpriteText;
+  private menu!: Menu;
+  private singlePlayerItem!: TextMenuItem;
+  private multiPlayerItem!: TextMenuItem;
+  private modesItem!: TextMenuItem;
+  private editorItem!: TextMenuItem;
+  private settingsItem!: TextMenuItem;
+  private aboutItem!: TextMenuItem;
   private state: State = State.Ready;
-  private session: Session;
-  private pointsHighscoreManager: PointsHighscoreManager;
+  private session!: Session;
+  private pointsHighscoreManager!: PointsHighscoreManager;
 
   protected setup({
     mapLoader,

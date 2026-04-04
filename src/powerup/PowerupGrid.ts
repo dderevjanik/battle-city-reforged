@@ -30,7 +30,7 @@ export class PowerupGrid {
   private colCount: number;
   private tileSize: number;
   private grid: boolean[][] = [];
-  private backupGrid: boolean[][] = null;
+  private backupGrid: boolean[][] | null = null;
 
   constructor() {
     this.tileSize = config.TILE_SIZE_MEDIUM;
@@ -127,7 +127,7 @@ export class PowerupGrid {
     return freeLargeCells;
   }
 
-  public getRandomPosition(): Vector {
+  public getRandomPosition(): Vector | null {
     const freeLargeCells = this.getFreeLargeCellIndexes();
 
     // In case all cells are blocked you need to decide what to do with powerup
@@ -159,6 +159,6 @@ export class PowerupGrid {
       this.grid[rowIndex] = this.backupGrid[rowIndex].slice();
     }
 
-    this.backupGrid = null;
+    this.backupGrid = null as null;
   }
 }

@@ -2,7 +2,7 @@ import { Storage } from './Storage';
 
 export class LocalStorage implements Storage {
   private namespace: string;
-  private cache = {};
+  private cache: { [key: string]: string } = {};
 
   constructor(namespace: string) {
     this.namespace = namespace;
@@ -18,7 +18,7 @@ export class LocalStorage implements Storage {
 
   public load(): void {
     // Returns null if key does no exist
-    const json = window.localStorage.getItem(this.namespace);
+    const json = window.localStorage.getItem(this.namespace) ?? '{}';
 
     let data;
     try {

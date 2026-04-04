@@ -13,7 +13,7 @@ export class PointsHighscoreManager {
       config.STORAGE_KEY_POINTS_HIGHSCORE_PRIMARY,
       0,
     );
-    return points;
+    return points!;
   }
 
   public savePrimaryPoints(points: number): void {
@@ -26,7 +26,7 @@ export class PointsHighscoreManager {
       config.STORAGE_KEY_POINTS_HIGHSCORE_SECONDARY,
       0,
     );
-    return points;
+    return points!;
   }
 
   public saveSecondaryPoints(points: number): void {

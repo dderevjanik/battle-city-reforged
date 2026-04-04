@@ -88,7 +88,7 @@ export class AudioManager {
     this.globalMuted = this.storage.getBoolean(
       config.STORAGE_KEY_SETTINGS_AUDIO_MUTED,
       false,
-    );
+    ) ?? false;
   }
 
   public saveSettings(): void {

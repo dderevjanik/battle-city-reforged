@@ -38,30 +38,30 @@ import { GameSceneType } from '../GameSceneType';
 import { LevelPlayLocationParams } from './LevelPlayLocationParams';
 
 export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
-  private world: LevelWorld;
-  private eventBus: LevelEventBus;
-  private session: Session;
-  private inputManager: InputManager;
-  private debugCollisionMenu: DebugCollisionMenu;
+  private world!: LevelWorld;
+  private eventBus!: LevelEventBus;
+  private session!: Session;
+  private inputManager!: InputManager;
+  private debugCollisionMenu!: DebugCollisionMenu;
 
   private allScripts: LevelScript[] = [];
   private alwaysUpdateScripts: LevelScript[] = [];
   private playingUpdateScripts: LevelScript[] = [];
 
-  private audioScript: LevelAudioScript;
-  private baseScript: LevelBaseScript;
-  private enemyScript: LevelEnemyScript;
-  private explosionScript: LevelExplosionScript;
-  private gameOverScript: LevelGameOverScript;
-  private infoScript: LevelInfoScript;
-  private introScript: LevelIntroScript;
-  private playerOverScript: LevelPlayerOverScript;
-  private playerScript: LevelPlayerScript;
-  private pointsScript: LevelPointsScript;
-  private powerupScript: LevelPowerupScript;
-  private pauseScript: LevelPauseScript;
-  private spawnScript: LevelSpawnScript;
-  private winScript: LevelWinScript;
+  private audioScript!: LevelAudioScript;
+  private baseScript!: LevelBaseScript;
+  private enemyScript!: LevelEnemyScript;
+  private explosionScript!: LevelExplosionScript;
+  private gameOverScript!: LevelGameOverScript;
+  private infoScript!: LevelInfoScript;
+  private introScript!: LevelIntroScript;
+  private playerOverScript!: LevelPlayerOverScript;
+  private playerScript!: LevelPlayerScript;
+  private pointsScript!: LevelPointsScript;
+  private powerupScript!: LevelPowerupScript;
+  private pauseScript!: LevelPauseScript;
+  private spawnScript!: LevelSpawnScript;
+  private winScript!: LevelWinScript;
 
   protected setup(context: GameContext): void {
     const { collisionSystem, inputManager, session } = context;
@@ -258,7 +258,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       return;
     }
 
-    const playerSession = this.session.getPlayer(event.hitterPartyIndex);
+    const playerSession = this.session.getPlayer(event.hitterPartyIndex!);
 
     playerSession.addKillPoints(event.type.tier);
   };

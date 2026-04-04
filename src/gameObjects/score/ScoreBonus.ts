@@ -4,8 +4,8 @@ import * as config from '../../config';
 import { SpriteText } from '../text/SpriteText';
 
 export class ScoreBonus extends GameObject {
-  private title: SpriteText;
-  private points: SpriteText;
+  private title!: SpriteText;
+  private points!: SpriteText;
 
   protected setup(): void {
     this.title = new SpriteText('BONUS!', {

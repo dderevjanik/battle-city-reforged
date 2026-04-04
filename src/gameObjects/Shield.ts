@@ -10,8 +10,8 @@ export class Shield extends GameObject {
   public ignorePause = true;
   public zIndex = config.SHIELD_Z_INDEX;
   public painter = new SpritePainter();
-  private animation: Animation<Sprite>;
-  private gameState: GameContext['gameState'];
+  private animation!: Animation<Sprite>;
+  private gameState!: GameContext['gameState'];
 
   constructor() {
     super(64, 64);

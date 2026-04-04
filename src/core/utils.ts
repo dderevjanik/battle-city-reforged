@@ -49,7 +49,7 @@ export class MathUtils {
 
 export class ArrayUtils {
   public static flatten(array: any[]): any[] {
-    let result = [];
+    let result: any[] = [];
 
     array.forEach((item) => {
       if (Array.isArray(item)) {

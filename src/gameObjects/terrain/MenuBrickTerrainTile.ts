@@ -9,7 +9,7 @@ import { TerrainTile } from '../TerrainTile';
 export class MenuBrickTerrainTile extends TerrainTile {
   public type = TerrainType.MenuBrick;
   public readonly painter = new SpritePainter();
-  protected sprites: Sprite[];
+  protected sprites!: Sprite[];
 
   constructor() {
     super(config.BRICK_TILE_SIZE, config.BRICK_TILE_SIZE);

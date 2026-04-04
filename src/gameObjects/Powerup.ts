@@ -16,12 +16,12 @@ const PICKUP_MIN_INTERSECTION_SIZE = 16;
 
 export class Powerup extends GameObject {
   public zIndex = config.POWERUP_Z_INDEX;
-  public collider = new BoxCollider(this, true);
+  public collider: BoxCollider = new BoxCollider(this, true);
   public painter = new SpritePainter();
   public ignorePause = true;
   public picked = new Subject<{ partyIndex: number }>();
   public type: PowerupType;
-  private animation: Animation<Sprite>;
+  private animation!: Animation<Sprite | null>;
 
   constructor(type: PowerupType) {
     super(64, 64);

@@ -79,11 +79,11 @@ export class TankSkinAnimation {
 
   // Tank might lose his drop, use it remove drop animation frames
   public updateFrames(): void {
-    this.idleAnimationMap.forEach((animation) => {
+    this.idleAnimationMap.forEach((animation: any) => {
       animation.updateFrames();
     });
 
-    this.moveAnimationMap.forEach((animation) => {
+    this.moveAnimationMap.forEach((animation: any) => {
       animation.updateFrames();
     });
   }

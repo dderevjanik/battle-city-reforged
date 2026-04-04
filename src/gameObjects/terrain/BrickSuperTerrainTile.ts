@@ -17,7 +17,7 @@ import { BrickTerrainTile } from './BrickTerrainTile';
 
 export class BrickSuperTerrainTile extends TerrainTile {
   public type = TerrainType.BrickSuper;
-  public collider = new BoxCollider(this);
+  public collider: BoxCollider = new BoxCollider(this);
   public readonly tags = [Tag.BlockMove];
   private subTiles: BrickTerrainTile[];
 

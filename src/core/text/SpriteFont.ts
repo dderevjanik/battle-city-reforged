@@ -98,7 +98,7 @@ export class SpriteFont implements Font<Sprite> {
       return new Vector(scale, scale);
     }
 
-    return scale;
+    return scale!;
   }
 
   public getCharacterWidth(): number {

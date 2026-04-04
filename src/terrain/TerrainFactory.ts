@@ -24,7 +24,7 @@ export class TerrainFactory {
   ): TerrainTile[] {
     const rectsByType = this.mapRegionConfigsByType(regionConfigs);
 
-    const tiles = [];
+    const tiles: TerrainTile[] = [];
 
     rectsByType.forEach((regionRects, type) => {
       const regionTiles = this.createMapFromRegions(type, regionRects);
@@ -44,7 +44,7 @@ export class TerrainFactory {
       return this.createMapFromBrickRegions(regionRects);
     }
 
-    const tiles = [];
+    const tiles: TerrainTile[] = [];
 
     regionRects.forEach((regionRect) => {
       const regionTiles = this.createFromRegion(type, regionRect);
@@ -61,7 +61,7 @@ export class TerrainFactory {
   ): TerrainTile[] {
     const rectsByType = this.mapRegionConfigsByType(regionConfigs);
 
-    const tiles = [];
+    const tiles: TerrainTile[] = [];
 
     rectsByType.forEach((regionRects, type) => {
       const regionTiles = this.createFromRegions(type, regionRects);
@@ -77,7 +77,7 @@ export class TerrainFactory {
     type: TerrainType,
     regionRects: Rect[],
   ): TerrainTile[] {
-    const tiles = [];
+    const tiles: TerrainTile[] = [];
 
     regionRects.forEach((regionRect) => {
       const regionTiles = this.createFromRegion(type, regionRect);
@@ -87,7 +87,7 @@ export class TerrainFactory {
     return tiles;
   }
 
-  public static validateRegion(type: TerrainType, regionRect: Rect): Error {
+  public static validateRegion(type: TerrainType, regionRect: Rect): Error | undefined {
     const { x, y, width, height } = regionRect;
 
     const tileSize = this.getTileSize(type);
@@ -116,7 +116,7 @@ export class TerrainFactory {
     }
   }
 
-  public static validateRegionConfigs(regions: TerrainRegionConfig[]): Error {
+  public static validateRegionConfigs(regions: TerrainRegionConfig[]): Error | undefined {
     for (const region of regions) {
       const regionRect = new Rect(
         region.x,
@@ -158,7 +158,7 @@ export class TerrainFactory {
     const superTileSize = config.BRICK_SUPER_TILE_SIZE;
     const superTileCount = config.FIELD_SIZE / superTileSize;
 
-    const superGrid = [];
+    const superGrid: BrickTerrainTile[][][] = [];
 
     for (let rowIndex = 0; rowIndex < superTileCount; rowIndex += 1) {
       superGrid[rowIndex] = [];
@@ -208,7 +208,7 @@ export class TerrainFactory {
           const x = localColIndex * subTileSize;
           const y = localRowIndex * subTileSize;
 
-          const subTile = this.createTile(TerrainType.Brick);
+          const subTile = new BrickTerrainTile();
           subTile.position.set(x, y);
 
           superGrid[superRowIndex][superColIndex].push(subTile);
@@ -216,7 +216,7 @@ export class TerrainFactory {
       }
     }
 
-    const superTiles = [];
+    const superTiles: TerrainTile[] = [];
 
     // Go over super-grid to create super-tiles
     for (let rowIndex = 0; rowIndex < superTileCount; rowIndex += 1) {

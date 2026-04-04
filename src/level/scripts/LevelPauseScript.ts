@@ -8,9 +8,9 @@ import { LevelPlayInputContext } from '../../input/InputContexts';
 import { LevelScript } from '../LevelScript';
 
 export class LevelPauseScript extends LevelScript {
-  private notice: PauseNotice;
-  private gameState: State<GameState>;
-  private inputManager: InputManager;
+  private notice!: PauseNotice;
+  private gameState!: State<GameState>;
+  private inputManager!: InputManager;
 
   protected setup({ gameState, inputManager }: GameContext): void {
     this.gameState = gameState;
@@ -35,7 +35,7 @@ export class LevelPauseScript extends LevelScript {
       // Get input variants for all players
       inputMethods = playerSessions.map((playerSession) => {
         const playerVariant = playerSession.getInputVariant();
-        const playerMethod = this.inputManager.getMethodByVariant(playerVariant);
+        const playerMethod = this.inputManager.getMethodByVariant(playerVariant!);
         return playerMethod;
       });
     }

@@ -11,11 +11,11 @@ import { TerrainTile } from '../TerrainTile';
 
 export class WaterTerrainTile extends TerrainTile {
   public type = TerrainType.Water;
-  public collider = new BoxCollider(this);
+  public collider: BoxCollider = new BoxCollider(this);
   public zIndex = config.WATER_TILE_Z_INDEX;
   public tags = [Tag.BlockMove];
   public readonly painter = new SpritePainter();
-  private animation: Animation<Sprite>;
+  private animation!: Animation<Sprite>;
 
   constructor() {
     super(config.WATER_TILE_SIZE, config.WATER_TILE_SIZE);

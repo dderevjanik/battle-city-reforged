@@ -13,8 +13,8 @@ export class SceneRouter<S> implements SceneNavigator {
     SceneType,
     { new (navigator: SceneNavigator, params: SceneParams): S }
   >();
-  private location: SceneLocation;
-  private scene: S = null;
+  private location!: SceneLocation;
+  private scene: S | null = null;
   private stack: SceneLocation[] = [];
 
   public register(
@@ -30,7 +30,7 @@ export class SceneRouter<S> implements SceneNavigator {
     this.push(type, params);
   }
 
-  public getCurrentScene(): S {
+  public getCurrentScene(): S | null {
     return this.scene;
   }
 
@@ -79,7 +79,7 @@ export class SceneRouter<S> implements SceneNavigator {
 
     const NextSceneClass = this.routes.get(type);
 
-    const nextScene = new NextSceneClass(this, params);
+    const nextScene = new NextSceneClass!(this, params);
 
     this.scene = nextScene;
 

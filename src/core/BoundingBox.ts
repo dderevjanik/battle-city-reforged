@@ -71,10 +71,10 @@ export class BoundingBox {
   public unionWith(...others: BoundingBox[]): this {
     const boxes = [this, ...others];
 
-    let minX = null;
-    let maxX = null;
-    let minY = null;
-    let maxY = null;
+    let minX: number | null = null;
+    let maxX: number | null = null;
+    let minY: number | null = null;
+    let maxY: number | null = null;
 
     for (const box of boxes) {
       if (minX === null || box.min.x < minX) {
@@ -91,8 +91,8 @@ export class BoundingBox {
       }
     }
 
-    this.min.set(minX, minY);
-    this.max.set(maxX, maxY);
+    this.min.set(minX!, minY!);
+    this.max.set(maxX!, maxY!);
 
     return this;
   }

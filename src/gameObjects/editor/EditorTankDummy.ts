@@ -7,7 +7,7 @@ import { Tag } from '../../game/Tag';
 import { TankColor, TankSpriteId, TankType } from '../../tank/TankTypes';
 
 export class EditorTankDummy extends GameObject {
-  public collider = new BoxCollider(this);
+  public collider: BoxCollider = new BoxCollider(this);
   public painter = new SpritePainter();
   public tags = [Tag.EditorBlockMove];
   private type: TankType;

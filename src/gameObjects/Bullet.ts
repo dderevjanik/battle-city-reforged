@@ -14,7 +14,7 @@ import { SmallExplosion } from './SmallExplosion';
 import { TerrainTileDestroyer } from './TerrainTileDestroyer';
 
 export class Bullet extends GameObject {
-  public collider = new SweptBoxCollider(this, true);
+  public collider: SweptBoxCollider = new SweptBoxCollider(this, true);
   public painter = new SpritePainter();
   public zIndex = config.BULLET_Z_INDEX;
   public ownerPartyIndex: number;
@@ -23,8 +23,8 @@ export class Bullet extends GameObject {
   public speed: number;
   public tags = [Tag.Bullet];
   public died = new Subject();
-  private hitBrickSound: Sound;
-  private hitSteelSound: Sound;
+  private hitBrickSound!: Sound;
+  private hitSteelSound!: Sound;
 
   constructor(
     ownerPartyIndex: number,
@@ -128,7 +128,7 @@ export class Bullet extends GameObject {
     // By using swept box collider and then finding closest points of contact,
     // we make bullet interact with the first object on the way.
     // Bullet can also hit multiple blocks (most likely two) at the same time.
-    let minDistance = null;
+    let minDistance: number | null = null;
 
     wallContacts.forEach((contact) => {
       const prevBox = this.collider.getPrevBox();
@@ -188,7 +188,7 @@ export class Bullet extends GameObject {
           destroyer.translateY(wallWorldBox.min.x - destroyerWorldBox.min.x);
         }
 
-        this.parent.attach(destroyer);
+        this.parent!.attach(destroyer);
 
         // TODO: it collides with multiple "bricks", multiple audio sources are
         // triggered

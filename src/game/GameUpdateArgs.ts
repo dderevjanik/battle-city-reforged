@@ -35,6 +35,3 @@ export interface GameContext {
   spriteFontLoader: SpriteFontLoader;
   spriteLoader: SpriteLoader;
 }
-
-/** @deprecated Use GameContext instead */
-export type GameUpdateArgs = GameContext & { deltaTime: number };

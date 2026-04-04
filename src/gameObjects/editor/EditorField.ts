@@ -11,7 +11,7 @@ import * as config from '../../config';
 import { EditorTankDummy } from './EditorTankDummy';
 
 export class EditorField extends GameObject {
-  private base: Base;
+  private base!: Base;
 
   constructor() {
     super(config.FIELD_SIZE, config.FIELD_SIZE);
@@ -49,6 +49,6 @@ export class EditorField extends GameObject {
   }
 
   protected update(): void {
-    this.base.collider.update();
+    this.base.collider!.update();
   }
 }

@@ -62,12 +62,12 @@ export class Tank extends GameObject {
   public type: TankType;
   public behavior: TankBehavior;
   public attributes: TankAttributes;
-  public skinAnimation: TankSkinAnimation;
+  public skinAnimation!: TankSkinAnimation;
   public bullets: Bullet[] = [];
-  public shield: Shield = null;
+  public shield: Shield | null = null;
   public fired = new Subject();
   public died = new Subject<{
-    hitterPartyIndex: number;
+    hitterPartyIndex: number | null;
     reason: TankDeathReason;
   }>();
   public hit = new Subject();
@@ -76,7 +76,7 @@ export class Tank extends GameObject {
   public freezeState = new State<boolean>(false);
   public isOnIce = false;
   protected shieldTimer = new Timer();
-  protected animation: Animation<TankAnimationFrame>;
+  protected animation!: Animation<TankAnimationFrame>;
   protected skinLayers: GameObject[] = [];
   protected lastFireTimer = new Timer();
   protected slideTimer = new Timer();
@@ -91,9 +91,9 @@ export class Tank extends GameObject {
   protected tankCollisionResolution: TankCollisionResolution =
     TankCollisionResolution.Unknown;
   protected isCollisionAbusedByPlayer = false;
-  protected collisionSystem: CollisionSystem;
-  protected context: GameContext;
-  protected gameState: GameContext['gameState'];
+  protected collisionSystem!: CollisionSystem;
+  protected context!: GameContext;
+  protected gameState!: GameContext['gameState'];
 
   constructor(type: TankType, behavior: TankBehavior, partyIndex: number) {
     super(64, 64);
@@ -248,7 +248,7 @@ export class Tank extends GameObject {
     this.collideBullets(collision);
   }
 
-  public fire(): boolean {
+  public fire(): boolean | void {
     if (this.bullets.length >= this.attributes.bulletMaxCount) {
       return;
     }
@@ -280,7 +280,7 @@ export class Tank extends GameObject {
     bullet.updateMatrix();
 
     // Then, detach bullet from a tank and move it to a field
-    this.parent.attach(bullet);
+    this.parent!.attach(bullet);
 
     if (this.tags.includes(Tag.Player)) {
       bullet.tags.push(Tag.Player);
@@ -350,7 +350,7 @@ export class Tank extends GameObject {
 
   public die(
     reason: TankDeathReason = TankDeathReason.Bullet,
-    hitterPartyIndex = null,
+    hitterPartyIndex: number | null = null,
   ): void {
     const event = {
       hitterPartyIndex,
@@ -404,7 +404,7 @@ export class Tank extends GameObject {
   };
 
   protected handleShieldTimer = (): void => {
-    this.shield.removeSelf();
+    this.shield!.removeSelf();
     this.shield = null;
   };
 
@@ -833,7 +833,7 @@ export class Tank extends GameObject {
       return contact.collider !== other.collider;
     });
 
-    const otherContactsExceptSelf = otherCollision.contacts.filter(
+    const otherContactsExceptSelf = otherCollision!.contacts.filter(
       (contact) => {
         return contact.collider !== this.collider;
       },
@@ -942,7 +942,7 @@ export class Tank extends GameObject {
     this.tags.push(Tag.BlockMove);
   }
 
-  protected getDirection(): Vector {
+  protected getDirection(): Vector | undefined {
     if (this.rotation === Rotation.Up) {
       return new Vector(0, -1);
     }

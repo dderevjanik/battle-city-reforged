@@ -18,11 +18,11 @@ export class LevelSelector extends GameObject {
   private minLevel = 1;
   private maxLevel: number;
   private isPlaytest: boolean;
-  private title: LevelTitle;
-  private arrowLeft: SpriteText;
-  private arrowRight: SpriteText;
+  private title!: LevelTitle;
+  private arrowLeft!: SpriteText;
+  private arrowRight!: SpriteText;
   private holdThrottles: InputHoldThrottle[] = [];
-  private context: GameContext;
+  private context!: GameContext;
 
   constructor(maxLevel = 1, isPlaytest = false) {
     super();

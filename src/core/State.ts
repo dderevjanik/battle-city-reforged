@@ -1,6 +1,6 @@
 export class State<T> {
   public value: T;
-  public previousValue: T;
+  public previousValue: T | null;
 
   constructor(initialValue: T) {
     this.value = initialValue;
@@ -25,11 +25,11 @@ export class State<T> {
     return this;
   }
 
-  public is(value): boolean {
+  public is(value: any): boolean {
     return this.value === value;
   }
 
-  public not(value): boolean {
+  public not(value: any): boolean {
     return this.value !== value;
   }
   public hasChanged(): boolean {

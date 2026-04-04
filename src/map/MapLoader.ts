@@ -12,7 +12,7 @@ export class MapLoader {
   public loaded = new Subject<MapConfig>();
   public error = new Subject<Error>();
   private defaultReader: MapListReader;
-  private activeReader: MapListReader = null;
+  private activeReader: MapListReader | null = null;
 
   constructor(defaultReader: MapListReader) {
     this.defaultReader = defaultReader;
@@ -37,18 +37,18 @@ export class MapLoader {
   }
 
   public loadAsync(levelNumber: number): void {
-    this.activeReader.readAsync(levelNumber);
+    this.activeReader!.readAsync(levelNumber);
   }
 
   public getItemsCount(): number {
-    return this.activeReader.getCount();
+    return this.activeReader!.getCount();
   }
 
-  private handleReaderLoaded = (mapConfig): void => {
+  private handleReaderLoaded = (mapConfig: any): void => {
     this.loaded.notify(mapConfig);
   };
 
-  private handleReaderError = (err): void => {
+  private handleReaderError = (err: any): void => {
     this.error.notify(err);
   };
 }

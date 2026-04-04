@@ -21,18 +21,18 @@ const HOLD_THROTTLE_OPTIONS: InputHoldThrottleOptions = {
 };
 
 export class EditorTool extends GameObject {
-  public collider = new BoxCollider(this, true);
+  public collider: BoxCollider = new BoxCollider(this, true);
   public painter = new RectPainter(null, config.COLOR_RED);
   public zIndex = config.EDITOR_TOOL_Z_INDEX;
   public draw = new Subject();
   public erase = new Subject();
   private brushes: EditorBrush[] = [];
-  private selectedBrush: EditorBrush = null;
+  private selectedBrush: EditorBrush | null = null;
   private velocity = new Vector(0, 0);
   private holdThrottles: InputHoldThrottle[] = [];
   private blinkTimer = new Timer();
   private isBlinkVisible = true;
-  private context: GameContext;
+  private context!: GameContext;
 
   constructor() {
     super();
@@ -66,7 +66,7 @@ export class EditorTool extends GameObject {
     this.selectBrush(0);
   }
 
-  public getSelectedBrush(): EditorBrush {
+  public getSelectedBrush(): EditorBrush | null {
     return this.selectedBrush;
   }
 
@@ -161,13 +161,13 @@ export class EditorTool extends GameObject {
       this.blinkTimer.update(deltaTime);
     }
 
-    if (this.selectBrush !== null) {
+    if (this.selectedBrush !== null) {
       this.selectedBrush.setVisible(this.isBlinkVisible);
     }
   }
 
   private selectNextBrush(): void {
-    const selectedBrushIndex = this.brushes.indexOf(this.selectedBrush);
+    const selectedBrushIndex = this.brushes.indexOf(this.selectedBrush!);
 
     let nextBrushIndex = selectedBrushIndex + 1;
     if (nextBrushIndex > this.brushes.length - 1) {
@@ -178,7 +178,7 @@ export class EditorTool extends GameObject {
   }
 
   private selectPrevBrush(): void {
-    const selectedBrushIndex = this.brushes.indexOf(this.selectedBrush);
+    const selectedBrushIndex = this.brushes.indexOf(this.selectedBrush!);
 
     let prevBrushIndex = selectedBrushIndex - 1;
     if (prevBrushIndex < 0) {
@@ -197,7 +197,7 @@ export class EditorTool extends GameObject {
     }
 
     if (this.brushes[index] === undefined) {
-      this.selectBrush = null;
+      this.selectedBrush = null;
       return;
     }
 

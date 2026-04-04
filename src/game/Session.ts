@@ -10,13 +10,13 @@ export class Session {
   public primaryPlayer = new SessionPlayer();
   public secondaryPlayer = new SessionPlayer();
   public players: SessionPlayer[] = [];
-  private startLevelNumber: number;
-  private endLevelNumber: number;
-  private currentLevelNumber: number;
-  private playtest: boolean;
-  private multiplayer: boolean;
-  private seenIntro: boolean;
-  private state: State;
+  private startLevelNumber!: number;
+  private endLevelNumber!: number;
+  private currentLevelNumber!: number;
+  private playtest!: boolean;
+  private multiplayer!: boolean;
+  private seenIntro!: boolean;
+  private state!: State;
 
   constructor() {
     this.reset();

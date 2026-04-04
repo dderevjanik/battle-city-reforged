@@ -5,10 +5,10 @@ export class GameStorage extends LocalStorage {
     this.set(key, value.toString());
   }
 
-  public getBoolean(key: string, defaultValue = null): boolean {
+  public getBoolean(key: string, defaultValue: boolean | null = null): boolean | null {
     const json = this.get(key);
 
-    let value = defaultValue;
+    let value: boolean | null = defaultValue;
 
     try {
       value = JSON.parse(json);
@@ -27,10 +27,10 @@ export class GameStorage extends LocalStorage {
     this.set(key, value.toString());
   }
 
-  public getNumber(key: string, defaultValue = null): number {
+  public getNumber(key: string, defaultValue: number | null = null): number | null {
     const json = this.get(key);
 
-    let value = defaultValue;
+    let value: number | null = defaultValue;
 
     try {
       value = JSON.parse(json);

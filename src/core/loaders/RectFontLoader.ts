@@ -27,7 +27,7 @@ export class RectFontLoader {
     }
 
     if (this.loadedFonts.has(id)) {
-      return this.loadedFonts.get(id);
+      return this.loadedFonts.get(id)!;
     }
 
     const { config, options: defaultOptions } = item;

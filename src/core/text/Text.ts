@@ -30,7 +30,7 @@ export class Text<T> {
   public static WORD_SEPARATOR = TEXT_WORD_SEPARATOR;
 
   private text = '';
-  private font: Font<T> = new NullFont();
+  private font: Font<T> = new NullFont() as unknown as Font<T>;
   private options: TextOptions;
 
   constructor(text = '', options: TextOptions = {}) {
@@ -84,7 +84,7 @@ export class Text<T> {
     const scale = this.font.getScale();
 
     const charactersHeight = lines.length * characterHeight * scale.y;
-    const spacingHeight = (lines.length - 1) * lineSpacing * scale.y;
+    const spacingHeight = (lines.length - 1) * lineSpacing! * scale.y;
     const linesHeight = charactersHeight + spacingHeight;
 
     return linesHeight;
@@ -103,7 +103,7 @@ export class Text<T> {
 
     const lines = this.splitTextToLines(text);
     lines.forEach((line, index) => {
-      const lineSpacing = index > 0 ? this.options.lineSpacing : 0;
+      const lineSpacing = index > 0 ? this.options.lineSpacing! : 0;
       const lineOffsetY = index * (characterHeight + lineSpacing);
 
       let lineOffsetX = 0;
@@ -155,7 +155,7 @@ export class Text<T> {
     const characters = this.splitWordToCharacters(word);
 
     characters.forEach((character, index) => {
-      const letterSpacing = index > 0 ? this.options.letterSpacing : 0;
+      const letterSpacing = index > 0 ? this.options.letterSpacing! : 0;
       const characterOffset = wordOffset
         .clone()
         .addX(index * (this.font.getCharacterWidth() + letterSpacing));
@@ -205,7 +205,7 @@ export class Text<T> {
     const { letterSpacing } = this.options;
 
     const charactersWidth = word.length * characterWidth;
-    const spacingWidth = (word.length - 1) * letterSpacing;
+    const spacingWidth = (word.length - 1) * letterSpacing!;
     const wordWidth = charactersWidth + spacingWidth;
 
     return wordWidth;
@@ -214,7 +214,7 @@ export class Text<T> {
   private getWordSeparatorWidth(): number {
     const { letterSpacing } = this.options;
     const characterWidth = this.font.getCharacterWidth();
-    const separatorWidth = characterWidth + letterSpacing * 2;
+    const separatorWidth = characterWidth + letterSpacing! * 2;
 
     return separatorWidth;
   }

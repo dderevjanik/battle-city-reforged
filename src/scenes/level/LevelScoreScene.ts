@@ -25,18 +25,18 @@ enum State {
 }
 
 export class LevelScoreScene extends GameScene {
-  private session: Session;
-  private audioManager: AudioManager;
-  private highscoreTitle: SpriteText;
-  private highscorePoints: SpriteText;
-  private levelTitle: LevelTitle;
-  private scoreTable: ScoreTable;
-  private primaryBonus: ScoreBonus;
-  private secondaryBonus: ScoreBonus;
+  private session!: Session;
+  private audioManager!: AudioManager;
+  private highscoreTitle!: SpriteText;
+  private highscorePoints!: SpriteText;
+  private levelTitle!: LevelTitle;
+  private scoreTable!: ScoreTable;
+  private primaryBonus!: ScoreBonus;
+  private secondaryBonus!: ScoreBonus;
   private bonusTimer = new Timer();
   private postTimer = new Timer();
   private state = State.Idle;
-  private pointsHighscoreManager: PointsHighscoreManager;
+  private pointsHighscoreManager!: PointsHighscoreManager;
 
   protected setup({
     audioManager,

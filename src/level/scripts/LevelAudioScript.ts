@@ -23,15 +23,15 @@ enum MoveState {
 }
 
 export class LevelAudioScript extends LevelScript {
-  private audioManager: AudioManager;
-  private gameState: State<GameState>;
-  private inputManager: InputManager;
+  private audioManager!: AudioManager;
+  private gameState!: State<GameState>;
+  private inputManager!: InputManager;
   private moveState = MoveState.Idle;
 
-  private moveSound: Sound;
-  private idleSound: Sound;
-  private pauseSound: Sound;
-  private playerExplosionSound: Sound;
+  private moveSound!: Sound;
+  private idleSound!: Sound;
+  private pauseSound!: Sound;
+  private playerExplosionSound!: Sound;
 
   protected setup({
     audioManager,
@@ -95,7 +95,7 @@ export class LevelAudioScript extends LevelScript {
       // Get input variants for all players
       inputMethods = playerSessions.map((playerSession) => {
         const playerVariant = playerSession.getInputVariant();
-        const playerMethod = this.inputManager.getMethodByVariant(playerVariant);
+        const playerMethod = this.inputManager.getMethodByVariant(playerVariant!);
         return playerMethod;
       });
     }

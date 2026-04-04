@@ -8,7 +8,7 @@ import { DebugGrid } from './DebugGrid';
 import { DebugMenu, DebugMenuOptions } from './DebugMenu';
 
 export class DebugLevelPowerupMenu extends DebugMenu {
-  public spawnRequest = new Subject<PowerupType>();
+  public spawnRequest = new Subject<PowerupType | null>();
   private levelWorld: LevelWorld;
   private powerupGrid: PowerupGrid;
   private debugGrid: DebugGrid;

@@ -5,7 +5,7 @@ import { Tank } from '../../gameObjects/Tank';
 import { TankBehavior } from '../TankBehavior';
 
 export class PatrolTankBehavior extends TankBehavior {
-  private lastPosition: Vector = null;
+  private lastPosition: Vector | null = null;
 
   public update(tank: Tank, deltaTime: number): void {
     tank.move(deltaTime);

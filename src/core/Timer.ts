@@ -2,13 +2,13 @@ import { Subject } from './Subject';
 
 export class Timer {
   public done = new Subject();
-  public timeLeft = null;
+  public timeLeft: number | null = null;
 
-  constructor(timeLeft = null) {
+  constructor(timeLeft: number | null = null) {
     this.timeLeft = timeLeft;
   }
 
-  public reset(timeLeft): this {
+  public reset(timeLeft: number): this {
     this.timeLeft = timeLeft;
 
     return this;
@@ -25,7 +25,7 @@ export class Timer {
       return;
     }
 
-    this.timeLeft -= deltaTime;
+    this.timeLeft = this.timeLeft! - deltaTime;
 
     if (this.timeLeft < 0) {
       this.timeLeft = null;

@@ -62,7 +62,7 @@ export class DebugMenu {
     return button;
   }
 
-  private getOffsetStyle(value): string {
+  private getOffsetStyle(value: any): string {
     if (value === null) {
       return 'initial';
     }

@@ -57,7 +57,7 @@ const SCENE_REGISTRY: [GameSceneType, typeof Phaser.Scene][] = [
  * It stops itself as soon as it starts the first GameScene.
  */
 export class BridgeScene extends Phaser.Scene {
-  private gameContext: GameContext;
+  private gameContext!: GameContext;
 
   constructor() {
     super({ key: 'BridgeScene' });

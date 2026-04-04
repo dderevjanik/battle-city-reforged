@@ -8,13 +8,13 @@ import { InputHintSettings } from '../../input/InputHintSettings';
 import { GameScene } from '../GameScene';
 
 export class SettingsInterfaceScene extends GameScene {
-  private title: SceneMenuTitle;
-  private levelControlsHintItem: TextMenuItem;
-  private editorControlsHintItem: TextMenuItem;
-  private backItem: TextMenuItem;
-  private menu: SceneMenu;
-  private audioManager: AudioManager;
-  private inputHintSettings: InputHintSettings;
+  private title!: SceneMenuTitle;
+  private levelControlsHintItem!: TextMenuItem;
+  private editorControlsHintItem!: TextMenuItem;
+  private backItem!: TextMenuItem;
+  private menu!: SceneMenu;
+  private audioManager!: AudioManager;
+  private inputHintSettings!: InputHintSettings;
 
   protected setup({ audioManager, inputHintSettings }: GameContext): void {
     this.audioManager = audioManager;

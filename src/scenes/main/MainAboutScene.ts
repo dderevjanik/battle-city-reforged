@@ -7,11 +7,11 @@ import * as config from '../../config';
 import { GameScene } from '../GameScene';
 
 export class MainAboutScene extends GameScene {
-  private title: SceneMenuTitle;
-  private description: MenuDescription;
-  private menu: SceneMenu;
-  private githubItem: TextMenuItem;
-  private backItem: TextMenuItem;
+  private title!: SceneMenuTitle;
+  private description!: MenuDescription;
+  private menu!: SceneMenu;
+  private githubItem!: TextMenuItem;
+  private backItem!: TextMenuItem;
 
   protected setup(): void {
     this.title = new SceneMenuTitle('ABOUT');

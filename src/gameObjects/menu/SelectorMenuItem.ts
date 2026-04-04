@@ -36,9 +36,9 @@ export class SelectorMenuItem<T> extends MenuItem {
   public zIndex = 0;
   private choices: SelectorMenuItemChoice<T>[] = [];
   private options: SelectorMenuItemOptions;
-  private leftArrow: SpriteText;
-  private rightArrow: SpriteText;
-  private container: GameObject;
+  private leftArrow!: SpriteText;
+  private rightArrow!: SpriteText;
+  private container!: GameObject;
   private selectedIndex = 0;
   private items: SpriteText[] = [];
 
@@ -63,7 +63,7 @@ export class SelectorMenuItem<T> extends MenuItem {
     this.selectChoice(choiceIndex);
   }
 
-  public getValue(): T {
+  public getValue(): T | null {
     const focusedChoice = this.choices[this.selectedIndex];
     if (focusedChoice === undefined) {
       return null;
@@ -90,7 +90,7 @@ export class SelectorMenuItem<T> extends MenuItem {
   }
 
   protected setup(): void {
-    this.container = new GameObject(this.options.containerWidth, ITEM_HEIGHT);
+    this.container = new GameObject(this.options.containerWidth!, ITEM_HEIGHT);
     this.container.position.setX(ARROW_WIDTH + ARROW_OFFSET);
     this.add(this.container);
 
@@ -98,9 +98,9 @@ export class SelectorMenuItem<T> extends MenuItem {
       const item = new SpriteText(choice.text, {
         color: this.options.color,
       });
-      item.origin.setX(this.options.itemOriginX);
+      item.origin.setX(this.options.itemOriginX!);
       item.position.setX(
-        this.options.containerWidth * this.options.itemOriginX,
+        this.options.containerWidth! * this.options.itemOriginX!,
       );
       item.setZIndex(this.zIndex + 1);
       this.container.add(item);
@@ -111,12 +111,12 @@ export class SelectorMenuItem<T> extends MenuItem {
 
     this.rightArrow = new SpriteText('→', { color: this.options.color });
     this.rightArrow.position.setX(
-      ARROW_WIDTH + ARROW_OFFSET + this.options.containerWidth + ARROW_OFFSET,
+      ARROW_WIDTH + ARROW_OFFSET + this.options.containerWidth! + ARROW_OFFSET,
     );
     this.add(this.rightArrow);
 
     this.size.set(
-      this.options.containerWidth + (ARROW_WIDTH + ARROW_OFFSET) * 2,
+      this.options.containerWidth! + (ARROW_WIDTH + ARROW_OFFSET) * 2,
       28,
     );
 

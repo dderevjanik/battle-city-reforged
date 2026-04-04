@@ -8,7 +8,7 @@ export class ImageLoader {
 
   public load(filePath: string): Image {
     if (this.images.has(filePath)) {
-      return this.images.get(filePath);
+      return this.images.get(filePath)!;
     }
 
     const imageElement = new window.Image();

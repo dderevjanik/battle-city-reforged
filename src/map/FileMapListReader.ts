@@ -5,7 +5,7 @@ import { MapListReader } from './MapListReader';
 // Use in combination with core/FileOpener.
 export class FileMapListReader extends MapListReader {
   private files: globalThis.File[];
-  private fileReader: MapFileReader;
+  private fileReader!: MapFileReader;
 
   constructor(files: globalThis.FileList) {
     super();

@@ -25,14 +25,14 @@ export class GameSceneRouter implements SceneNavigator {
   public push(type: GameSceneType, params?: SceneParams): void {
     const safe = params ?? {};
     this.stack.push({ type, params: safe });
-    this.scenePlugin.start(GameSceneType[type], safe);
+    this.scenePlugin!.start(GameSceneType[type], safe);
   }
 
   public replace(type: GameSceneType, params?: SceneParams): void {
     const safe = params ?? {};
     this.stack.pop();
     this.stack.push({ type, params: safe });
-    this.scenePlugin.start(GameSceneType[type], safe);
+    this.scenePlugin!.start(GameSceneType[type], safe);
   }
 
   public back(): void {
@@ -41,7 +41,7 @@ export class GameSceneRouter implements SceneNavigator {
     }
     this.stack.pop();
     const prev = this.stack[this.stack.length - 1];
-    this.scenePlugin.start(GameSceneType[prev.type], prev.params);
+    this.scenePlugin!.start(GameSceneType[prev.type], prev.params);
   }
 
   public clearAndPush(type: GameSceneType, params?: SceneParams): void {

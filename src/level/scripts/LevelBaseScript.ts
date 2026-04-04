@@ -6,7 +6,7 @@ import { LevelScript } from '../LevelScript';
 import { LevelPowerupPickedEvent } from '../LevelEvents';
 
 export class LevelBaseScript extends LevelScript {
-  private base: Base;
+  private base!: Base;
 
   protected setup(): void {
     this.eventBus.powerupPicked.addListener(this.handlePowerupPicked);

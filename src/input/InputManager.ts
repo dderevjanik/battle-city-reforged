@@ -32,7 +32,7 @@ export class InputManager {
   // in this case active device will switch from keyboard to gamepad
   // seamlessly.
   // For multi-player you should query player-specific devices.
-  private activeDeviceType: InputDeviceType = null;
+  private activeDeviceType: InputDeviceType | null = null;
 
   constructor(storage: GameStorage) {
     this.storage = storage;
@@ -110,7 +110,7 @@ export class InputManager {
       throw new Error(`Binding "${bindingType.serialize()}" not registered`);
     }
 
-    const binding = this.bindings.get(bindingType);
+    const binding = this.bindings.get(bindingType)!;
 
     return binding;
   }
@@ -120,7 +120,7 @@ export class InputManager {
       throw new Error(`Device type "${deviceType}" not registered`);
     }
 
-    const devices = this.deviceMap.get(deviceType);
+    const devices = this.deviceMap.get(deviceType)!;
 
     const device = devices[deviceIndex];
 
@@ -134,7 +134,7 @@ export class InputManager {
   }
 
   public getPresenter(deviceType: InputDeviceType): InputButtonCodePresenter {
-    const presenter = this.presenters.get(deviceType);
+    const presenter = this.presenters.get(deviceType)!;
 
     return presenter;
   }
@@ -163,12 +163,12 @@ export class InputManager {
   }
 
   public getActiveDevice(): InputDevice {
-    return this.getDevice(this.activeDeviceType);
+    return this.getDevice(this.activeDeviceType!);
   }
 
   // Find first binding that suits active device
   public getActiveBinding(): InputBinding {
-    let foundBinding = null;
+    let foundBinding: InputBinding | null = null;
 
     this.bindings.forEach((binding, bindingType) => {
       // Null check tells if binding was already selected in prev iterations
@@ -191,7 +191,7 @@ export class InputManager {
 
   // Find first binding type that suits active device
   public getActiveBindingType(): InputBindingType {
-    let foundBindingType = null;
+    let foundBindingType: InputBindingType | null = null;
 
     this.bindings.forEach((binding, bindingType) => {
       // Null check tells if binding was already selected in prev iterations

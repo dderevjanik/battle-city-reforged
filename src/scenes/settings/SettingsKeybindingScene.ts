@@ -41,19 +41,19 @@ enum State {
 
 export class SettingsKeybindingScene extends GameScene {
   private state = State.Navigation;
-  private selectedBindingType: InputBindingType;
-  private inputManager: InputManager;
-  private selectedControl: InputControl = null;
+  private selectedBindingType!: InputBindingType;
+  private inputManager!: InputManager;
+  private selectedControl: InputControl | null = null;
 
-  private title: SceneMenuTitle;
-  private modal: InputButtonCaptureModal;
-  private deviceSelectorItem: SelectorMenuItem<InputBindingType>;
-  private topDividerItem: DividerMenuItem;
-  private botDividerItem: DividerMenuItem;
-  private bindingItems: TextMenuItem[];
-  private resetItem: TextMenuItem;
-  private backItem: TextMenuItem;
-  private menu: SceneMenu;
+  private title!: SceneMenuTitle;
+  private modal!: InputButtonCaptureModal;
+  private deviceSelectorItem!: SelectorMenuItem<InputBindingType>;
+  private topDividerItem!: DividerMenuItem;
+  private botDividerItem!: DividerMenuItem;
+  private bindingItems!: TextMenuItem[];
+  private resetItem!: TextMenuItem;
+  private backItem!: TextMenuItem;
+  private menu!: SceneMenu;
 
   protected setup(context: GameContext): void {
     this.inputManager = context.inputManager;
@@ -118,7 +118,7 @@ export class SettingsKeybindingScene extends GameScene {
       if (codes.length > 0) {
         const code = codes[0];
 
-        this.updateBinding(this.selectedControl, code);
+        this.updateBinding(this.selectedControl!, code);
         this.updateMenu();
         this.closeModal();
       }

@@ -15,12 +15,12 @@ import { GameSceneType } from '../GameSceneType';
 const VICTORY_PLAYS = 3;
 
 export class MainVictoryScene extends GameScene {
-  private heading: VictoryHeading;
-  private audioManager: AudioManager;
-  private map: VictoryMap;
-  private tank: PlayerTank;
-  private behavior: VictoryTankBehavior;
-  private victorySound: Sound;
+  private heading!: VictoryHeading;
+  private audioManager!: AudioManager;
+  private map!: VictoryMap;
+  private tank!: PlayerTank;
+  private behavior!: VictoryTankBehavior;
+  private victorySound!: Sound;
   private victoryPlays = 0;
 
   protected setup({ audioManager, audioLoader }: GameContext): void {

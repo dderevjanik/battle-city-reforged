@@ -36,7 +36,7 @@ export class AudioLoader {
 
   public load(id: string): Sound {
     if (this.sounds.has(id)) {
-      return this.sounds.get(id);
+      return this.sounds.get(id)!;
     }
 
     if (this.soundManager === null) {

@@ -18,12 +18,12 @@ import { LevelControlsLocationParams } from './LevelControlsLocationParams';
 import { LevelPlayLocationParams } from './LevelPlayLocationParams';
 
 export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
-  private background: GameObject;
-  private title: SpriteText;
-  private selector: SelectorMenuItem<InputVariant>;
-  private levelHint: LevelInputHint;
-  private continueHint: GameObject;
-  private session: Session;
+  private background!: GameObject;
+  private title!: SpriteText;
+  private selector!: SelectorMenuItem<InputVariant>;
+  private levelHint!: LevelInputHint;
+  private continueHint!: GameObject;
+  private session!: Session;
 
   protected setup({
     inputHintSettings,
@@ -98,12 +98,12 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
 
         // If primary player has picked gamepad - remove all variants using
         // same gamepad device for secondary player
-        const primaryDeviceType = primaryPlayerVariant.bindingType.deviceType;
+        const primaryDeviceType = primaryPlayerVariant!.bindingType.deviceType;
         const choiceDeviceType = choiceVariant.bindingType.deviceType;
         const isSameGamepadDevice =
           primaryDeviceType === InputDeviceType.Gamepad &&
           choiceDeviceType === InputDeviceType.Gamepad &&
-          primaryPlayerVariant.deviceIndex === choiceVariant.deviceIndex;
+          primaryPlayerVariant!.deviceIndex === choiceVariant.deviceIndex;
         if (isSameGamepadDevice) {
           return false;
         }
@@ -202,7 +202,7 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
       const selectedInputVariant = this.selector.getValue();
 
       const playerSession = this.session.getPlayer(this.params.playerIndex);
-      playerSession.setInputVariant(selectedInputVariant);
+      playerSession.setInputVariant(selectedInputVariant!);
 
       // If player is not alone - configure next player
       if (this.session.isMultiplayer() && this.params.playerIndex === 0) {

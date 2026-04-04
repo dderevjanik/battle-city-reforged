@@ -20,7 +20,7 @@ export class ColorSpriteFontGenerator {
     this.spriteFontLoader = spriteFontLoader;
   }
 
-  public get(fontId: string, color: string = null): SpriteFont {
+  public get(fontId: string, color: string | null = null): SpriteFont {
     const item = this.map.get(fontId);
     if (item === undefined) {
       throw new Error(`Font "${fontId}" not registered`);
@@ -81,24 +81,24 @@ export class ColorSpriteFontGenerator {
       item.canvas = canvas;
     }
 
-    const context = canvas.getContext('2d');
+    const context = canvas!.getContext('2d')!;
 
-    const prevHeight = canvas.height;
+    const prevHeight = canvas!.height;
 
     let prevImageData = null;
     if (!isNewCanvas) {
       // Make sure to save all drawings, because we are going to resize the
       // canvas
-      prevImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      prevImageData = context.getImageData(0, 0, canvas!.width, canvas!.height);
 
       // Calculate new area taken by all generated fonts on canvas.
       // New generated font will be added at the bottom.
-      const prevHeight = canvas.height;
+      const prevHeight = canvas!.height;
       const nextHeight = prevHeight + sourceRect.height;
 
       // WARNING: all drawing is erased when canvas is resized.
       // Update canvas size to include area for new generated font
-      canvas.height = nextHeight;
+      canvas!.height = nextHeight;
     }
 
     const generatedY = isNewCanvas ? 0 : prevHeight;
@@ -140,11 +140,11 @@ export class ColorSpriteFontGenerator {
     // because composite operations are applied on entire canvas and will
     // screw up existing fonts if they are drawn earlier.
     if (!isNewCanvas) {
-      context.putImageData(prevImageData, 0, 0);
+      context.putImageData(prevImageData!, 0, 0);
     }
 
     // Use canvas as image source for rendering the font
-    const generatedImage = new CanvasImage(canvas);
+    const generatedImage = new CanvasImage(canvas!);
 
     // Clone font config to specify location of characters on canvas
     const generatedFontConfig = Object.assign({}, defaultFont.config, {

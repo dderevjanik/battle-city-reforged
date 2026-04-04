@@ -7,7 +7,7 @@
     "moduleResolution": "node10",
     "ignoreDeprecations": "5.0",
     "esModuleInterop": true,
-    "strict": false,
+    "strict": true,
     "skipLibCheck": true,
     "typeRoots": ["./src/types", "./node_modules/@types"]
   }

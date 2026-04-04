@@ -11,7 +11,7 @@ export class Spawn extends GameObject {
   public zIndex = config.SPAWN_Z_INDEX;
   public painter = new SpritePainter();
   public completed = new Subject();
-  private animation: Animation<Sprite>;
+  private animation!: Animation<Sprite>;
 
   constructor() {
     super(64, 64);

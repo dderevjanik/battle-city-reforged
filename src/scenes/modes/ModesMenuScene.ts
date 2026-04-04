@@ -6,10 +6,10 @@ import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
 export class ModesMenuScene extends GameScene {
-  private title: SceneMenuTitle;
-  private customItem: TextMenuItem;
-  private backItem: TextMenuItem;
-  private menu: SceneMenu;
+  private title!: SceneMenuTitle;
+  private customItem!: TextMenuItem;
+  private backItem!: TextMenuItem;
+  private menu!: SceneMenu;
 
   protected setup(): void {
     this.title = new SceneMenuTitle('MODES');

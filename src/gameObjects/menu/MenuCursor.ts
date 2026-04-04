@@ -9,7 +9,7 @@ import { TankMoveAnimation } from '../../tank/TankMoveAnimation';
 
 export class MenuCursor extends GameObject {
   public readonly painter = new SpritePainter();
-  private animation: Animation<TankAnimationFrame>;
+  private animation!: Animation<TankAnimationFrame>;
 
   constructor() {
     super(60, 60);

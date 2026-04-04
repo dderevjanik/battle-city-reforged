@@ -1,3 +1,4 @@
+// @ts-ignore
 import Stats from 'stats.js';
 
 import { Logger } from './core/Logger';
@@ -98,17 +99,17 @@ if (config.IS_DEV) {
 
 async function main(): Promise<void> {
   log.time('Rect font preload');
-  loadingElement.textContent = 'Loading rects fonts...';
+  loadingElement!.textContent ='Loading rects fonts...';
   await rectFontLoader.preloadAll();
   log.timeEnd('Rect font preload');
 
   log.time('Sprite font preload');
-  loadingElement.textContent = 'Loading sprite fonts...';
+  loadingElement!.textContent ='Loading sprite fonts...';
   await spriteFontLoader.preloadAllAsync();
   log.timeEnd('Sprite font preload');
 
   log.time('Color sprite font generation');
-  loadingElement.textContent = 'Generating sprite font colors...';
+  loadingElement!.textContent ='Generating sprite font colors...';
   colorSpriteFontGenerator.generate(
     config.PRIMARY_SPRITE_FONT_ID,
     config.COLOR_WHITE,
@@ -128,16 +129,16 @@ async function main(): Promise<void> {
   log.timeEnd('Color sprite font generation');
 
   log.time('Sprites preload');
-  loadingElement.textContent = 'Loading sprites...';
+  loadingElement!.textContent ='Loading sprites...';
   await spriteLoader.preloadAllAsync();
   log.timeEnd('Sprites preload');
 
   log.time('Input bindings load');
-  loadingElement.textContent = 'Loading input bindings...';
+  loadingElement!.textContent ='Loading input bindings...';
   inputManager.loadAllBindings();
   log.timeEnd('Input bindings load');
 
-  document.body.removeChild(loadingElement);
+  document.body.removeChild(loadingElement!);
 
   // Create Phaser game — it will append its own canvas to document.body
   const phaserGame = createPhaserGame({
@@ -151,5 +152,5 @@ async function main(): Promise<void> {
 
 main().catch((err) => {
   console.error('Failed to start game:', err);
-  loadingElement.textContent = `ERROR: ${err.message}`;
+  loadingElement!.textContent =`ERROR: ${err.message}`;
 });

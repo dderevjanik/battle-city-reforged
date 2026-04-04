@@ -7,11 +7,11 @@ import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
 import { GameScene } from '../GameScene';
 
 export class SettingsAudioScene extends GameScene {
-  private title: SceneMenuTitle;
-  private muteItem: TextMenuItem;
-  private backItem: TextMenuItem;
-  private menu: SceneMenu;
-  private audioManager: AudioManager;
+  private title!: SceneMenuTitle;
+  private muteItem!: TextMenuItem;
+  private backItem!: TextMenuItem;
+  private menu!: SceneMenu;
+  private audioManager!: AudioManager;
 
   protected setup({ audioManager }: GameContext): void {
     this.audioManager = audioManager;

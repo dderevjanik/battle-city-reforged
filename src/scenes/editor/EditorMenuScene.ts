@@ -27,23 +27,23 @@ enum MenuState {
 }
 
 export class EditorMenuScene extends GameScene<EditorLocationParams> {
-  private title: SceneMenuTitle;
-  private menu: SceneMenu;
-  private newItem: TextMenuItem;
-  private loadItem: TextMenuItem;
-  private saveItem: TextMenuItem;
-  private playtestItem: TextMenuItem;
-  private mapItem: TextMenuItem;
-  private enemyItem: TextMenuItem;
-  private exitItem: TextMenuItem;
-  private alertModal: AlertModal;
-  private confirmModal: ConfirmModal;
-  private mapConfig: MapConfig = null;
+  private title!: SceneMenuTitle;
+  private menu!: SceneMenu;
+  private newItem!: TextMenuItem;
+  private loadItem!: TextMenuItem;
+  private saveItem!: TextMenuItem;
+  private playtestItem!: TextMenuItem;
+  private mapItem!: TextMenuItem;
+  private enemyItem!: TextMenuItem;
+  private exitItem!: TextMenuItem;
+  private alertModal!: AlertModal;
+  private confirmModal!: ConfirmModal;
+  private mapConfig: MapConfig | null = null;
   private menuState = MenuState.Navigation;
   private loadState = EditorLoadState.None;
-  private session: Session;
-  private inputHintSettings: InputHintSettings;
-  private mapLoader: MapLoader;
+  private session!: Session;
+  private inputHintSettings!: InputHintSettings;
+  private mapLoader!: MapLoader;
 
   protected setup({
     inputHintSettings,
@@ -174,7 +174,7 @@ export class EditorMenuScene extends GameScene<EditorLocationParams> {
 
   private createLocationParams(): EditorLocationParams {
     return {
-      mapConfig: this.mapConfig,
+      mapConfig: this.mapConfig!,
       loadState: this.loadState,
     };
   }
@@ -229,7 +229,7 @@ export class EditorMenuScene extends GameScene<EditorLocationParams> {
   };
 
   private handleSaveSelected = (): void => {
-    const json = this.mapConfig.toJSON();
+    const json = this.mapConfig!.toJSON();
     const fileName = 'map.json';
 
     const fileSaver = new FileSaver();
@@ -242,7 +242,7 @@ export class EditorMenuScene extends GameScene<EditorLocationParams> {
     // playtest we will end up here with remembered state.
     this.navigator.push(GameSceneType.EditorMenu, this.createLocationParams());
 
-    const memoryMapListReader = new MemoryMapListReader([this.mapConfig]);
+    const memoryMapListReader = new MemoryMapListReader([this.mapConfig!]);
     this.mapLoader.setListReader(memoryMapListReader);
 
     this.session.setPlaytest();

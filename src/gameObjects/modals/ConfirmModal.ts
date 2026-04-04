@@ -28,11 +28,11 @@ export class ConfirmModal extends GameObject {
   public declined = new Subject();
   public zIndex = config.MODAL_Z_INDEX;
   private options: ConfirmModalOptions;
-  private container: GameObject;
-  private text: SpriteText;
-  private acceptItem: TextMenuItem;
-  private declineItem: TextMenuItem;
-  private menu: Menu;
+  private container!: GameObject;
+  private text!: SpriteText;
+  private acceptItem!: TextMenuItem;
+  private declineItem!: TextMenuItem;
+  private menu!: Menu;
 
   constructor(options: ConfirmModalOptions = {}) {
     super();

@@ -62,7 +62,7 @@ export class VictoryMap extends GameObject {
     this.destroy();
   }
 
-  private handleTileDestroyed = (event): void => {
+  private handleTileDestroyed = (event: any): void => {
     // Whenever tank destroys first tile - the whole show begins
     this.shouldDestroy = true;
 

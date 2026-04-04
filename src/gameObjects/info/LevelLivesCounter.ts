@@ -5,7 +5,7 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import { SpriteText } from '../text/SpriteText';
 
 export class LevelLivesCounter extends GameObject {
-  private title: SpriteText;
+  private title!: SpriteText;
   private livesText = new SpriteText('0');
   private icon = new GameObject(28, 32);
   private playerIndex: number;

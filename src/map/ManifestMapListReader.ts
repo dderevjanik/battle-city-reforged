@@ -31,7 +31,7 @@ export class ManifestMapListReader extends MapListReader {
 
       this.loaded.notify(config);
     } catch (err) {
-      this.error.notify(err);
+      this.error.notify(err as Error);
     }
   }
 

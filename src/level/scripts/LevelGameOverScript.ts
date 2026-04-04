@@ -12,7 +12,7 @@ export class LevelGameOverScript extends LevelScript {
   // Disable by default
   protected enabled = false;
 
-  private notice: GameOverNotice;
+  private notice!: GameOverNotice;
   private moveBlockTimer = new Timer();
   private totalTimer = new Timer();
 

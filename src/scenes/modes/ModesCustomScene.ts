@@ -13,16 +13,16 @@ import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
 export class ModesCustomScene extends GameScene {
-  private title: SceneMenuTitle;
-  private description: MenuDescription;
-  private loadItem: TextMenuItem;
-  private singlePlayerItem: TextMenuItem;
-  private multiPlayerItem: TextMenuItem;
-  private backItem: TextMenuItem;
-  private menu: SceneMenu;
-  private mapLoader: MapLoader;
-  private session: Session;
-  private fileMapListReader: FileMapListReader = null;
+  private title!: SceneMenuTitle;
+  private description!: MenuDescription;
+  private loadItem!: TextMenuItem;
+  private singlePlayerItem!: TextMenuItem;
+  private multiPlayerItem!: TextMenuItem;
+  private backItem!: TextMenuItem;
+  private menu!: SceneMenu;
+  private mapLoader!: MapLoader;
+  private session!: Session;
+  private fileMapListReader: FileMapListReader | null = null;
 
   protected setup({ mapLoader, session }: GameContext): void {
     this.mapLoader = mapLoader;
@@ -86,13 +86,13 @@ export class ModesCustomScene extends GameScene {
   };
 
   private handleSinglePlayerSelected = (): void => {
-    this.mapLoader.setListReader(this.fileMapListReader);
+    this.mapLoader.setListReader(this.fileMapListReader!);
     this.navigator.replace(GameSceneType.LevelSelection);
   };
 
   private handleMultiPlayerSelected = (): void => {
     this.session.setMultiplayer();
-    this.mapLoader.setListReader(this.fileMapListReader);
+    this.mapLoader.setListReader(this.fileMapListReader!);
     this.navigator.replace(GameSceneType.LevelSelection);
   };
 

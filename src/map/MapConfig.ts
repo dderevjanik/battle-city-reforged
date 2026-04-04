@@ -40,7 +40,7 @@ export class MapConfig {
     }
 
     const terrainError = TerrainFactory.validateRegionConfigs(
-      validatedDto.terrain.regions,
+      validatedDto.terrain!.regions!,
     );
     if (terrainError !== undefined) {
       throw terrainError;
@@ -50,11 +50,11 @@ export class MapConfig {
   }
 
   public addTerrainRegion(region: TerrainRegionConfig): void {
-    this.dto.terrain.regions.push(region);
+    this.dto.terrain!.regions!.push(region);
   }
 
   public clearTerrainRect(rectToClear: Rect): void {
-    const { regions } = this.dto.terrain;
+    const regions = this.dto.terrain!.regions!;
 
     // Iterate in reverse because we are removing items from array
     for (let i = regions.length - 1; i >= 0; i -= 1) {
@@ -74,11 +74,11 @@ export class MapConfig {
   }
 
   public getTerrainRegions(): TerrainRegionConfig[] {
-    return this.dto.terrain.regions;
+    return this.dto.terrain!.regions!;
   }
 
   public getPlayerSpawnPositions(): Vector[] {
-    const dtoLocations = this.dto.spawn.player.locations;
+    const dtoLocations = this.dto.spawn!.player!.locations!;
 
     let locations = config.PLAYER_DEFAULT_SPAWN_POSITIONS;
 
@@ -95,7 +95,7 @@ export class MapConfig {
   }
 
   public getEnemySpawnPositions(): Vector[] {
-    const dtoLocations = this.dto.spawn.enemy.locations;
+    const dtoLocations = this.dto.spawn!.enemy!.locations!;
 
     let locations = config.ENEMY_DEFAULT_SPAWN_POSITIONS;
 
@@ -112,19 +112,19 @@ export class MapConfig {
   }
 
   public getEnemySpawnList(): TankType[] {
-    const types = this.dto.spawn.enemy.list.map((item) => {
+    const types = this.dto.spawn!.enemy!.list!.map((item) => {
       return new TankType(TankParty.Enemy, item.tier, item.drop);
     });
     return types;
   }
 
   public isEnemySpawnListEmpty(): boolean {
-    return this.dto.spawn.enemy.list.length === 0;
+    return this.dto.spawn!.enemy!.list!.length === 0;
   }
 
   public fillEnemySpawnList(type: TankType): void {
     for (let i = 0; i < config.ENEMY_MAX_TOTAL_COUNT; i += 1) {
-      this.dto.spawn.enemy.list[i] = {
+      this.dto.spawn!.enemy!.list![i] = {
         tier: type.tier,
         drop: type.hasDrop,
       };
@@ -132,7 +132,7 @@ export class MapConfig {
   }
 
   public setEnemySpawnListItem(index: number, type: TankType): void {
-    this.dto.spawn.enemy.list[index] = {
+    this.dto.spawn!.enemy!.list![index] = {
       tier: type.tier,
       drop: type.hasDrop,
     };

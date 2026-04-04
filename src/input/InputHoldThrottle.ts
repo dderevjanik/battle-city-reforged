@@ -27,7 +27,7 @@ export class InputHoldThrottle {
     this.controls = controls;
     this.callback = callback;
     this.options = Object.assign({}, DEFAULT_OPTIONS, options);
-    this.timer = new Timer(options.activationDelay);
+    this.timer = new Timer(options.activationDelay ?? null);
   }
 
   public update(inputMethod: InputMethod, deltaTime: number): void {
@@ -35,13 +35,13 @@ export class InputHoldThrottle {
       inputMethod.isDownAny(this.controls) ||
       inputMethod.isUpAny(this.controls)
     ) {
-      this.timer.reset(this.options.activationDelay);
+      this.timer.reset(this.options.activationDelay!);
     }
 
     if (inputMethod.isHoldAny(this.controls)) {
       if (this.timer.isDone()) {
         this.callback();
-        this.timer.reset(this.options.delay);
+        this.timer.reset(this.options.delay!);
       } else {
         this.timer.update(deltaTime);
       }

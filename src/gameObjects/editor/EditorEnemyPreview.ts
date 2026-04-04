@@ -10,7 +10,7 @@ import * as config from '../../config';
 
 export class EditorEnemyPreview extends GameObject {
   public painter = new RectPainter(null, config.COLOR_WHITE);
-  private container: GameObject;
+  private container!: GameObject;
   private animations: Animation<TankAnimationFrame>[] = [];
   private types: TankType[];
   private selectedIndex = -1;

@@ -47,6 +47,8 @@ export interface MapDtoTerrain {
 export interface MapDto {
   version?: number;
   tileset?: TilesetId;
+  width: number;
+  height: number;
   spawn: MapDtoSpawn;
   terrain?: MapDtoTerrain;
 }
@@ -56,6 +58,8 @@ const DEFAULT_VERSION = 1;
 export const MapDtoSchema = Joi.object<MapDto>({
   version: Joi.number().default(DEFAULT_VERSION),
   tileset: Joi.string().valid(...Object.values(TilesetId)).default(TilesetId.Classic),
+  width: Joi.number().integer().min(1).required(),
+  height: Joi.number().integer().min(1).required(),
   spawn: Joi.object({
     enemy: Joi.object({
       spawnDelay: Joi.number().required(),

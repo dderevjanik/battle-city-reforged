@@ -41,7 +41,7 @@ export class EditorMapScene extends GameScene<EditorLocationParams> {
     );
     this.root.add(this.map);
 
-    this.field = new EditorField();
+    this.field = new EditorField(this.mapConfig.getFieldWidth(), this.mapConfig.getFieldHeight());
     this.field.position.set(
       config.BORDER_LEFT_WIDTH,
       config.BORDER_TOP_BOTTOM_HEIGHT,

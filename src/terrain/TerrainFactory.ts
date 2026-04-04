@@ -23,13 +23,14 @@ export class TerrainFactory {
   public static createMapFromRegionConfigs(
     regionConfigs: TerrainRegionConfig[],
     tilesetId: TilesetId = TilesetId.Classic,
+    fieldSize: number = config.FIELD_SIZE,
   ): TerrainTile[] {
     const rectsByType = this.mapRegionConfigsByType(regionConfigs);
 
     const tiles: TerrainTile[] = [];
 
     rectsByType.forEach((regionRects, type) => {
-      const regionTiles = this.createMapFromRegions(type, regionRects, tilesetId);
+      const regionTiles = this.createMapFromRegions(type, regionRects, tilesetId, fieldSize);
       tiles.push(...regionTiles);
     });
 
@@ -42,9 +43,10 @@ export class TerrainFactory {
     type: TerrainType,
     regionRects: Rect[],
     tilesetId: TilesetId = TilesetId.Classic,
+    fieldSize: number = config.FIELD_SIZE,
   ): TerrainTile[] {
     if (type === TerrainType.Brick) {
-      return this.createMapFromBrickRegions(regionRects, tilesetId);
+      return this.createMapFromBrickRegions(regionRects, tilesetId, fieldSize);
     }
 
     const tiles: TerrainTile[] = [];
@@ -163,9 +165,10 @@ export class TerrainFactory {
   private static createMapFromBrickRegions(
     regionRects: Rect[],
     tilesetId: TilesetId,
+    fieldSize: number,
   ): TerrainTile[] {
     const superTileSize = config.BRICK_SUPER_TILE_SIZE;
-    const superTileCount = config.FIELD_SIZE / superTileSize;
+    const superTileCount = fieldSize / superTileSize;
 
     const superGrid: BrickTerrainTile[][][] = [];
 
@@ -177,7 +180,7 @@ export class TerrainFactory {
     }
 
     const subTileSize = config.BRICK_TILE_SIZE;
-    const subTileCount = config.FIELD_SIZE / subTileSize;
+    const subTileCount = fieldSize / subTileSize;
 
     const ratio = superTileSize / subTileSize;
 

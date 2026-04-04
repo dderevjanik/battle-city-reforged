@@ -16,7 +16,7 @@ export class EditorMap extends GameObject {
   private brushes!: EditorBrush[];
 
   constructor(mapConfig: MapConfig) {
-    super(config.FIELD_SIZE, config.FIELD_SIZE);
+    super(mapConfig.getFieldWidth(), mapConfig.getFieldHeight());
 
     this.mapConfig = mapConfig;
   }

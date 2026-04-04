@@ -1,5 +1,8 @@
 {
+  "version": 1,
   "tileset": "classic",
+  "width": 832,
+  "height": 832,
   "spawn": {
     "enemy": {
       "spawnDelay": 3,
@@ -613,6 +616,5 @@
         "height": 64
       }
     ]
-  },
-  "version": 1
+  }
 }

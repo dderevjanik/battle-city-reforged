@@ -22,6 +22,8 @@ export class MapConfig {
 
   constructor() {
     this.dto = this.fillAndValidate({
+      width: config.FIELD_SIZE,
+      height: config.FIELD_SIZE,
       spawn: {
         enemy: {
           spawnDelay: config.ENEMY_SPAWN_DELAY,
@@ -82,6 +84,14 @@ export class MapConfig {
         regions.splice(i, 1);
       }
     }
+  }
+
+  public getFieldWidth(): number {
+    return this.dto.width;
+  }
+
+  public getFieldHeight(): number {
+    return this.dto.height;
   }
 
   public getTileset(): TilesetId {

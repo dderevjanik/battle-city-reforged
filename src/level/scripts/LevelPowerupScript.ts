@@ -30,7 +30,7 @@ export class LevelPowerupScript extends LevelScript {
     this.timer = new Timer();
     this.timer.done.addListener(this.handleTimer);
 
-    this.grid = new PowerupGrid();
+    this.grid = new PowerupGrid(this.mapConfig.getFieldWidth(), this.mapConfig.getFieldHeight());
     this.blockGridDefaults();
     this.blockGridInitialMap();
 

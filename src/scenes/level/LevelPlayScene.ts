@@ -76,7 +76,14 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       this.debugCollisionMenu.show();
     }
 
-    this.world = new LevelWorld(this.root);
+    this.eventBus = new LevelEventBus();
+
+    this.inputManager = inputManager;
+    this.session = session;
+
+    const { mapConfig } = this.params;
+
+    this.world = new LevelWorld(this.root, mapConfig.getFieldWidth(), mapConfig.getFieldHeight());
 
     this.root.add(new Border());
 
@@ -86,15 +93,8 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     );
     this.root.add(this.world.field);
 
-    this.eventBus = new LevelEventBus();
-
-    this.inputManager = inputManager;
-    this.session = session;
-
-    const { mapConfig } = this.params;
-
     const terrainRegions = mapConfig.getTerrainRegions();
-    const tiles = TerrainFactory.createMapFromRegionConfigs(terrainRegions, mapConfig.getTileset());
+    const tiles = TerrainFactory.createMapFromRegionConfigs(terrainRegions, mapConfig.getTileset(), mapConfig.getFieldWidth());
 
     for (const tile of tiles) {
       tile.destroyed.addListener(() => {

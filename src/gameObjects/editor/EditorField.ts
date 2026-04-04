@@ -13,8 +13,8 @@ import { EditorTankDummy } from './EditorTankDummy';
 export class EditorField extends GameObject {
   private base!: Base;
 
-  constructor() {
-    super(config.FIELD_SIZE, config.FIELD_SIZE);
+  constructor(width: number, height: number) {
+    super(width, height);
   }
 
   protected setup({ collisionSystem }: GameContext): void {

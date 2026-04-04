@@ -18,7 +18,7 @@ import { GameContext } from './game/GameUpdateArgs';
 import { Session } from './game/Session';
 import { InputHintSettings } from './input/InputHintSettings';
 import { InputManager } from './input/InputManager';
-import { ManifestMapListReader } from './map/ManifestMapListReader';
+import { ManifestMapListReader } from './map/MapListReaders';
 import { MapLoader } from './map/MapLoader';
 import { PointsHighscoreManager } from './points/PointsHighscoreManager';
 

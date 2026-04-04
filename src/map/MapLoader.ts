@@ -1,7 +1,7 @@
 import { Subject } from '../core/Subject';
 
 import { MapConfig } from './MapConfig';
-import { MapListReader } from './MapListReader';
+import { MapListReader } from './MapListReaders';
 
 // Container for map list readers used in the game. Readers can be switched
 // in runtime, so maps can be loaded from different sources.

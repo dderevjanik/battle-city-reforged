@@ -6,7 +6,7 @@ import { MenuDescription } from '../../gameObjects/menu/MenuDescription';
 import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
-import { FileMapListReader } from '../../map/FileMapListReader';
+import { FileMapListReader } from '../../map/MapListReaders';
 import { MapLoader } from '../../map/MapLoader';
 
 import { GameScene } from '../GameScene';

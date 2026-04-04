@@ -11,7 +11,7 @@ import { InputHintSettings } from '../../input/InputHintSettings';
 import { MapConfig } from '../../map/MapConfig';
 import { MapFileReader } from '../../map/MapFileReader';
 import { MapLoader } from '../../map/MapLoader';
-import { MemoryMapListReader } from '../../map/MemoryMapListReader';
+import { MemoryMapListReader } from '../../map/MapListReaders';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';

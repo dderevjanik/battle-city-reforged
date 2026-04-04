@@ -8,7 +8,7 @@ import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { InputButtonCaptureModal } from '../../gameObjects/modals/InputButtonCaptureModal';
 import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
 import { InputBindingType } from '../../input/InputBindingType';
-import { InputButtonCodePresenter } from '../../input/InputButtonCodePresenter';
+import { InputButtonCodePresenter } from '../../input/InputButtonCodePresenters';
 import { InputControl } from '../../input/InputControl';
 import { InputControlPresenter } from '../../input/InputControlPresenter';
 import { InputManager } from '../../input/InputManager';

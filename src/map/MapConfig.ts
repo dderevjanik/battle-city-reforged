@@ -5,8 +5,7 @@ import { TerrainFactory } from '../terrain/TerrainFactory';
 import { TerrainRegionConfig } from '../terrain/TerrainRegionConfig';
 import * as config from '../config';
 
-import { MapDto } from './MapDto';
-import { MapDtoSchema } from './MapDtoSchema';
+import { MapDto, MapDtoSchema } from './MapDto';
 
 export interface MapConfigToJsonOptions {
   pretty?: boolean;

@@ -44,8 +44,6 @@ export class Base extends GameObject {
     this.heart.died.addListener(this.died.notify);
     this.add(this.heart);
 
-    this.setTiles(TerrainType.Brick);
-
     this.fadeAnimation = new Animation([TerrainType.Brick, TerrainType.Steel], {
       delay: 0.25,
       loop: 7,

@@ -10,7 +10,6 @@ import { GameScene } from '../GameScene';
 export class SettingsInterfaceScene extends GameScene {
   private title!: SceneMenuTitle;
   private levelControlsHintItem!: TextMenuItem;
-  private editorControlsHintItem!: TextMenuItem;
   private backItem!: TextMenuItem;
   private menu!: SceneMenu;
   private audioManager!: AudioManager;
@@ -30,19 +29,11 @@ export class SettingsInterfaceScene extends GameScene {
       this.handleLevelControlsHintSelected,
     );
 
-    this.editorControlsHintItem = new TextMenuItem(
-      this.getEditorControlsHintText(),
-    );
-    this.editorControlsHintItem.selected.addListener(
-      this.handleEditorControlsHintSelected,
-    );
-
     this.backItem = new TextMenuItem('BACK');
     this.backItem.selected.addListener(this.handleBackSelected);
 
     const menuItems = [
       this.levelControlsHintItem,
-      this.editorControlsHintItem,
       this.backItem,
     ];
 
@@ -60,15 +51,6 @@ export class SettingsInterfaceScene extends GameScene {
     this.levelControlsHintItem.setText(this.getLevelControlsHintText());
   };
 
-  private handleEditorControlsHintSelected = (): void => {
-    const showEditorHint = this.inputHintSettings.getShowEditorHint();
-    const nextShowEditorHint = !showEditorHint;
-
-    this.inputHintSettings.setShowEditorHint(nextShowEditorHint);
-
-    this.editorControlsHintItem.setText(this.getEditorControlsHintText());
-  };
-
   private handleBackSelected = (): void => {
     this.navigator.back();
   };
@@ -83,23 +65,6 @@ export class SettingsInterfaceScene extends GameScene {
       checkmark = '+';
     }
 
-    const text = `GAMEPLAY CONTROLS HINT [${checkmark}]`;
-
-    return text;
-  }
-
-  private getEditorControlsHintText(): string {
-    const isEnabled = this.inputHintSettings.getShowEditorHint();
-
-    let checkmark = ' ';
-    if (isEnabled === null) {
-      checkmark = '?';
-    } else if (isEnabled) {
-      checkmark = '+';
-    }
-
-    const text = `CONSTRUCT. CONTROLS HINT [${checkmark}]`;
-
-    return text;
+    return `GAMEPLAY CONTROLS HINT [${checkmark}]`;
   }
 }

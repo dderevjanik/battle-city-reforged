@@ -140,7 +140,7 @@ export class LevelLoadScene extends GameScene {
 
   private handleAlertAccepted = (): void => {
     if (this.session.isPlaytest()) {
-      this.navigator.replace(GameSceneType.EditorMenu);
+      this.navigator.replace(GameSceneType.MainMenu);
       return;
     }
 

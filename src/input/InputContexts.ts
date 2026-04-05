@@ -1,22 +1,6 @@
 import { InputContext } from './InputContext';
 import { InputControl } from './InputControl';
 
-export const EditorControlsInputContext: InputContext = {
-  Skip: [InputControl.Select, InputControl.PrimaryAction],
-};
-
-export const EditorMapInputContext: InputContext = {
-  MoveUp: [InputControl.Up],
-  MoveDown: [InputControl.Down],
-  MoveLeft: [InputControl.Left],
-  MoveRight: [InputControl.Right],
-  Draw: [InputControl.PrimaryAction],
-  Erase: [InputControl.SecondaryAction],
-  NextBrush: [InputControl.FastForward],
-  PrevBrush: [InputControl.Rewind],
-  Menu: [InputControl.Select],
-};
-
 export const LevelControlsInputContext: InputContext = {
   Continue: [InputControl.Select, InputControl.PrimaryAction],
 };

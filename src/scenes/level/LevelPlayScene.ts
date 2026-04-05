@@ -294,7 +294,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.inputManager.listen();
 
     if (this.session.isPlaytest()) {
-      this.navigator.replace(GameSceneType.EditorMenu);
+      this.navigator.replace(GameSceneType.MainMenu);
       return;
     }
 
@@ -303,7 +303,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
 
   private handleLevelWinCompleted = (): void => {
     if (this.session.isPlaytest()) {
-      this.navigator.replace(GameSceneType.EditorMenu);
+      this.navigator.replace(GameSceneType.MainMenu);
       return;
     }
 

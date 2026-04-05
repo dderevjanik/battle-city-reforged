@@ -1,10 +1,6 @@
 import Phaser from 'phaser';
 
 import { GameContext } from '../../game/GameUpdateArgs';
-import { EditorControlsScene } from '../../scenes/editor/EditorControlsScene';
-import { EditorEnemyScene } from '../../scenes/editor/EditorEnemyScene';
-import { EditorMapScene } from '../../scenes/editor/EditorMapScene';
-import { EditorMenuScene } from '../../scenes/editor/EditorMenuScene';
 import { LevelControlsScene } from '../../scenes/level/LevelControlsScene';
 import { LevelLoadScene } from '../../scenes/level/LevelLoadScene';
 import { LevelPlayScene } from '../../scenes/level/LevelPlayScene';
@@ -21,18 +17,18 @@ import { SettingsAudioScene } from '../../scenes/settings/SettingsAudioScene';
 import { SettingsInterfaceScene } from '../../scenes/settings/SettingsInterfaceScene';
 import { SettingsKeybindingScene } from '../../scenes/settings/SettingsKeybindingScene';
 import { SettingsMenuScene } from '../../scenes/settings/SettingsMenuScene';
+import { MapConfig } from '../../map/MapConfig';
+import { MemoryMapListReader } from '../../map/MapListReaders';
 import { GameSceneRouter } from '../../scenes/GameSceneRouter';
 import { GameSceneType } from '../../scenes/GameSceneType';
+
+export const PLAYTEST_STORAGE_KEY = 'cattle-bity-playtest';
 
 import spriteManifest from '../../../data/sprite.manifest.json';
 import audioManifest from '../../../data/audio.manifest.json';
 
 /** Maps each GameSceneType to its concrete class. */
 const SCENE_REGISTRY: [GameSceneType, typeof Phaser.Scene][] = [
-  [GameSceneType.EditorControls, EditorControlsScene],
-  [GameSceneType.EditorEnemy, EditorEnemyScene],
-  [GameSceneType.EditorMap, EditorMapScene],
-  [GameSceneType.EditorMenu, EditorMenuScene],
   [GameSceneType.LevelControls, LevelControlsScene],
   [GameSceneType.LevelLoad, LevelLoadScene],
   [GameSceneType.LevelPlay, LevelPlayScene],
@@ -108,6 +104,23 @@ export class BridgeScene extends Phaser.Scene {
 
     // Hand off to the first scene (this also stops BridgeScene)
     router.setScenePlugin(this.scene);
+
+    const playtestJson = localStorage.getItem(PLAYTEST_STORAGE_KEY);
+    if (playtestJson) {
+      localStorage.removeItem(PLAYTEST_STORAGE_KEY);
+      try {
+        const mapConfig = new MapConfig();
+        mapConfig.fromJSON(playtestJson);
+        this.gameContext.mapLoader.setListReader(new MemoryMapListReader([mapConfig]));
+        this.gameContext.session.setPlaytest();
+        this.gameContext.session.start(1, 1);
+        router.start(GameSceneType.LevelLoad);
+        return;
+      } catch (err) {
+        console.warn('Playtest map failed to load, falling back to menu:', err);
+      }
+    }
+
     router.start(GameSceneType.MainMenu);
   }
 }

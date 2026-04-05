@@ -29,7 +29,6 @@ export class MainMenuScene extends GameScene {
   private singlePlayerItem!: TextMenuItem;
   private multiPlayerItem!: TextMenuItem;
   private modesItem!: TextMenuItem;
-  private editorItem!: TextMenuItem;
   private settingsItem!: TextMenuItem;
   private aboutItem!: TextMenuItem;
   private state: State = State.Ready;
@@ -85,9 +84,6 @@ export class MainMenuScene extends GameScene {
     this.modesItem = new TextMenuItem('MODES');
     this.modesItem.selected.addListener(this.handleModesSelected);
 
-    this.editorItem = new TextMenuItem('CONSTRUCTION');
-    this.editorItem.selected.addListener(this.handleEditorSelected);
-
     this.settingsItem = new TextMenuItem('SETTINGS');
     this.settingsItem.selected.addListener(this.handleSettingsSelected);
 
@@ -98,7 +94,6 @@ export class MainMenuScene extends GameScene {
       this.singlePlayerItem,
       this.multiPlayerItem,
       this.modesItem,
-      this.editorItem,
       this.settingsItem,
       this.aboutItem,
     ];
@@ -194,10 +189,6 @@ export class MainMenuScene extends GameScene {
 
   private handleModesSelected = (): void => {
     this.navigator.push(GameSceneType.ModesMenu);
-  };
-
-  private handleEditorSelected = (): void => {
-    this.navigator.push(GameSceneType.EditorMenu);
   };
 
   private handleSettingsSelected = (): void => {

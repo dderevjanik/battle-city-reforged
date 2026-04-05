@@ -2,7 +2,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    main: './src/main.ts',
+    main:   './src/main.ts',
+    editor: './src/editor/index.ts',
   },
 
   output: {

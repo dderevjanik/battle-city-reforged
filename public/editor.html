@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cattle Bity - Map Editor</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #0d1117; color: #e0e0e0; font-family: 'Courier New', monospace; font-size: 12px; overflow: hidden; user-select: none; }
+
+    /* ── Layout ─────────────────────────────── */
+    #app {
+      display: grid;
+      grid-template-rows: 38px 1fr 24px;
+      grid-template-columns: 150px 1fr 260px;
+      height: 100vh;
+    }
+    #toolbar   { grid-column: 1 / -1; background: #161b22; border-bottom: 1px solid #30363d; display: flex; align-items: center; gap: 6px; padding: 0 10px; }
+    #sidebar   { background: #161b22; border-right: 1px solid #30363d; overflow-y: auto; padding: 8px 6px; }
+    #viewport  { position: relative; overflow: hidden; background: #0d1117; }
+    #panel     { background: #161b22; border-left: 1px solid #30363d; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; }
+    #statusbar { grid-column: 1 / -1; background: #161b22; border-top: 1px solid #30363d; display: flex; align-items: center; gap: 16px; padding: 0 10px; font-size: 10px; color: #6e7681; }
+
+    /* ── Toolbar ─────────────────────────────── */
+    .t-title  { color: #f85149; font-weight: bold; font-size: 13px; letter-spacing: 1px; margin-right: 4px; }
+    .t-sep    { width: 1px; height: 20px; background: #30363d; margin: 0 2px; }
+    .t-btn    { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 3px 10px; cursor: pointer; font: inherit; font-size: 11px; }
+    .t-btn:hover { background: #30363d; }
+    .t-label  { color: #6e7681; font-size: 10px; }
+    select.t-select { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 3px 4px; font: inherit; font-size: 11px; }
+
+    /* ── Sidebar ─────────────────────────────── */
+    .sec-label { color: #6e7681; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 4px; }
+    .sec-label:first-child { margin-top: 0; }
+
+    .mode-btn {
+      display: block; width: 100%; text-align: left; padding: 4px 7px; margin-bottom: 2px;
+      background: #0d1117; border: 1px solid #21262d; cursor: pointer;
+      font: inherit; font-size: 11px; color: #8b949e;
+    }
+    .mode-btn:hover  { border-color: #388bfd; color: #c9d1d9; }
+    .mode-btn.active { border-color: #f85149; background: #1a0f0f; color: #fff; }
+
+    .brush-btn {
+      display: flex; align-items: center; gap: 6px; width: 100%; padding: 4px 7px; margin-bottom: 2px;
+      background: #0d1117; border: 1px solid #21262d; cursor: pointer;
+      font: inherit; font-size: 11px; color: #8b949e; text-align: left;
+    }
+    .brush-btn:hover  { border-color: #388bfd; color: #c9d1d9; }
+    .brush-btn.active { border-color: #f85149; background: #1a0f0f; color: #fff; }
+    .swatch { width: 11px; height: 11px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.15); }
+
+    .key-hint { display: inline-block; background: #21262d; border: 1px solid #30363d; padding: 0 4px; font-size: 9px; color: #8b949e; border-radius: 2px; }
+    .hint-row { margin-bottom: 3px; color: #6e7681; font-size: 10px; }
+
+    /* ── Panel (right) ───────────────────────── */
+    .panel-sec { margin-bottom: 14px; }
+    .panel-sec h3 { font-size: 9px; color: #6e7681; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #21262d; padding-bottom: 3px; margin-bottom: 6px; }
+
+    label.field-lbl { display: block; color: #8b949e; font-size: 10px; margin-bottom: 2px; }
+    input.field-inp, select.field-sel {
+      width: 100%; background: #0d1117; border: 1px solid #30363d; color: #e0e0e0;
+      padding: 3px 5px; font: inherit; font-size: 11px; margin-bottom: 6px;
+    }
+    input.field-inp:focus, select.field-sel:focus { outline: none; border-color: #388bfd; }
+
+    .spawn-row   { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
+    .spawn-badge { padding: 1px 6px; font-size: 9px; font-weight: bold; min-width: 26px; text-align: center; }
+    .spawn-badge.p { background: #1f6feb; color: #fff; }
+    .spawn-badge.e { background: #da3633; color: #fff; }
+    .spawn-coord   { color: #6e7681; font-size: 10px; flex: 1; }
+    .spawn-del     { background: none; border: 1px solid #6e7681; color: #6e7681; padding: 1px 5px; cursor: pointer; font-size: 9px; }
+    .spawn-del:hover { border-color: #f85149; color: #f85149; }
+
+    .enemy-header { display: grid; grid-template-columns: 20px 1fr 1fr 1fr; gap: 2px; font-size: 9px; color: #6e7681; margin-bottom: 3px; }
+    .enemy-row    { display: grid; grid-template-columns: 20px 1fr 1fr 1fr; gap: 2px; margin-bottom: 2px; align-items: center; }
+    .enemy-num    { color: #6e7681; font-size: 9px; text-align: right; }
+    .enemy-row select { background: #0d1117; border: 1px solid #21262d; color: #c9d1d9; padding: 2px; font: inherit; font-size: 9px; margin-bottom: 0; width: 100%; }
+
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Toolbar ───────────────────────────────────── -->
+  <div id="toolbar">
+    <span class="t-title">CATTLE BITY EDITOR</span>
+    <div class="t-sep"></div>
+    <button class="t-btn" id="btn-new">New</button>
+    <button class="t-btn" id="btn-load">Load</button>
+    <button class="t-btn" id="btn-save">Save</button>
+    <button class="t-btn" id="btn-test" title="Open map in game (new tab)" style="color:#3fb950;">▶ Test</button>
+    <div class="t-sep"></div>
+    <button class="t-btn" id="btn-undo" title="Ctrl+Z">Undo</button>
+    <button class="t-btn" id="btn-redo" title="Ctrl+Y">Redo</button>
+    <div class="t-sep"></div>
+    <span class="t-label">Tileset</span>
+    <select class="t-select" id="sel-tileset">
+      <option value="classic">Classic</option>
+      <option value="modern">Modern</option>
+    </select>
+    <div class="t-sep"></div>
+    <button class="t-btn" id="btn-grid">Grid ON</button>
+    <button class="t-btn" id="btn-center">Center</button>
+    <span style="margin-left:auto; color:#6e7681; font-size:10px;">
+      Scroll=Zoom &nbsp;|&nbsp; Space+Drag=Pan &nbsp;|&nbsp; LMB=Paint &nbsp;|&nbsp; RMB=Erase &nbsp;|&nbsp; Ctrl+Z/Y=Undo/Redo
+    </span>
+  </div>
+
+  <!-- ── Sidebar ───────────────────────────────────── -->
+  <div id="sidebar">
+    <div class="sec-label">Mode</div>
+    <button class="mode-btn active" id="mode-terrain">✏ Terrain</button>
+    <button class="mode-btn"        id="mode-player-spawn">● Player Spawn</button>
+    <button class="mode-btn"        id="mode-enemy-spawn">● Enemy Spawn</button>
+
+    <div class="sec-label">Brushes</div>
+    <div id="brush-list"></div>
+
+    <div class="sec-label">Shortcuts</div>
+    <div class="hint-row"><span class="key-hint">B</span> Brick &nbsp;<span class="key-hint">S</span> Steel</div>
+    <div class="hint-row"><span class="key-hint">J</span> Jungle &nbsp;<span class="key-hint">W</span> Water</div>
+    <div class="hint-row"><span class="key-hint">I</span> Ice &nbsp;<span class="key-hint">E</span> Eraser</div>
+    <div class="hint-row"><span class="key-hint">G</span> Grid &nbsp;<span class="key-hint">F</span> Fit</div>
+    <div class="hint-row"><span class="key-hint">Del</span> Clear map</div>
+    <div class="hint-row"><span class="key-hint">[ ]</span> Brush size</div>
+  </div>
+
+  <!-- ── Canvas ────────────────────────────────────── -->
+  <div id="viewport">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <!-- ── Right panel ───────────────────────────────── -->
+  <div id="panel">
+    <div class="panel-sec">
+      <h3>Spawn Settings</h3>
+      <label class="field-lbl">Spawn Delay (s)</label>
+      <input  class="field-inp" type="number" id="inp-delay" value="3" min="1" max="30" step="0.5">
+      <label class="field-lbl">Max Alive Count</label>
+      <input  class="field-inp" type="number" id="inp-alive" value="4" min="1" max="6">
+    </div>
+
+    <div class="panel-sec">
+      <h3>Player Spawns <span style="font-weight:normal;color:#6e7681;">(click map)</span></h3>
+      <div id="list-player-spawns"></div>
+    </div>
+
+    <div class="panel-sec">
+      <h3>Enemy Spawns <span style="font-weight:normal;color:#6e7681;">(click map)</span></h3>
+      <div id="list-enemy-spawns"></div>
+    </div>
+
+    <div class="panel-sec" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+      <h3>Enemy List (20 slots)</h3>
+      <div class="enemy-header">
+        <div></div><div>Type</div><div>AI</div><div>Drop</div>
+      </div>
+      <div id="enemy-list" style="overflow-y:auto; flex:1;"></div>
+    </div>
+  </div>
+
+  <!-- ── Status bar ────────────────────────────────── -->
+  <div id="statusbar">
+    <span id="st-xy">x: 0, y: 0</span>
+    <span id="st-cell">tile: 0, 0</span>
+    <span id="st-brush">Brush: Brick 16px</span>
+    <span style="margin-left:auto;" id="st-zoom">Zoom: 100%</span>
+  </div>
+</div>
+
+<input type="file" id="file-input" accept=".json" style="display:none">
+
+<script src="editor.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@ import { setup, resizeCanvas, centerView, loadSprite, paintBrushSwatches, render
 import { buildBrushList, buildEnemyRows, refreshSpawnLists } from './ui';
 import { pushHistory } from './history';
 import { bindViewport, bindKeyboard, bindToolbar, bindResize } from './events';
+import { paintBaseDefense } from './io';
 
 function init(): void {
   const canvas   = document.getElementById('canvas')   as HTMLCanvasElement;
@@ -18,6 +19,7 @@ function init(): void {
   bindKeyboard();
   bindResize();
 
+  paintBaseDefense();
   centerView();
   pushHistory();
 

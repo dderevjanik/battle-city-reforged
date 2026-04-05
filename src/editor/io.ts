@@ -1,5 +1,5 @@
 import { PLAYTEST_STORAGE_KEY } from '../core/render/BridgeScene';
-import { DEF_PLAYER, DEF_ENEMY } from './constants';
+import { DEF_PLAYER, DEF_ENEMY, GW, GH, T2I } from './constants';
 import { gridToRegions, regionsToGrid } from './grid';
 import { pushHistory } from './history';
 import { render } from './renderer';
@@ -74,9 +74,25 @@ export function loadDto(dto: MapDto): void {
   render();
 }
 
+export function paintBaseDefense(): void {
+  const BRICK = T2I['brick'];
+  const fill = (col: number, row: number, cols: number, rows: number): void => {
+    for (let r = row; r < row + rows; r++) {
+      for (let c = col; c < col + cols; c++) {
+        if (c >= 0 && c < GW && r >= 0 && r < GH) state.grid[r * GW + c] = BRICK;
+      }
+    }
+  };
+  // Base sits at grid col 24, row 48 (world 384,768), 4×4 cells
+  fill(22, 46, 8, 2); // top wall: cols 22-29, rows 46-47
+  fill(22, 48, 2, 4); // left wing: cols 22-23, rows 48-51
+  fill(28, 48, 2, 4); // right wing: cols 28-29, rows 48-51
+}
+
 export function newMap(): void {
   if (!confirm('Clear current map and start fresh?')) return;
   state.grid.fill(0);
+  paintBaseDefense();
   state.playerSpawns = DEF_PLAYER.map(s => ({ ...s }));
   state.enemySpawns  = DEF_ENEMY.map(s  => ({ ...s }));
   state.enemyList    = Array.from({ length: 20 }, () => ({ type: 'basic', ai: 'classic', drop: '' }));

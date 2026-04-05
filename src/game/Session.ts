@@ -124,6 +124,10 @@ export class Session {
     return this.currentLevelNumber;
   }
 
+  public getStartLevelNumber(): number {
+    return this.startLevelNumber;
+  }
+
   public isLastLevel(): boolean {
     return this.currentLevelNumber === this.endLevelNumber;
   }

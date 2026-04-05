@@ -20,6 +20,8 @@ import { InputHintSettings } from './input/InputHintSettings';
 import { InputManager } from './input/InputManager';
 import { ManifestMapListReader } from './map/MapListReaders';
 import { MapLoader } from './map/MapLoader';
+import { AchievementsManager } from './achievements/AchievementsManager';
+import { AchievementsTracker } from './achievements/AchievementsTracker';
 import { PointsHighscoreManager } from './points/PointsHighscoreManager';
 
 import * as config from './config';
@@ -68,6 +70,9 @@ const session = new Session();
 
 const inputHintSettings = new InputHintSettings(gameStorage);
 
+const achievementsManager = new AchievementsManager(gameStorage);
+const achievementsTracker = new AchievementsTracker();
+
 const pointsHighscoreManager = new PointsHighscoreManager(gameStorage);
 
 const collisionSystem = new CollisionSystem();
@@ -75,6 +80,8 @@ const collisionSystem = new CollisionSystem();
 const gameState = new State<GameState>(GameState.Playing);
 
 const gameContext: GameContext = {
+  achievementsManager,
+  achievementsTracker,
   audioManager,
   audioLoader,
   collisionSystem,

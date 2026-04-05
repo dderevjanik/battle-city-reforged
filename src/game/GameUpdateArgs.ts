@@ -11,6 +11,9 @@ import { InputManager } from '../input/InputManager';
 import { MapLoader } from '../map/MapLoader';
 import { PointsHighscoreManager } from '../points/PointsHighscoreManager';
 
+import { AchievementsManager } from '../achievements/AchievementsManager';
+import { AchievementsTracker } from '../achievements/AchievementsTracker';
+
 import { AudioManager } from './AudioManager';
 import { GameState } from './GameState';
 import { Session } from './Session';
@@ -20,6 +23,8 @@ import { Session } from './Session';
  * For per-frame data (deltaTime), use the update(deltaTime) parameter directly.
  */
 export interface GameContext {
+  achievementsManager: AchievementsManager;
+  achievementsTracker: AchievementsTracker;
   audioManager: AudioManager;
   audioLoader: AudioLoader;
   collisionSystem: CollisionSystem;

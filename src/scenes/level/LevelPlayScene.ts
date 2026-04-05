@@ -30,6 +30,7 @@ import { LevelPlayerScript } from '../../level/scripts/LevelPlayerScript';
 import { LevelPointsScript } from '../../level/scripts/LevelPointsScript';
 import { LevelPowerupScript } from '../../level/scripts/LevelPowerupScript';
 import { LevelSpawnScript } from '../../level/scripts/LevelSpawnScript';
+import { LevelAchievementsScript } from '../../level/scripts/LevelAchievementsScript';
 import { LevelWinScript } from '../../level/scripts/LevelWinScript';
 
 import { GameScene } from '../GameScene';
@@ -62,6 +63,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private pauseScript!: LevelPauseScript;
   private spawnScript!: LevelSpawnScript;
   private winScript!: LevelWinScript;
+  private achievementsScript!: LevelAchievementsScript;
 
   protected setup(context: GameContext): void {
     const { collisionSystem, inputManager, session } = context;
@@ -122,6 +124,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.powerupScript = new LevelPowerupScript();
     this.spawnScript = new LevelSpawnScript();
     this.winScript = new LevelWinScript();
+    this.achievementsScript = new LevelAchievementsScript();
 
     this.allScripts = [
       this.audioScript,
@@ -138,6 +141,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       this.powerupScript,
       this.spawnScript,
       this.winScript,
+      this.achievementsScript,
     ];
 
     this.allScripts.forEach((script) => {
@@ -146,6 +150,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
 
     // When intro starts, enable only it and audio
     this.alwaysUpdateScripts = [this.audioScript, this.introScript];
+    this.playingUpdateScripts = [];
 
     // When intro is completed, enable the rest of the scripts
     this.introScript.completed.addListener(() => {
@@ -165,6 +170,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
         this.playerScript,
         this.pointsScript,
         this.powerupScript,
+        this.achievementsScript,
       );
     });
 

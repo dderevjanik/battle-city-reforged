@@ -3,13 +3,17 @@ import { PowerupType } from '../../powerup/PowerupType';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
-import { LevelPowerupPickedEvent } from '../LevelEvents';
+import {
+  LevelEnemyPowerupPickedEvent,
+  LevelPowerupPickedEvent,
+} from '../LevelEvents';
 
 export class LevelBaseScript extends LevelScript {
   private bases: Base[] = [];
 
   protected setup(): void {
     this.eventBus.powerupPicked.addListener(this.handlePowerupPicked);
+    this.eventBus.enemyPowerupPicked.addListener(this.handleEnemyPowerupPicked);
 
     for (const basePos of this.mapConfig.getBasePositions()) {
       const base = new Base();
@@ -28,6 +32,16 @@ export class LevelBaseScript extends LevelScript {
     if (powerupType === PowerupType.BaseDefence) {
       for (const base of this.bases) {
         base.activateDefence(config.BASE_DEFENCE_POWERUP_DURATION);
+      }
+    }
+  };
+
+  private handleEnemyPowerupPicked = (
+    event: LevelEnemyPowerupPickedEvent,
+  ): void => {
+    if (event.type === PowerupType.BaseDefence) {
+      for (const base of this.bases) {
+        base.deactivateDefence();
       }
     }
   };

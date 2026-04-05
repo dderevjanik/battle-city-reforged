@@ -1,5 +1,6 @@
 import { Timer } from '../../core/Timer';
 import { Vector } from '../../core/Vector';
+import { RandomUtils } from '../../core/utils';
 import { Rotation } from '../../game/Rotation';
 import { EnemyTank } from '../../gameObjects/EnemyTank';
 import { PowerupType } from '../../powerup/PowerupType';
@@ -10,6 +11,7 @@ import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
 import {
+  LevelEnemyPowerupPickedEvent,
   LevelEnemySpawnCompletedEvent,
   LevelPowerupPickedEvent,
 } from '../LevelEvents';
@@ -28,6 +30,7 @@ export class LevelEnemyScript extends LevelScript {
   protected setup(): void {
     this.eventBus.enemySpawnCompleted.addListener(this.handleSpawnCompleted);
     this.eventBus.powerupPicked.addListener(this.handlePowerupPicked);
+    this.eventBus.enemyPowerupPicked.addListener(this.handleEnemyPowerupPicked);
 
     this.list = this.mapConfig.getEnemySpawnList();
     this.aiModes = this.mapConfig.getEnemyAiModes();
@@ -194,6 +197,37 @@ export class LevelEnemyScript extends LevelScript {
       });
     }
   };
+
+  private handleEnemyPowerupPicked = (
+    event: LevelEnemyPowerupPickedEvent,
+  ): void => {
+    const { type: powerupType, tank } = event;
+
+    if (powerupType === PowerupType.Shield) {
+      tank.activateShield(config.SHIELD_POWERUP_DURATION);
+    }
+
+    if (powerupType === PowerupType.Upgrade) {
+      tank.upgrade();
+    }
+
+    if (powerupType === PowerupType.Life) {
+      this.addExtraEnemy();
+    }
+  };
+
+  private addExtraEnemy(): void {
+    const sourceList = this.mapConfig.getEnemySpawnList();
+    const randomType = RandomUtils.arrayElement(sourceList);
+    this.list.push(randomType.clone());
+
+    if (
+      !this.spawnTimer.isActive() &&
+      this.aliveTanks.length < this.getMaxAliveCount()
+    ) {
+      this.spawnTimer.reset(this.mapConfig.getEnemySpawnDelay());
+    }
+  }
 
   private getMaxAliveCount(): number {
     return this.mapConfig.getEnemyMaxAliveCount();

@@ -4,12 +4,13 @@ import { DebugLevelPlayerMenu } from '../../debug/DebugLevelPlayerMenu';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { PlayerTank } from '../../gameObjects/PlayerTank';
 import { PowerupType } from '../../powerup/PowerupType';
-import { TankParty } from '../../tank/TankTypes';
+import { TankDeathReason, TankParty } from '../../tank/TankTypes';
 import { TankFactory } from '../../tank/TankFactory';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
 import {
+  LevelEnemyPowerupPickedEvent,
   LevelPlayerSpawnCompletedEvent,
   LevelPowerupPickedEvent,
 } from '../LevelEvents';
@@ -18,13 +19,16 @@ export class LevelPlayerScript extends LevelScript {
   private positions: Vector[] = [];
   private timers: Timer[] = [];
   private tanks: (PlayerTank | null)[] = [];
+  private playerFreezeTimer = new Timer();
 
   protected setup({ session }: GameContext): void {
     this.eventBus.playerSpawnCompleted.addListener(this.handleSpawnCompleted);
     this.eventBus.powerupPicked.addListener(this.handlePowerupPicked);
+    this.eventBus.enemyPowerupPicked.addListener(this.handleEnemyPowerupPicked);
     this.eventBus.levelGameOverMoveBlocked.addListener(
       this.handleLevelGameOverMoveBlocked,
     );
+    this.playerFreezeTimer.done.addListener(this.handlePlayerFreezeTimer);
 
     this.positions = this.mapConfig.getPlayerSpawnPositions();
 
@@ -74,6 +78,7 @@ export class LevelPlayerScript extends LevelScript {
     this.timers.forEach((timer) => {
       timer.update(deltaTime);
     });
+    this.playerFreezeTimer.update(deltaTime);
   }
 
   private requestSpawn = (partyIndex: number): void => {
@@ -165,6 +170,25 @@ export class LevelPlayerScript extends LevelScript {
     if (powerupType === PowerupType.Upgrade) {
       tank!.upgrade();
     }
+  };
+
+  private handleEnemyPowerupPicked = (
+    event: LevelEnemyPowerupPickedEvent,
+  ): void => {
+    const { type: powerupType } = event;
+
+    if (powerupType === PowerupType.Freeze) {
+      this.playerFreezeTimer.reset(config.FREEZE_POWERUP_DURATION);
+      this.tanks.forEach((tank) => tank?.freezeState.set(true));
+    }
+
+    if (powerupType === PowerupType.Wipeout) {
+      this.tanks.forEach((tank) => tank?.die(TankDeathReason.WipeoutPowerup));
+    }
+  };
+
+  private handlePlayerFreezeTimer = (): void => {
+    this.tanks.forEach((tank) => tank?.freezeState.set(false));
   };
 
   private handleLevelGameOverMoveBlocked = (): void => {

@@ -17,6 +17,7 @@ export class Session {
   private playerCount!: number;
   private seenIntro!: boolean;
   private state!: State;
+  private enemyPowerupsEnabled!: boolean;
 
   constructor() {
     this.players.push(
@@ -48,6 +49,7 @@ export class Session {
     this.state = State.Idle;
     this.playtest = false;
     this.playerCount = 1;
+    this.enemyPowerupsEnabled = false;
 
     for (const player of this.players) {
       player.reset();
@@ -174,5 +176,13 @@ export class Session {
 
   public isMultiplayer(): boolean {
     return this.playerCount > 1;
+  }
+
+  public setEnemyPowerupsEnabled(enabled: boolean): void {
+    this.enemyPowerupsEnabled = enabled;
+  }
+
+  public isEnemyPowerupsEnabled(): boolean {
+    return this.enemyPowerupsEnabled;
   }
 }

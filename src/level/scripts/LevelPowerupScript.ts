@@ -166,6 +166,17 @@ export class LevelPowerupScript extends LevelScript {
       });
     });
 
+    powerup.enemyPicked.addListener((tank) => {
+      if (!this.session.isEnemyPowerupsEnabled()) {
+        return;
+      }
+      this.eventBus.enemyPowerupPicked.notify({
+        type: powerup.type,
+        tank,
+        centerPosition: powerup.getCenter(),
+      });
+    });
+
     this.timer.reset(config.POWERUP_DURATION);
 
     this.activePowerup = powerup;

@@ -1,5 +1,6 @@
 import { Size } from '../core/Size';
 import { Vector } from '../core/Vector';
+import { EnemyTank } from '../gameObjects/EnemyTank';
 import { PowerupType } from '../powerup/PowerupType';
 import { TankDeathReason, TankType } from '../tank/TankTypes';
 import { TerrainType } from '../terrain/TerrainType';
@@ -67,4 +68,10 @@ export interface LevelPowerupPickedEvent {
 export interface LevelPowerupSpawnedEvent {
   type: PowerupType;
   position: Vector;
+}
+
+export interface LevelEnemyPowerupPickedEvent {
+  type: PowerupType;
+  tank: EnemyTank;
+  centerPosition: Vector;
 }

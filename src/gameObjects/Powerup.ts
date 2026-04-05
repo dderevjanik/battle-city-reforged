@@ -10,6 +10,7 @@ import { Tag } from '../game/Tag';
 import { PowerupType } from '../powerup/PowerupType';
 import * as config from '../config';
 
+import { EnemyTank } from './EnemyTank';
 import { PlayerTank } from './PlayerTank';
 
 const PICKUP_MIN_INTERSECTION_SIZE = 16;
@@ -20,6 +21,7 @@ export class Powerup extends GameObject {
   public painter = new SpritePainter();
   public ignorePause = true;
   public picked = new Subject<{ partyIndex: number }>();
+  public enemyPicked = new Subject<EnemyTank>();
   public type: PowerupType;
   private animation!: Animation<Sprite | null>;
 
@@ -83,6 +85,32 @@ export class Powerup extends GameObject {
 
         this.destroy();
         this.picked.notify({ partyIndex });
+      }
+    }
+
+    const enemyTankContacts = collision.contacts.filter((contact) => {
+      return (
+        contact.collider.object.tags.includes(Tag.Tank) &&
+        contact.collider.object.tags.includes(Tag.Enemy)
+      );
+    });
+
+    if (enemyTankContacts.length > 0) {
+      const firstEnemyTankContact = enemyTankContacts[0];
+      const tankBox = firstEnemyTankContact.collider.getBox();
+      const selfBox = this.collider.getBox();
+
+      const intersectionBox = selfBox.clone().intersectWith(tankBox);
+      const intersectionRect = intersectionBox.toRect();
+
+      if (
+        intersectionRect.width > PICKUP_MIN_INTERSECTION_SIZE &&
+        intersectionRect.height > PICKUP_MIN_INTERSECTION_SIZE
+      ) {
+        const tank = firstEnemyTankContact.collider.object as EnemyTank;
+
+        this.destroy();
+        this.enemyPicked.notify(tank);
       }
     }
   }

@@ -4,6 +4,7 @@ import {
   LevelEnemyDiedEvent,
   LevelEnemyExplodedEvent,
   LevelEnemyHitEvent,
+  LevelEnemyPowerupPickedEvent,
   LevelEnemySpawnCompletedEvent,
   LevelEnemySpawnRequestedEvent,
   LevelMapTileDestroyedEvent,
@@ -41,4 +42,5 @@ export class LevelEventBus {
   public powerupSpawned = new Subject<LevelPowerupSpawnedEvent>();
   public powerupPicked = new Subject<LevelPowerupPickedEvent>();
   public powerupRevoked = new Subject();
+  public enemyPowerupPicked = new Subject<LevelEnemyPowerupPickedEvent>();
 }

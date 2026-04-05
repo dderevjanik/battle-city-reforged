@@ -35,6 +35,12 @@ export class Base extends GameObject {
     this.defenceTimer.reset(duration);
   }
 
+  public deactivateDefence(): void {
+    this.defenceTimer.stop();
+    this.resetFading();
+    this.setTiles(TerrainType.Brick);
+  }
+
   protected setup(): void {
     this.container = new GameObject();
     this.container.size.copyFrom(this.size);

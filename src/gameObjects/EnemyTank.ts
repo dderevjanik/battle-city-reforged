@@ -1,8 +1,10 @@
 import { Sound } from '../core/Sound';
+import { SpriteLoader } from '../core/loaders/SpriteLoader';
 import { GameState } from '../game/GameState';
 import { GameContext } from '../game/GameUpdateArgs';
 import { Tag } from '../game/Tag';
 import { TankColor, TankKind } from '../tank/TankTypes';
+import { TankAttributesFactory } from '../tank/TankAttributesFactory';
 import { TankSkinAnimation } from '../tank/TankSkinAnimation';
 import * as config from '../config';
 
@@ -13,9 +15,11 @@ export class EnemyTank extends Tank {
   public zIndex = config.ENEMY_TANK_Z_INDEX;
   private healthSkinAnimations = new Map<number, TankSkinAnimation>();
   private hitSound!: Sound;
+  private spriteLoader!: SpriteLoader;
 
   protected setup(context: GameContext): void {
     const { audioLoader, spriteLoader } = context;
+    this.spriteLoader = spriteLoader;
 
     this.hitSound = audioLoader.load('hit.enemy');
 
@@ -24,38 +28,7 @@ export class EnemyTank extends Tank {
       this.ignorePause = true;
     }
 
-    // Currently only tier D tank has more than 1 health
-    if (this.type.kind === TankKind.Heavy) {
-      this.healthSkinAnimations.set(
-        4,
-        new TankSkinAnimation(spriteLoader, this.type, [
-          TankColor.Default,
-          TankColor.Secondary,
-        ]),
-      );
-
-      this.healthSkinAnimations.set(
-        3,
-        new TankSkinAnimation(spriteLoader, this.type, [
-          TankColor.Default,
-          TankColor.Primary,
-        ]),
-      );
-
-      this.healthSkinAnimations.set(
-        2,
-        new TankSkinAnimation(spriteLoader, this.type, [
-          TankColor.Secondary,
-          TankColor.Primary,
-        ]),
-      );
-    }
-
-    this.healthSkinAnimations.set(
-      1,
-      new TankSkinAnimation(spriteLoader, this.type, [TankColor.Default]),
-    );
-
+    this.buildHealthSkinAnimations();
     this.skinAnimation = this.healthSkinAnimations.get(this.attributes.health)!;
 
     super.setup(context);
@@ -105,6 +78,52 @@ export class EnemyTank extends Tank {
 
     // Change skin based on number of health left
     this.skinAnimation = this.healthSkinAnimations.get(this.attributes.health)!;
+  }
+
+  public upgrade(): void {
+    if (this.type.isMaxKind()) {
+      return;
+    }
+
+    this.type.increaseKind();
+    this.attributes = TankAttributesFactory.create(this.type);
+
+    this.buildHealthSkinAnimations();
+    this.skinAnimation = this.healthSkinAnimations.get(this.attributes.health)!;
+  }
+
+  private buildHealthSkinAnimations(): void {
+    this.healthSkinAnimations.clear();
+
+    // Only Heavy tier has more than 1 health point
+    if (this.type.kind === TankKind.Heavy) {
+      this.healthSkinAnimations.set(
+        4,
+        new TankSkinAnimation(this.spriteLoader, this.type, [
+          TankColor.Default,
+          TankColor.Secondary,
+        ]),
+      );
+      this.healthSkinAnimations.set(
+        3,
+        new TankSkinAnimation(this.spriteLoader, this.type, [
+          TankColor.Default,
+          TankColor.Primary,
+        ]),
+      );
+      this.healthSkinAnimations.set(
+        2,
+        new TankSkinAnimation(this.spriteLoader, this.type, [
+          TankColor.Secondary,
+          TankColor.Primary,
+        ]),
+      );
+    }
+
+    this.healthSkinAnimations.set(
+      1,
+      new TankSkinAnimation(this.spriteLoader, this.type, [TankColor.Default]),
+    );
   }
 
   public discardDrop(): this {

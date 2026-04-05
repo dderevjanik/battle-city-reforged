@@ -53,6 +53,7 @@ export function selectBrush(i: number): void {
   const b = BRUSHES[i];
   const el = document.getElementById('st-brush');
   if (el) el.textContent = b.type ? `Brush: ${cap(b.type)} ${b.size}px` : 'Brush: Eraser';
+  setMode('terrain');
 }
 
 // ── Mode ──────────────────────────────────────────

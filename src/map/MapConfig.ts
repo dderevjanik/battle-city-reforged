@@ -53,8 +53,9 @@ export class MapConfig {
       throw schemaError;
     }
 
-    // Normalize: if only legacy `base` field, promote to `bases` array
-    if (!validatedDto.spawn.bases || validatedDto.spawn.bases.length === 0) {
+    // Normalize: only apply default when `bases` is absent (undefined).
+    // An explicit empty array means "no bases" — game ends on player death only.
+    if (validatedDto.spawn.bases === undefined) {
       if (validatedDto.spawn.base) {
         validatedDto.spawn.bases = [validatedDto.spawn.base];
       } else {

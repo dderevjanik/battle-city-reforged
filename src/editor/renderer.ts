@@ -84,11 +84,15 @@ export function render(): void {
       const sz   = TS * state.zoom;
 
       if (spriteReady && spriteImg) {
-        const r  = SRECTS[type];
-        const nw = r[2], nh = r[3];
-        const ox = (col % (nw / TS)) * TS;
-        const oy = (row % (nh / TS)) * TS;
-        ctx.drawImage(spriteImg, r[0] + ox, r[1] + oy, TS, TS, p.x, p.y, sz + 0.5, sz + 0.5);
+        if (type === 'brick') {
+          const r = (col + row) % 2 === 0 ? SRECTS.brick : SRECTS.brick2;
+          ctx.drawImage(spriteImg, r[0], r[1], TS, TS, p.x, p.y, sz + 0.5, sz + 0.5);
+        } else {
+          const r  = SRECTS[type];
+          const ox = (col % (r[2] / TS)) * TS;
+          const oy = (row % (r[3] / TS)) * TS;
+          ctx.drawImage(spriteImg, r[0] + ox, r[1] + oy, TS, TS, p.x, p.y, sz + 0.5, sz + 0.5);
+        }
       } else {
         ctx.fillStyle = COLORS[type];
         ctx.fillRect(p.x, p.y, sz + 0.5, sz + 0.5);

@@ -49,9 +49,11 @@ export const SPRITE_SRC = 'data/graphics/sprite.png';
 
 export const SRECTS: Record<string, SpriteRect> = {
   brick:      [1052,   0, 16, 16],
+  brick2:     [1068,   0, 16, 16],
   steel:      [1052,  64, 32, 32],
   jungle:     [1116, 128, 32, 32],
   water:      [1052, 192, 32, 32],
+  water2:     [1116, 192, 32, 32],
   ice:        [1180, 128, 32, 32],
   base:       [1244, 128, 64, 64],
   playerTank: [4,      8, 52, 52],  // player primary basic up.1

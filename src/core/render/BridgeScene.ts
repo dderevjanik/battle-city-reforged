@@ -7,6 +7,7 @@ import { LevelPlayScene } from '../../scenes/level/LevelPlayScene';
 import { LevelScoreScene } from '../../scenes/level/LevelScoreScene';
 import { LevelSelectionScene } from '../../scenes/level/LevelSelectionScene';
 import { MainAboutScene } from '../../scenes/main/MainAboutScene';
+import { MainAchievementsScene } from '../../scenes/main/MainAchievementsScene';
 import { MainGameOverScene } from '../../scenes/main/MainGameOverScene';
 import { MainHighscoreScene } from '../../scenes/main/MainHighscoreScene';
 import { MainMenuScene } from '../../scenes/main/MainMenuScene';
@@ -35,6 +36,7 @@ const SCENE_REGISTRY: [GameSceneType, typeof Phaser.Scene][] = [
   [GameSceneType.LevelScore, LevelScoreScene],
   [GameSceneType.LevelSelection, LevelSelectionScene],
   [GameSceneType.MainAbout, MainAboutScene],
+  [GameSceneType.MainAchievements, MainAchievementsScene],
   [GameSceneType.MainGameOver, MainGameOverScene],
   [GameSceneType.MainHighscore, MainHighscoreScene],
   [GameSceneType.MainMenu, MainMenuScene],

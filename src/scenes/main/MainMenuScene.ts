@@ -33,6 +33,7 @@ export class MainMenuScene extends GameScene {
   private modesItem!: TextMenuItem;
   private settingsItem!: TextMenuItem;
   private aboutItem!: TextMenuItem;
+  private achievementsItem!: TextMenuItem;
   private state: State = State.Ready;
   private session!: Session;
   private pointsHighscoreManager!: PointsHighscoreManager;
@@ -98,6 +99,9 @@ export class MainMenuScene extends GameScene {
     this.aboutItem = new TextMenuItem('ABOUT');
     this.aboutItem.selected.addListener(this.handleAboutSelected);
 
+    this.achievementsItem = new TextMenuItem('ACHIEVEMENTS');
+    this.achievementsItem.selected.addListener(this.handleAchievementsSelected);
+
     const menuItems = [
       this.singlePlayerItem,
       this.multiPlayerItem,
@@ -106,6 +110,7 @@ export class MainMenuScene extends GameScene {
       this.modesItem,
       this.settingsItem,
       this.aboutItem,
+      this.achievementsItem,
     ];
 
     this.menu = new Menu();
@@ -217,5 +222,9 @@ export class MainMenuScene extends GameScene {
 
   private handleAboutSelected = (): void => {
     this.navigator.push(GameSceneType.MainAbout);
+  };
+
+  private handleAchievementsSelected = (): void => {
+    this.navigator.push(GameSceneType.MainAchievements);
   };
 }

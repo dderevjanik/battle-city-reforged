@@ -18,6 +18,7 @@ export class PrimaryKeyboardInputBinding extends InputBinding {
     this.setDefault(InputControl.SecondaryAction, KeyboardButtonCode.X);
     this.setDefault(InputControl.Rewind, KeyboardButtonCode.A);
     this.setDefault(InputControl.FastForward, KeyboardButtonCode.S);
+    this.setDefault(InputControl.Back, KeyboardButtonCode.Escape);
   }
 }
 
@@ -36,6 +37,7 @@ export class SecondaryKeyboardInputBinding extends InputBinding {
     this.setDefault(InputControl.SecondaryAction, KeyboardButtonCode.G);
     this.setDefault(InputControl.Rewind, KeyboardButtonCode.R);
     this.setDefault(InputControl.FastForward, KeyboardButtonCode.T);
+    this.setDefault(InputControl.Back, KeyboardButtonCode.Escape);
   }
 }
 
@@ -54,6 +56,7 @@ export class TertiaryKeyboardInputBinding extends InputBinding {
     this.setDefault(InputControl.SecondaryAction, KeyboardButtonCode.L);
     this.setDefault(InputControl.Rewind, KeyboardButtonCode.I);
     this.setDefault(InputControl.FastForward, KeyboardButtonCode.O);
+    this.setDefault(InputControl.Back, KeyboardButtonCode.Escape);
   }
 }
 

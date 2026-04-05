@@ -22,6 +22,7 @@ const ITEM_OFFSET = 16;
 export class Menu extends GameObject {
   public focused = new Subject<number>();
   public selected = new Subject<number>();
+  public back = new Subject<void>();
   private items: MenuItem[] = [];
   private options: MenuOptions;
   private cursor: MenuCursor = new MenuCursor();
@@ -88,6 +89,10 @@ export class Menu extends GameObject {
 
     if (inputMethod.isDownAny(MenuInputContext.Select)) {
       this.notifyItemSelected();
+    }
+
+    if (inputMethod.isDownAny(MenuInputContext.Back)) {
+      this.back.notify();
     }
 
     this.items.forEach((menuItem, index) => {

@@ -1,4 +1,5 @@
 export enum KeyboardButtonCode {
+  Escape = 27,
   Enter = 13,
   RShift = 16,
   Space = 32,

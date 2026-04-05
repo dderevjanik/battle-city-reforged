@@ -8,4 +8,5 @@ export enum InputControl {
   SecondaryAction,
   Rewind,
   FastForward,
+  Back,
 }

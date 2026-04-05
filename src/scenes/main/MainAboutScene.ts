@@ -34,6 +34,7 @@ export class MainAboutScene extends GameScene {
     this.menu = new SceneMenu();
     this.menu.position.addY(164);
     this.menu.setItems(menuItems);
+    this.menu.back.addListener(this.handleBackSelected);
     this.root.add(this.menu);
   }
 

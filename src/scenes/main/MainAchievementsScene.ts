@@ -75,6 +75,7 @@ export class MainAchievementsScene extends GameScene {
     this.root.add(menu);
 
     menu.focused.addListener(this.handleMenuFocused);
+    menu.back.addListener(this.handleBackSelected);
     // Show description for initial focused item (index 0)
     this.updateDescription(0);
   }

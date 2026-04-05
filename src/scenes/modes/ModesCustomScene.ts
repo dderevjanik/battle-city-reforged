@@ -60,6 +60,7 @@ export class ModesCustomScene extends GameScene {
       divider,
       this.backItem,
     ]);
+    this.menu.back.addListener(this.handleBackSelected);
     this.root.add(this.menu);
   }
 

@@ -37,6 +37,7 @@ export class SettingsMenuScene extends GameScene {
 
     this.menu = new SceneMenu();
     this.menu.setItems(menuItems);
+    this.menu.back.addListener(this.handleBackSelected);
     this.root.add(this.menu);
   }
 

@@ -34,4 +34,5 @@ export const MenuInputContext: InputContext = {
   HorizontalPrev: [InputControl.Left],
   Skip: [InputControl.PrimaryAction, InputControl.Select],
   Select: [InputControl.PrimaryAction, InputControl.Select],
+  Back: [InputControl.Back],
 };

@@ -46,6 +46,7 @@ export class MainMultiplayerScene extends GameScene<MainMultiplayerLocationParam
       this.fourPlayerItem,
       this.backItem,
     ]);
+    this.menu.back.addListener(this.handleBackSelected);
     this.root.add(this.menu);
   }
 

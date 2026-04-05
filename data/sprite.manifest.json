@@ -63,6 +63,10 @@
     "file": "data/graphics/sprite.png",
     "rect": [1436, 448, 64, 60]
   },
+  "powerup.ship": {
+    "file": "data/graphics/powerup-ship.png",
+    "rect": [0, 0, 64, 60]
+  },
   "points.100": {
     "file": "data/graphics/sprite.png",
     "rect": [1184, 656, 56, 28]

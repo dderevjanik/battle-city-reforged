@@ -7,7 +7,7 @@ export function pushHistory(): void {
     grid:         new Uint8Array(state.grid),
     playerSpawns: JSON.parse(JSON.stringify(state.playerSpawns)) as SpawnPoint[],
     enemySpawns:  JSON.parse(JSON.stringify(state.enemySpawns))  as SpawnPoint[],
-    basePos:      { ...state.basePos },
+    basePositions: JSON.parse(JSON.stringify(state.basePositions)) as SpawnPoint[],
   });
   state.histIdx = state.history.length - 1;
 
@@ -23,7 +23,7 @@ export function restoreCurrentSnapshot(): void {
   state.grid       = new Uint8Array(snap.grid);
   state.playerSpawns = JSON.parse(JSON.stringify(snap.playerSpawns)) as SpawnPoint[];
   state.enemySpawns  = JSON.parse(JSON.stringify(snap.enemySpawns))  as SpawnPoint[];
-  state.basePos      = { ...snap.basePos };
+  state.basePositions = JSON.parse(JSON.stringify(snap.basePositions)) as SpawnPoint[];
 }
 
 export function canUndo(): boolean { return state.histIdx > 0; }

@@ -1,3 +1,4 @@
+import { Vector } from '../core/Vector';
 import { EnemyTank } from '../gameObjects/EnemyTank';
 import { PlayerTank } from '../gameObjects/PlayerTank';
 
@@ -33,14 +34,14 @@ export class TankFactory {
     return new EnemyTank(type, resolvedBehavior, partyIndex);
   }
 
-  public static createBehaviorForAiMode(ai: TankAiMode): TankBehavior {
+  public static createBehaviorForAiMode(ai: TankAiMode, basePositions: Vector[] = []): TankBehavior {
     switch (ai) {
       case TankAiMode.Hunter:
         return new HunterTankBehavior();
       case TankAiMode.Ambush:
         return new AmbushTankBehavior();
       case TankAiMode.AttackBase:
-        return new AttackBaseTankBehavior();
+        return new AttackBaseTankBehavior(basePositions);
       case TankAiMode.Classic:
       default:
         return new AiTankBehavior();

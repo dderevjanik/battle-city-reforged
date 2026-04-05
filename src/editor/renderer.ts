@@ -113,7 +113,7 @@ export function render(): void {
   ctx.strokeRect(fp.x - 0.5, fp.y - 0.5, fs + 1, fs + 1);
 
   // ── Markers ──
-  drawBase();
+  state.basePositions.forEach((s, i) => drawBase(s.x, s.y, state.basePositions.length > 1 ? `B${i + 1}` : 'BASE'));
   state.playerSpawns.forEach((s, i) => drawMarker(s.x, s.y, `P${i + 1}`, '#1f6feb', '#74b0ff', SRECTS.playerTank));
   state.enemySpawns.forEach( (s, i) => drawMarker(s.x, s.y, `E${i + 1}`, '#da3633', '#ff8080', SRECTS.enemyTank));
 
@@ -140,13 +140,18 @@ function drawGridLines(tileSize: number, color: string, lw: number): void {
   }
 }
 
-function drawBase(): void {
-  const p  = w2c(state.basePos.x, state.basePos.y);
+function drawBase(wx: number, wy: number, label: string): void {
+  const p  = w2c(wx, wy);
   const sz = TL * state.zoom;
 
   if (spriteReady && spriteImg) {
     const r = SRECTS['base'];
     ctx.drawImage(spriteImg, r[0], r[1], r[2], r[3], p.x, p.y, sz, sz);
+    ctx.fillStyle    = '#e3b341';
+    ctx.font         = `bold ${Math.max(8, Math.round(9 * state.zoom))}px 'Courier New', monospace`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(label, p.x + sz / 2, p.y - 2 * state.zoom);
   } else {
     ctx.strokeStyle = '#e3b341';
     ctx.lineWidth   = 2;
@@ -157,7 +162,7 @@ function drawBase(): void {
     ctx.font         = `bold ${Math.max(8, Math.round(10 * state.zoom))}px 'Courier New', monospace`;
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('BASE', p.x + sz / 2, p.y + sz / 2);
+    ctx.fillText(label, p.x + sz / 2, p.y + sz / 2);
   }
 }
 

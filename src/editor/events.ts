@@ -67,7 +67,10 @@ export function bindViewport(viewport: HTMLElement): void {
       render();
 
     } else if (state.mode === 'base-spawn' && e.button === 0 && inField(world.x, world.y)) {
-      state.basePos = snapToTL(world.x, world.y);
+      const snapped = snapToTL(world.x, world.y);
+      const existIdx = state.basePositions.findIndex(s => s.x === snapped.x && s.y === snapped.y);
+      if (existIdx !== -1) state.basePositions.splice(existIdx, 1);
+      else state.basePositions.push(snapped);
       pushHistory();
       render();
     }

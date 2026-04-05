@@ -1,4 +1,4 @@
-import { GW, GH, DEF_PLAYER, DEF_ENEMY, BASE_POS } from './constants';
+import { GW, GH, DEF_PLAYER, DEF_ENEMY, DEF_BASES } from './constants';
 import type { EditorMode, EnemyEntry, HistorySnapshot, SpawnPoint } from './types';
 
 export const state = {
@@ -26,7 +26,7 @@ export const state = {
 
   playerSpawns: DEF_PLAYER.map((s): SpawnPoint => ({ ...s })),
   enemySpawns:  DEF_ENEMY.map( (s): SpawnPoint => ({ ...s })),
-  basePos:      { ...BASE_POS },
+  basePositions: DEF_BASES.map((s): SpawnPoint => ({ ...s })),
   enemyList:    Array.from<unknown, EnemyEntry>({ length: 20 }, () => ({ type: 'basic', ai: 'classic', drop: '' })),
 
   history:  [] as HistorySnapshot[],

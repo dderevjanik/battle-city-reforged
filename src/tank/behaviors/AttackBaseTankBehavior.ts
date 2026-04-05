@@ -22,14 +22,20 @@ const REDIRECT_INTERVAL = 0.4;
 
 const ROTATIONS = [Rotation.Up, Rotation.Down, Rotation.Left, Rotation.Right];
 
-// Always moves toward the player's base.
+// Always moves toward the player's base (nearest one if multiple).
 export class AttackBaseTankBehavior extends TankBehavior {
+  private basePositions: Vector[];
   private state: State = State.Moving;
   private lastPosition = new Vector(-1, -1);
   private thinkTimer = new Timer();
   private fireTimer = new Timer();
   private redirectTimer = new Timer();
   private log = new Logger(AttackBaseTankBehavior.name, Logger.Level.Info);
+
+  constructor(basePositions: Vector[] = []) {
+    super();
+    this.basePositions = basePositions;
+  }
 
   public update(tank: Tank, deltaTime: number): void {
     if (this.fireTimer.isDone()) {
@@ -93,11 +99,25 @@ export class AttackBaseTankBehavior extends TankBehavior {
     return RandomUtils.probability(STUCK_FIRE_CHANCE);
   }
 
+  private getNearestBase(tankPosition: Vector): Vector {
+    const positions = this.basePositions.length > 0
+      ? this.basePositions
+      : [new Vector(config.BASE_DEFAULT_POSITION.x, config.BASE_DEFAULT_POSITION.y)];
+
+    let nearest = positions[0];
+    let minDist = tankPosition.distanceTo(nearest);
+    for (let i = 1; i < positions.length; i++) {
+      const dist = tankPosition.distanceTo(positions[i]);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = positions[i];
+      }
+    }
+    return nearest;
+  }
+
   private getBestRotation(tank: Tank, candidates: Rotation[]): Rotation {
-    const base = new Vector(
-      config.BASE_DEFAULT_POSITION.x,
-      config.BASE_DEFAULT_POSITION.y,
-    );
+    const base = this.getNearestBase(tank.position);
     const diff = base.clone().sub(tank.position);
     let best = candidates[0];
     let bestScore = -Infinity;

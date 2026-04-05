@@ -38,7 +38,8 @@ export interface MapDtoSpawnBase {
 export interface MapDtoSpawn {
   enemy: MapDtoSpawnEnemy;
   player: MapDtoSpawnPlayer;
-  base: MapDtoSpawnBase;
+  base?: MapDtoSpawnBase;
+  bases?: MapDtoSpawnBase[];
 }
 
 export interface MapDtoTerrainRegion {
@@ -111,7 +112,15 @@ export const MapDtoSchema = Joi.object<MapDto>({
     base: Joi.object({
       x: Joi.number().required(),
       y: Joi.number().required(),
-    }).default({ x: 384, y: 768 }),
+    }).optional(),
+    bases: Joi.array()
+      .items(
+        Joi.object({
+          x: Joi.number().required(),
+          y: Joi.number().required(),
+        }),
+      )
+      .optional(),
   }).required(),
   terrain: Joi.object({
     regions: Joi.array()

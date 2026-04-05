@@ -62,4 +62,4 @@ export const SRECTS: Record<string, SpriteRect> = {
 
 export const DEF_PLAYER: SpawnPoint[] = [{ x: 256, y: 768 }, { x: 512, y: 768 }];
 export const DEF_ENEMY:  SpawnPoint[] = [{ x: 0, y: 0 }, { x: 384, y: 0 }, { x: 768, y: 0 }];
-export const BASE_POS:   SpawnPoint   = { x: 384, y: 768 };
+export const DEF_BASES:  SpawnPoint[] = [{ x: 384, y: 768 }];

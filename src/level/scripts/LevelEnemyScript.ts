@@ -76,7 +76,7 @@ export class LevelEnemyScript extends LevelScript {
     }
 
     const ai = this.aiModes[event.partyIndex];
-    const behavior = TankFactory.createBehaviorForAiMode(ai ?? TankAiMode.Classic);
+    const behavior = TankFactory.createBehaviorForAiMode(ai ?? TankAiMode.Classic, this.mapConfig.getBasePositions());
     const tank = TankFactory.createEnemy(event.partyIndex, type, behavior);
     tank.updateMatrix(); // Origin should be in before setting center
     tank.rotate(Rotation.Down);

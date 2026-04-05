@@ -1,5 +1,5 @@
 import { PLAYTEST_STORAGE_KEY } from '../core/render/BridgeScene';
-import { DEF_PLAYER, DEF_ENEMY, BASE_POS, GW, GH, T2I, TS } from './constants';
+import { DEF_PLAYER, DEF_ENEMY, DEF_BASES, GW, GH, T2I, TS } from './constants';
 import { gridToRegions, regionsToGrid } from './grid';
 import { pushHistory } from './history';
 import { render } from './renderer';
@@ -44,7 +44,7 @@ export function buildMapDto(): MapDto {
       player: {
         locations: state.playerSpawns.map(s => ({ x: s.x, y: s.y })),
       },
-      base: { x: state.basePos.x, y: state.basePos.y },
+      bases: state.basePositions.map(s => ({ x: s.x, y: s.y })),
     },
     terrain: {
       regions: gridToRegions(),
@@ -59,7 +59,8 @@ export function loadDto(dto: MapDto): void {
 
   state.playerSpawns = ((dto.spawn?.player?.locations ?? DEF_PLAYER) as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
   state.enemySpawns  = ((dto.spawn?.enemy?.locations  ?? DEF_ENEMY)  as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
-  state.basePos      = dto.spawn?.base ? { ...dto.spawn.base } : { ...BASE_POS };
+  state.basePositions = dto.spawn?.bases?.map(s => ({ x: s.x, y: s.y }))
+    ?? (dto.spawn?.base ? [{ x: dto.spawn.base.x, y: dto.spawn.base.y }] : DEF_BASES.map(s => ({ ...s })));
 
   if (dto.spawn?.enemy?.spawnDelay    !== undefined) setInputValue('inp-delay', dto.spawn.enemy.spawnDelay);
   if (dto.spawn?.enemy?.maxAliveCount !== undefined) setInputValue('inp-alive', dto.spawn.enemy.maxAliveCount);
@@ -85,11 +86,13 @@ export function paintBaseDefense(): void {
       }
     }
   };
-  const heartCol = state.basePos.x / TS;
-  const heartRow = state.basePos.y / TS;
-  fill(heartCol - 2, heartRow - 2, 8, 2); // top wall
-  fill(heartCol - 2, heartRow,     2, 4); // left wing
-  fill(heartCol + 4, heartRow,     2, 4); // right wing
+  for (const base of state.basePositions) {
+    const heartCol = base.x / TS;
+    const heartRow = base.y / TS;
+    fill(heartCol - 2, heartRow - 2, 8, 2); // top wall
+    fill(heartCol - 2, heartRow,     2, 4); // left wing
+    fill(heartCol + 4, heartRow,     2, 4); // right wing
+  }
 }
 
 export function newMap(): void {
@@ -98,7 +101,7 @@ export function newMap(): void {
   paintBaseDefense();
   state.playerSpawns = DEF_PLAYER.map(s => ({ ...s }));
   state.enemySpawns  = DEF_ENEMY.map(s  => ({ ...s }));
-  state.basePos      = { ...BASE_POS };
+  state.basePositions = DEF_BASES.map(s => ({ ...s }));
   state.enemyList    = Array.from({ length: 20 }, () => ({ type: 'basic', ai: 'classic', drop: '' }));
   setInputValue('inp-delay', 3);
   setInputValue('inp-alive', 4);

@@ -32,7 +32,7 @@ export class MapConfig {
           list: [],
         },
         player: { locations: config.PLAYER_DEFAULT_SPAWN_POSITIONS },
-        base: { x: 384, y: 768 },
+        bases: [{ x: 384, y: 768 }],
       },
     });
   }
@@ -51,6 +51,15 @@ export class MapConfig {
 
     if (schemaError !== undefined) {
       throw schemaError;
+    }
+
+    // Normalize: if only legacy `base` field, promote to `bases` array
+    if (!validatedDto.spawn.bases || validatedDto.spawn.bases.length === 0) {
+      if (validatedDto.spawn.base) {
+        validatedDto.spawn.bases = [validatedDto.spawn.base];
+      } else {
+        validatedDto.spawn.bases = [{ x: 384, y: 768 }];
+      }
     }
 
     const terrainError = TerrainFactory.validateRegionConfigs(
@@ -117,9 +126,12 @@ export class MapConfig {
     return this.dto.spawn.enemy.maxAliveCount;
   }
 
+  public getBasePositions(): Vector[] {
+    return this.dto.spawn.bases!.map((b) => new Vector(b.x - 32, b.y - 32));
+  }
+
   public getBasePosition(): Vector {
-    const b = this.dto.spawn.base;
-    return new Vector(b.x - 32, b.y - 32);
+    return this.getBasePositions()[0];
   }
 
   public getEnemySpawnPositions(): Vector[] {

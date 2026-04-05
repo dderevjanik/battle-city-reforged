@@ -37,6 +37,7 @@ export interface MapDto {
       locations: SpawnPoint[];
     };
     base?: SpawnPoint;
+    bases?: SpawnPoint[];
   };
   terrain: {
     regions: TerrainRegion[];
@@ -51,5 +52,5 @@ export interface HistorySnapshot {
   grid: Uint8Array;
   playerSpawns: SpawnPoint[];
   enemySpawns: SpawnPoint[];
-  basePos: SpawnPoint;
+  basePositions: SpawnPoint[];
 }

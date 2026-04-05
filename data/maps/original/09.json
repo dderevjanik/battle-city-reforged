@@ -821,6 +821,27 @@
         "y": 640,
         "width": 64,
         "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 352,
+        "y": 736,
+        "width": 128,
+        "height": 32
+      },
+      {
+        "type": "brick",
+        "x": 352,
+        "y": 768,
+        "width": 32,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 448,
+        "y": 768,
+        "width": 32,
+        "height": 64
       }
     ]
   }

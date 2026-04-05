@@ -4,7 +4,7 @@ import { stepUndo, stepRedo, pushHistory } from './history';
 import { render, resizeCanvas, centerView, c2w, w2c } from './renderer';
 import { state } from './state';
 import { selectBrush, setMode, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus } from './ui';
-import { newMap, saveMap, openFile, onFileSelected, testMap } from './io';
+import { newMap, saveMap, openFile, onFileSelected, testMap, openMapBrowser } from './io';
 import type { SpawnPoint } from './types';
 
 function clamp(v: number, lo: number, hi: number): number {
@@ -175,6 +175,7 @@ function cycleBrushGroup(start: number, count: number): void {
 export function bindToolbar(): void {
   document.getElementById('btn-new')?.addEventListener('click', newMap);
   document.getElementById('btn-load')?.addEventListener('click', openFile);
+  document.getElementById('btn-browse')?.addEventListener('click', openMapBrowser);
   document.getElementById('btn-save')?.addEventListener('click', saveMap);
   document.getElementById('btn-test')?.addEventListener('click', testMap);
   document.getElementById('btn-undo')?.addEventListener('click', () => { stepUndo(); refreshSpawnLists(); render(); });

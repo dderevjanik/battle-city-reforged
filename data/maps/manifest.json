@@ -1,0 +1,52 @@
+{
+  "groups": [
+    {
+      "name": "Original",
+      "maps": [
+        { "label": "01", "file": "data/maps/original/01.json" },
+        { "label": "02", "file": "data/maps/original/02.json" },
+        { "label": "03", "file": "data/maps/original/03.json" },
+        { "label": "04", "file": "data/maps/original/04.json" },
+        { "label": "05", "file": "data/maps/original/05.json" },
+        { "label": "06", "file": "data/maps/original/06.json" },
+        { "label": "07", "file": "data/maps/original/07.json" },
+        { "label": "08", "file": "data/maps/original/08.json" },
+        { "label": "09", "file": "data/maps/original/09.json" },
+        { "label": "10", "file": "data/maps/original/10.json" },
+        { "label": "11", "file": "data/maps/original/11.json" },
+        { "label": "12", "file": "data/maps/original/12.json" },
+        { "label": "13", "file": "data/maps/original/13.json" },
+        { "label": "14", "file": "data/maps/original/14.json" },
+        { "label": "15", "file": "data/maps/original/15.json" },
+        { "label": "16", "file": "data/maps/original/16.json" },
+        { "label": "17", "file": "data/maps/original/17.json" },
+        { "label": "18", "file": "data/maps/original/18.json" },
+        { "label": "19", "file": "data/maps/original/19.json" },
+        { "label": "20", "file": "data/maps/original/20.json" },
+        { "label": "21", "file": "data/maps/original/21.json" },
+        { "label": "22", "file": "data/maps/original/22.json" },
+        { "label": "23", "file": "data/maps/original/23.json" },
+        { "label": "24", "file": "data/maps/original/24.json" },
+        { "label": "25", "file": "data/maps/original/25.json" },
+        { "label": "26", "file": "data/maps/original/26.json" },
+        { "label": "27", "file": "data/maps/original/27.json" },
+        { "label": "28", "file": "data/maps/original/28.json" },
+        { "label": "29", "file": "data/maps/original/29.json" },
+        { "label": "30", "file": "data/maps/original/30.json" },
+        { "label": "31", "file": "data/maps/original/31.json" },
+        { "label": "32", "file": "data/maps/original/32.json" },
+        { "label": "33", "file": "data/maps/original/33.json" },
+        { "label": "34", "file": "data/maps/original/34.json" },
+        { "label": "35", "file": "data/maps/original/35.json" }
+      ]
+    },
+    {
+      "name": "Test",
+      "maps": [
+        { "label": "enemy-tanks", "file": "data/maps/test/enemy-tanks.json" },
+        { "label": "nsfw",        "file": "data/maps/test/nsfw.json" },
+        { "label": "tank-collision", "file": "data/maps/test/tank-collision.json" }
+      ]
+    }
+  ]
+}

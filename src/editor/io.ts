@@ -124,3 +124,88 @@ export function onFileSelected(event: Event): void {
   reader.readAsText(file);
   input.value = '';
 }
+
+interface MapManifestEntry { label: string; file: string; }
+interface MapManifestGroup { name: string; maps: MapManifestEntry[]; }
+interface MapManifest      { groups: MapManifestGroup[]; }
+
+export async function loadMapFromUrl(url: string): Promise<void> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  loadDto(await res.json() as MapDto);
+}
+
+export function openMapBrowser(): void {
+  const existing = document.getElementById('map-browser-overlay');
+  if (existing) { existing.remove(); return; }
+
+  const overlay = document.createElement('div');
+  overlay.id = 'map-browser-overlay';
+  Object.assign(overlay.style, {
+    position: 'fixed', inset: '0', background: 'rgba(0,0,0,0.7)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: '1000',
+  });
+
+  const dialog = document.createElement('div');
+  Object.assign(dialog.style, {
+    background: '#161b22', border: '1px solid #30363d', padding: '16px',
+    minWidth: '320px', maxHeight: '80vh', display: 'flex', flexDirection: 'column',
+    fontFamily: "'Courier New', monospace", fontSize: '12px', color: '#e0e0e0',
+  });
+
+  const header = document.createElement('div');
+  Object.assign(header.style, { display: 'flex', alignItems: 'center', marginBottom: '12px' });
+  const title = document.createElement('span');
+  title.textContent = 'OPEN MAP';
+  Object.assign(title.style, { color: '#f85149', fontWeight: 'bold', fontSize: '13px', letterSpacing: '1px', flex: '1' });
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕';
+  Object.assign(closeBtn.style, { background: 'none', border: 'none', color: '#6e7681', cursor: 'pointer', fontSize: '14px' });
+  closeBtn.onclick = () => overlay.remove();
+  header.append(title, closeBtn);
+
+  const body = document.createElement('div');
+  Object.assign(body.style, { overflowY: 'auto', flex: '1' });
+  body.textContent = 'Loading…';
+
+  dialog.append(header, body);
+  overlay.append(dialog);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  document.body.append(overlay);
+
+  fetch('data/maps/manifest.json')
+    .then(r => r.json() as Promise<MapManifest>)
+    .then(manifest => {
+      body.textContent = '';
+      for (const group of manifest.groups) {
+        const groupLabel = document.createElement('div');
+        groupLabel.textContent = group.name.toUpperCase();
+        Object.assign(groupLabel.style, {
+          color: '#6e7681', fontSize: '9px', letterSpacing: '1px',
+          textTransform: 'uppercase', margin: '8px 0 4px',
+        });
+        body.append(groupLabel);
+
+        const grid = document.createElement('div');
+        Object.assign(grid.style, { display: 'flex', flexWrap: 'wrap', gap: '4px' });
+
+        for (const entry of group.maps) {
+          const btn = document.createElement('button');
+          btn.textContent = entry.label;
+          Object.assign(btn.style, {
+            background: '#0d1117', border: '1px solid #21262d', color: '#c9d1d9',
+            padding: '4px 10px', cursor: 'pointer', font: 'inherit', fontSize: '11px',
+          });
+          btn.onmouseenter = () => { btn.style.borderColor = '#388bfd'; };
+          btn.onmouseleave = () => { btn.style.borderColor = '#21262d'; };
+          btn.onclick = () => {
+            overlay.remove();
+            loadMapFromUrl(entry.file).catch(err => alert(`Failed to load map: ${(err as Error).message}`));
+          };
+          grid.append(btn);
+        }
+        body.append(grid);
+      }
+    })
+    .catch(err => { body.textContent = `Error: ${(err as Error).message}`; });
+}

@@ -36,12 +36,7 @@ export class LevelLivesCounter extends GameObject {
   }
 
   private getPlayerNumberText(playerIndex: number): string {
-    if (playerIndex === 0) {
-      return 'Ⅰ';
-    }
-    if (playerIndex === 1) {
-      return 'Ⅱ';
-    }
-    return '?';
+    const numerals = ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ'];
+    return numerals[playerIndex] ?? '?';
   }
 }

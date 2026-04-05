@@ -39,6 +39,14 @@ export class InputVariant {
     InputBindingType.TertiaryKeyboard,
     0,
   );
+  public static QuaternaryKeyboard0 = new InputVariant(
+    InputBindingType.QuaternaryKeyboard,
+    0,
+  );
+  public static QuinaryKeyboard0 = new InputVariant(
+    InputBindingType.QuinaryKeyboard,
+    0,
+  );
   public static PrimaryGamepad0 = new InputVariant(
     InputBindingType.PrimaryGamepad,
     0,

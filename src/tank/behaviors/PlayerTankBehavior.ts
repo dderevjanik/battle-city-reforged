@@ -32,7 +32,9 @@ export class PlayerTankBehavior extends TankBehavior {
     if (session.isMultiplayer()) {
       const playerSession = session.getPlayer(tank.partyIndex);
       const playerInputVariant = playerSession.getInputVariant();
-      inputMethod = inputManager.getMethodByVariant(playerInputVariant!);
+      if (playerInputVariant !== null) {
+        inputMethod = inputManager.getMethodByVariant(playerInputVariant);
+      }
     }
 
     // WARNING: order is important. Make sure to keep fire updates before

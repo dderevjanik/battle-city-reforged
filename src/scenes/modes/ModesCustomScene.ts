@@ -18,6 +18,8 @@ export class ModesCustomScene extends GameScene {
   private loadItem!: TextMenuItem;
   private singlePlayerItem!: TextMenuItem;
   private multiPlayerItem!: TextMenuItem;
+  private triplePlayerItem!: TextMenuItem;
+  private quadPlayerItem!: TextMenuItem;
   private backItem!: TextMenuItem;
   private menu!: SceneMenu;
   private mapLoader!: MapLoader;
@@ -48,6 +50,14 @@ export class ModesCustomScene extends GameScene {
     this.multiPlayerItem.selected.addListener(this.handleMultiPlayerSelected);
     this.multiPlayerItem.setFocusable(false);
 
+    this.triplePlayerItem = new TextMenuItem('PLAY - 3 PLAYERS');
+    this.triplePlayerItem.selected.addListener(this.handleTriplePlayerSelected);
+    this.triplePlayerItem.setFocusable(false);
+
+    this.quadPlayerItem = new TextMenuItem('PLAY - 4 PLAYERS');
+    this.quadPlayerItem.selected.addListener(this.handleQuadPlayerSelected);
+    this.quadPlayerItem.setFocusable(false);
+
     this.backItem = new TextMenuItem('BACK');
     this.backItem.selected.addListener(this.handleBackSelected);
 
@@ -57,6 +67,8 @@ export class ModesCustomScene extends GameScene {
       this.loadItem,
       this.singlePlayerItem,
       this.multiPlayerItem,
+      this.triplePlayerItem,
+      this.quadPlayerItem,
       divider,
       this.backItem,
     ];
@@ -70,6 +82,8 @@ export class ModesCustomScene extends GameScene {
   private updateMenu(): void {
     this.singlePlayerItem.setFocusable(this.canPlay());
     this.multiPlayerItem.setFocusable(this.canPlay());
+    this.triplePlayerItem.setFocusable(this.canPlay());
+    this.quadPlayerItem.setFocusable(this.canPlay());
   }
 
   private canPlay(): boolean {
@@ -91,7 +105,19 @@ export class ModesCustomScene extends GameScene {
   };
 
   private handleMultiPlayerSelected = (): void => {
-    this.session.setMultiplayer();
+    this.session.setPlayerCount(2);
+    this.mapLoader.setListReader(this.fileMapListReader!);
+    this.navigator.replace(GameSceneType.LevelSelection);
+  };
+
+  private handleTriplePlayerSelected = (): void => {
+    this.session.setPlayerCount(3);
+    this.mapLoader.setListReader(this.fileMapListReader!);
+    this.navigator.replace(GameSceneType.LevelSelection);
+  };
+
+  private handleQuadPlayerSelected = (): void => {
+    this.session.setPlayerCount(4);
     this.mapLoader.setListReader(this.fileMapListReader!);
     this.navigator.replace(GameSceneType.LevelSelection);
   };

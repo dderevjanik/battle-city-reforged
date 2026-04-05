@@ -28,10 +28,7 @@ export class LevelPlayerScript extends LevelScript {
 
     this.positions = this.mapConfig.getPlayerSpawnPositions();
 
-    // Keep only one player if not multiplayer
-    if (!session.isMultiplayer()) {
-      this.positions = this.positions.slice(0, 1);
-    }
+    this.positions = this.positions.slice(0, session.getPlayerCount());
 
     this.positions.forEach((position, index) => {
       const timer = new Timer(config.PLAYER_FIRST_SPAWN_DELAY);

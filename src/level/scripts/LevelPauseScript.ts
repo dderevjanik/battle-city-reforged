@@ -30,14 +30,21 @@ export class LevelPauseScript extends LevelScript {
     let inputMethods = [activeMethod];
 
     if (this.session.isMultiplayer()) {
-      const playerSessions = this.session.getPlayers();
+      const methods = this.session
+        .getPlayers()
+        .slice(0, this.session.getPlayerCount())
+        .map((playerSession) => {
+          const playerVariant = playerSession.getInputVariant();
+          if (playerVariant === null) {
+            return null;
+          }
+          return this.inputManager.getMethodByVariant(playerVariant);
+        })
+        .filter((m) => m !== null) as typeof inputMethods;
 
-      // Get input variants for all players
-      inputMethods = playerSessions.map((playerSession) => {
-        const playerVariant = playerSession.getInputVariant();
-        const playerMethod = this.inputManager.getMethodByVariant(playerVariant!);
-        return playerMethod;
-      });
+      if (methods.length > 0) {
+        inputMethods = methods;
+      }
     }
 
     const anybodyPaused = inputMethods.some((inputMethod) => {

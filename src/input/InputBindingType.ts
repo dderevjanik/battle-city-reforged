@@ -46,6 +46,10 @@ export class InputBindingType {
         return 'secondary';
       case 2:
         return 'tertiary';
+      case 3:
+        return 'quaternary';
+      case 4:
+        return 'quinary';
     }
     return 'unknown';
   }
@@ -82,6 +86,16 @@ export class InputBindingType {
 
   public static TertiaryKeyboard = new InputBindingType(
     2,
+    InputDeviceType.Keyboard,
+  );
+
+  public static QuaternaryKeyboard = new InputBindingType(
+    3,
+    InputDeviceType.Keyboard,
+  );
+
+  public static QuinaryKeyboard = new InputBindingType(
+    4,
     InputDeviceType.Keyboard,
   );
 }

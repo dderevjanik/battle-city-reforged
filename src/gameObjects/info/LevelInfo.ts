@@ -9,8 +9,12 @@ import { LevelNumberCounter } from './LevelNumberCounter';
 export class LevelInfo extends GameObject {
   public zIndex = config.LEVEL_INFO_Z_INDEX;
   private enemyCounter = new LevelEnemyCounter();
-  private primaryLivesCounter = new LevelLivesCounter(0);
-  private secondaryLivesCounter = new LevelLivesCounter(1);
+  private livesCounters = [
+    new LevelLivesCounter(0),
+    new LevelLivesCounter(1),
+    new LevelLivesCounter(2),
+    new LevelLivesCounter(3),
+  ];
   private levelNumberCounter = new LevelNumberCounter();
 
   constructor() {
@@ -20,15 +24,18 @@ export class LevelInfo extends GameObject {
   protected setup({ session }: GameContext): void {
     this.add(this.enemyCounter);
 
-    this.primaryLivesCounter.position.setY(444);
-    this.add(this.primaryLivesCounter);
+    const playerCount = session.getPlayerCount();
+    // Space counters evenly below the enemy counter area (starts ~444px)
+    // With 4 counters, use 72px spacing; with fewer, use 96px spacing
+    const spacing = playerCount <= 2 ? 96 : 72;
+    const startY = 444;
 
-    if (session.isMultiplayer()) {
-      this.secondaryLivesCounter.position.setY(540);
-      this.add(this.secondaryLivesCounter);
+    for (let i = 0; i < playerCount; i++) {
+      this.livesCounters[i].position.setY(startY + i * spacing);
+      this.add(this.livesCounters[i]);
     }
 
-    this.levelNumberCounter.position.setY(636);
+    this.levelNumberCounter.position.setY(startY + playerCount * spacing);
     this.add(this.levelNumberCounter);
   }
 
@@ -37,11 +44,9 @@ export class LevelInfo extends GameObject {
   }
 
   public setLivesCount(playerIndex: number, livesCount: number): void {
-    if (playerIndex === 0) {
-      this.primaryLivesCounter.setCount(livesCount);
-    }
-    if (playerIndex === 1) {
-      this.secondaryLivesCounter.setCount(livesCount);
+    const counter = this.livesCounters[playerIndex];
+    if (counter !== undefined) {
+      counter.setCount(livesCount);
     }
   }
 

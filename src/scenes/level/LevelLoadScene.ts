@@ -88,7 +88,7 @@ export class LevelLoadScene extends GameScene {
     if (this.session.isMultiplayer()) {
       // Check if players already selected their variants.
       // It happens before first level.
-      const primaryInputVariant = this.session.primaryPlayer.getInputVariant();
+      const primaryInputVariant = this.session.getPlayer(0).getInputVariant();
       const needSelectVariant = primaryInputVariant === null;
 
       if (needSelectVariant) {

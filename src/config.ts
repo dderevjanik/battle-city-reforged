@@ -110,6 +110,8 @@ export const STORAGE_KEY_SETTINGS_SHOW_EDITOR_HINT =
 export const PLAYER_DEFAULT_SPAWN_POSITIONS = [
   { x: 256, y: 768 },
   { x: 512, y: 768 },
+  { x: 128, y: 768 },
+  { x: 640, y: 768 },
 ];
 export const ENEMY_DEFAULT_SPAWN_POSITIONS = [
   { x: 384, y: 0 },

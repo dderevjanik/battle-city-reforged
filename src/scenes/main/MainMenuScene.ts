@@ -28,6 +28,8 @@ export class MainMenuScene extends GameScene {
   private menu!: Menu;
   private singlePlayerItem!: TextMenuItem;
   private multiPlayerItem!: TextMenuItem;
+  private triplePlayerItem!: TextMenuItem;
+  private quadPlayerItem!: TextMenuItem;
   private modesItem!: TextMenuItem;
   private settingsItem!: TextMenuItem;
   private aboutItem!: TextMenuItem;
@@ -81,6 +83,12 @@ export class MainMenuScene extends GameScene {
     this.multiPlayerItem = new TextMenuItem('2 PLAYERS');
     this.multiPlayerItem.selected.addListener(this.handleMultiPlayerSelected);
 
+    this.triplePlayerItem = new TextMenuItem('3 PLAYERS');
+    this.triplePlayerItem.selected.addListener(this.handleTriplePlayerSelected);
+
+    this.quadPlayerItem = new TextMenuItem('4 PLAYERS');
+    this.quadPlayerItem.selected.addListener(this.handleQuadPlayerSelected);
+
     this.modesItem = new TextMenuItem('MODES');
     this.modesItem.selected.addListener(this.handleModesSelected);
 
@@ -93,6 +101,8 @@ export class MainMenuScene extends GameScene {
     const menuItems = [
       this.singlePlayerItem,
       this.multiPlayerItem,
+      this.triplePlayerItem,
+      this.quadPlayerItem,
       this.modesItem,
       this.settingsItem,
       this.aboutItem,
@@ -183,7 +193,17 @@ export class MainMenuScene extends GameScene {
   };
 
   private handleMultiPlayerSelected = (): void => {
-    this.session.setMultiplayer();
+    this.session.setPlayerCount(2);
+    this.navigator.replace(GameSceneType.LevelSelection);
+  };
+
+  private handleTriplePlayerSelected = (): void => {
+    this.session.setPlayerCount(3);
+    this.navigator.replace(GameSceneType.LevelSelection);
+  };
+
+  private handleQuadPlayerSelected = (): void => {
+    this.session.setPlayerCount(4);
     this.navigator.replace(GameSceneType.LevelSelection);
   };
 

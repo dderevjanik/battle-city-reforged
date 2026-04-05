@@ -57,6 +57,36 @@ export class TertiaryKeyboardInputBinding extends InputBinding {
   }
 }
 
+// Suggested for multi-player mode, third player (IJKL cluster)
+export class QuaternaryKeyboardInputBinding extends InputBinding {
+  constructor() {
+    super();
+
+    this.setDefault(InputControl.Up, KeyboardButtonCode.I);
+    this.setDefault(InputControl.Down, KeyboardButtonCode.K);
+    this.setDefault(InputControl.Left, KeyboardButtonCode.J);
+    this.setDefault(InputControl.Right, KeyboardButtonCode.L);
+    this.setDefault(InputControl.Select, KeyboardButtonCode.U);
+    this.setDefault(InputControl.PrimaryAction, KeyboardButtonCode.U);
+    this.setDefault(InputControl.SecondaryAction, KeyboardButtonCode.O);
+  }
+}
+
+// Suggested for multi-player mode, fourth player (numpad)
+export class QuinaryKeyboardInputBinding extends InputBinding {
+  constructor() {
+    super();
+
+    this.setDefault(InputControl.Up, KeyboardButtonCode.Numpad8);
+    this.setDefault(InputControl.Down, KeyboardButtonCode.Numpad2);
+    this.setDefault(InputControl.Left, KeyboardButtonCode.Numpad4);
+    this.setDefault(InputControl.Right, KeyboardButtonCode.Numpad6);
+    this.setDefault(InputControl.Select, KeyboardButtonCode.Numpad5);
+    this.setDefault(InputControl.PrimaryAction, KeyboardButtonCode.Numpad0);
+    this.setDefault(InputControl.SecondaryAction, KeyboardButtonCode.NumpadDecimal);
+  }
+}
+
 export class PrimaryGamepadInputBinding extends InputBinding {
   constructor() {
     super();

@@ -37,11 +37,10 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
     // Keyboard is always available
     let variantChoices: SelectorMenuItemChoice<InputVariant>[] = [
       { value: InputVariant.PrimaryKeyboard0, text: 'KEYBOARD - BINDING 1' },
-      {
-        value: InputVariant.SecondaryKeyboard0,
-        text: 'KEYBOARD - BINDING 2',
-      },
+      { value: InputVariant.SecondaryKeyboard0, text: 'KEYBOARD - BINDING 2' },
       { value: InputVariant.TertiaryKeyboard0, text: 'KEYBOARD - BINDING 3' },
+      { value: InputVariant.QuaternaryKeyboard0, text: 'KEYBOARD - BINDING 4' },
+      { value: InputVariant.QuinaryKeyboard0, text: 'KEYBOARD - BINDING 5' },
     ];
 
     const gamepadDevice0 = inputManager.getDevice(InputDeviceType.Gamepad, 0);
@@ -68,58 +67,64 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
       });
     }
 
+    // Default variant suggestions per player index
+    const defaultVariantsByIndex = [
+      InputVariant.SecondaryKeyboard0,
+      InputVariant.TertiaryKeyboard0,
+      InputVariant.QuaternaryKeyboard0,
+      InputVariant.QuinaryKeyboard0,
+    ];
+
     // By default it is single-player and we pick active device and binding.
     let defaultVariant = new InputVariant(
       inputManager.getActiveBindingType(),
       0,
     );
 
-    // If player can actually select from his options.
-    // For multiplayer suggest primary player - keyboard #2, and for secondary
-    // player - keyboard #3. Will be queried by player index.
     if (this.params.canSelectVariant) {
       if (this.session.isMultiplayer()) {
-        if (this.params.playerIndex === 0) {
-          defaultVariant = InputVariant.SecondaryKeyboard0;
-        } else {
-          defaultVariant = InputVariant.TertiaryKeyboard0;
-        }
+        defaultVariant =
+          defaultVariantsByIndex[this.params.playerIndex] ??
+          InputVariant.PrimaryKeyboard0;
       } else {
         defaultVariant = InputVariant.PrimaryKeyboard0;
       }
     }
 
-    // For secondary player - remove the item primary player has picked
-    if (this.params.canSelectVariant && this.params.playerIndex === 1) {
-      const primaryPlayerVariant = this.session.primaryPlayer.getInputVariant();
+    // For players after the first: remove variants already picked by previous players
+    if (this.params.canSelectVariant && this.params.playerIndex > 0) {
+      const pickedVariants = this.session.players
+        .slice(0, this.params.playerIndex)
+        .map((p) => p.getInputVariant())
+        .filter((v) => v !== null) as InputVariant[];
 
       variantChoices = variantChoices.filter((choice) => {
         const choiceVariant = choice.value;
 
-        // If primary player has picked gamepad - remove all variants using
-        // same gamepad device for secondary player
-        const primaryDeviceType = primaryPlayerVariant!.bindingType.deviceType;
-        const choiceDeviceType = choiceVariant.bindingType.deviceType;
-        const isSameGamepadDevice =
-          primaryDeviceType === InputDeviceType.Gamepad &&
-          choiceDeviceType === InputDeviceType.Gamepad &&
-          primaryPlayerVariant!.deviceIndex === choiceVariant.deviceIndex;
-        if (isSameGamepadDevice) {
-          return false;
-        }
+        for (const picked of pickedVariants) {
+          // Remove all variants that use the same gamepad device
+          const pickedDeviceType = picked.bindingType.deviceType;
+          const choiceDeviceType = choiceVariant.bindingType.deviceType;
+          const isSameGamepadDevice =
+            pickedDeviceType === InputDeviceType.Gamepad &&
+            choiceDeviceType === InputDeviceType.Gamepad &&
+            picked.deviceIndex === choiceVariant.deviceIndex;
+          if (isSameGamepadDevice) {
+            return false;
+          }
 
-        const isSameVariant = choiceVariant === primaryPlayerVariant;
-        if (isSameVariant) {
-          return false;
+          if (choiceVariant === picked) {
+            return false;
+          }
         }
 
         return true;
       });
 
-      // Adjust default value in case primary player has picked secondary's
-      // player default variant type; pick the oppositing variant
-      if (defaultVariant === primaryPlayerVariant) {
-        defaultVariant = InputVariant.SecondaryKeyboard0;
+      // Adjust default if it was already taken
+      if (pickedVariants.includes(defaultVariant)) {
+        defaultVariant =
+          variantChoices[0]?.value ?? InputVariant.PrimaryKeyboard0;
       }
     }
 
@@ -204,12 +209,13 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
       const playerSession = this.session.getPlayer(this.params.playerIndex);
       playerSession.setInputVariant(selectedInputVariant!);
 
-      // If player is not alone - configure next player
-      if (this.session.isMultiplayer() && this.params.playerIndex === 0) {
+      // Configure next player if there are more players left
+      const nextPlayerIndex = this.params.playerIndex + 1;
+      if (this.session.isMultiplayer() && nextPlayerIndex < this.session.getPlayerCount()) {
         const params: LevelControlsLocationParams = {
           canSelectVariant: true,
           mapConfig: this.params.mapConfig,
-          playerIndex: 1,
+          playerIndex: nextPlayerIndex,
         };
         this.navigator.replace(GameSceneType.LevelControls, params);
         return;

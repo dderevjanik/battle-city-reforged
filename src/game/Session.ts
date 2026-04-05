@@ -14,14 +14,19 @@ export class Session {
   private endLevelNumber!: number;
   private currentLevelNumber!: number;
   private playtest!: boolean;
-  private multiplayer!: boolean;
+  private playerCount!: number;
   private seenIntro!: boolean;
   private state!: State;
 
   constructor() {
-    this.reset();
+    this.players.push(
+      this.primaryPlayer,
+      this.secondaryPlayer,
+      new SessionPlayer(),
+      new SessionPlayer(),
+    );
 
-    this.players.push(this.primaryPlayer, this.secondaryPlayer);
+    this.reset();
   }
 
   public start(startLevelNumber: number, endLevelNumber: number): void {
@@ -42,10 +47,11 @@ export class Session {
     this.endLevelNumber = 1;
     this.state = State.Idle;
     this.playtest = false;
-    this.multiplayer = false;
+    this.playerCount = 1;
 
-    this.primaryPlayer.reset();
-    this.secondaryPlayer.reset();
+    for (const player of this.players) {
+      player.reset();
+    }
   }
 
   public getPlayer(playerIndex: number): SessionPlayer {
@@ -57,11 +63,7 @@ export class Session {
   }
 
   public isAnyPlayerAlive(): boolean {
-    if (!this.multiplayer) {
-      return this.primaryPlayer.isAlive();
-    }
-
-    return this.players.some((player) => {
+    return this.players.slice(0, this.playerCount).some((player) => {
       return player.isAlive();
     });
   }
@@ -73,15 +75,17 @@ export class Session {
     this.state = State.Idle;
     this.playtest = false;
 
-    this.primaryPlayer.reset();
-    this.secondaryPlayer.reset();
+    for (const player of this.players) {
+      player.reset();
+    }
   }
 
   public activateNextLevel(): void {
     this.currentLevelNumber += 1;
 
-    this.primaryPlayer.completeLevel();
-    this.secondaryPlayer.completeLevel();
+    for (const player of this.players) {
+      player.completeLevel();
+    }
   }
 
   public getMaxLevelPoints(): number {
@@ -152,11 +156,19 @@ export class Session {
     return this.playtest;
   }
 
+  public setPlayerCount(count: number): void {
+    this.playerCount = Math.min(Math.max(count, 1), this.players.length);
+  }
+
+  public getPlayerCount(): number {
+    return this.playerCount;
+  }
+
   public setMultiplayer(): void {
-    this.multiplayer = true;
+    this.setPlayerCount(2);
   }
 
   public isMultiplayer(): boolean {
-    return this.multiplayer;
+    return this.playerCount > 1;
   }
 }

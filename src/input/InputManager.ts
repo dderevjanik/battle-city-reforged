@@ -10,6 +10,8 @@ import * as config from '../config';
 
 import { PrimaryGamepadInputBinding } from './InputBindings';
 import { PrimaryKeyboardInputBinding } from './InputBindings';
+import { QuaternaryKeyboardInputBinding } from './InputBindings';
+import { QuinaryKeyboardInputBinding } from './InputBindings';
 import { SecondaryGamepadInputBinding } from './InputBindings';
 import { SecondaryKeyboardInputBinding } from './InputBindings';
 import { TertiaryKeyboardInputBinding } from './InputBindings';
@@ -60,6 +62,14 @@ export class InputManager {
     this.bindings.set(
       InputBindingType.TertiaryKeyboard,
       new TertiaryKeyboardInputBinding(),
+    );
+    this.bindings.set(
+      InputBindingType.QuaternaryKeyboard,
+      new QuaternaryKeyboardInputBinding(),
+    );
+    this.bindings.set(
+      InputBindingType.QuinaryKeyboard,
+      new QuinaryKeyboardInputBinding(),
     );
     this.bindings.set(
       InputBindingType.PrimaryGamepad,

@@ -8,36 +8,36 @@
       "maxAliveCount": 4,
       "list": [
         {
-          "ai": "attack_base",
+          "ai": "classic",
           "type": "basic"
         },
         {
-          "ai": "attack_base",
+          "ai": "classic",
           "type": "basic"
         },
         {
-          "ai": "attack_base",
+          "ai": "classic",
           "type": "basic"
         },
         {
           "drop": "random",
-          "ai": "attack_base",
+          "ai": "classic",
           "type": "basic"
         },
         {
-          "ai": "attack_base",
+          "ai": "classic",
           "type": "basic"
         },
         {
-          "ai": "attack_base",
+          "ai": "classic",
           "type": "basic"
         },
         {
-          "ai": "attack_base",
+          "ai": "classic",
           "type": "basic"
         },
         {
-          "ai": "attack_base",
+          "ai": "classic",
           "type": "basic"
         },
         {
@@ -114,6 +114,14 @@
         },
         {
           "x": 512,
+          "y": 768
+        },
+        {
+          "x": 128,
+          "y": 768
+        },
+        {
+          "x": 640,
           "y": 768
         }
       ]

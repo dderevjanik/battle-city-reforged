@@ -19,6 +19,7 @@ import { SettingsAudioScene } from '../../scenes/settings/SettingsAudioScene';
 import { SettingsInterfaceScene } from '../../scenes/settings/SettingsInterfaceScene';
 import { SettingsKeybindingScene } from '../../scenes/settings/SettingsKeybindingScene';
 import { SettingsMenuScene } from '../../scenes/settings/SettingsMenuScene';
+import { SettingsResetAchievementsScene } from '../../scenes/settings/SettingsResetAchievementsScene';
 import { MapConfig } from '../../map/MapConfig';
 import { MemoryMapListReader } from '../../map/MapListReaders';
 import { GameSceneRouter } from '../../scenes/GameSceneRouter';
@@ -49,6 +50,7 @@ const SCENE_REGISTRY: [GameSceneType, typeof Phaser.Scene][] = [
   [GameSceneType.SettingsInterface, SettingsInterfaceScene],
   [GameSceneType.SettingsKeybinding, SettingsKeybindingScene],
   [GameSceneType.SettingsMenu, SettingsMenuScene],
+  [GameSceneType.SettingsResetAchievements, SettingsResetAchievementsScene],
 ];
 
 /**

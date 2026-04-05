@@ -1,4 +1,5 @@
 import { ACHIEVEMENTS } from '../../achievements/AchievementsRegistry';
+import { AchievementsManager } from '../../achievements/AchievementsManager';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Menu } from '../../gameObjects/menu/Menu';
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
@@ -33,8 +34,11 @@ function wrapText(text: string, maxChars: number): string {
 
 export class MainAchievementsScene extends GameScene {
   private description!: SpriteText;
+  private achievementsManager!: AchievementsManager;
 
   protected setup({ achievementsManager }: GameContext): void {
+    this.achievementsManager = achievementsManager;
+
     const title = new SceneMenuTitle('ACHIEVEMENTS');
     this.root.add(title);
 
@@ -90,9 +94,12 @@ export class MainAchievementsScene extends GameScene {
       this.description.setText('');
       return;
     }
-    this.description.setText(
-      wrapText(achievement.description.toUpperCase(), DESCRIPTION_WRAP_CHARS),
-    );
+    let text = wrapText(achievement.description.toUpperCase(), DESCRIPTION_WRAP_CHARS);
+    const unlockedAt = this.achievementsManager.getUnlockedAt(achievement.id);
+    if (unlockedAt !== null) {
+      text += '\n\nUNLOCKED: ' + unlockedAt.toISOString().substring(0, 10);
+    }
+    this.description.setText(text);
   }
 
   private handleBackSelected = (): void => {

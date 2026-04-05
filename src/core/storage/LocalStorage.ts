@@ -35,6 +35,10 @@ export class LocalStorage implements Storage {
     this.cache = data;
   }
 
+  public remove(key: string): void {
+    delete this.cache[key];
+  }
+
   public save(): void {
     const json = JSON.stringify(this.cache);
 

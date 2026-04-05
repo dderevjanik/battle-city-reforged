@@ -17,4 +17,5 @@ export enum GameSceneType {
   SettingsInterface,
   SettingsKeybinding,
   SettingsMenu,
+  SettingsResetAchievements,
 }

@@ -10,6 +10,7 @@ export class SettingsMenuScene extends GameScene {
   private keybindingItem!: TextMenuItem;
   private audioItem!: TextMenuItem;
   private interfaceItem!: TextMenuItem;
+  private resetAchievementsItem!: TextMenuItem;
   private backItem!: TextMenuItem;
   private menu!: SceneMenu;
 
@@ -25,6 +26,9 @@ export class SettingsMenuScene extends GameScene {
     this.interfaceItem = new TextMenuItem('INTERFACE');
     this.interfaceItem.selected.addListener(this.handleInterfaceSelected);
 
+    this.resetAchievementsItem = new TextMenuItem('RESET ACHIEVEMENTS');
+    this.resetAchievementsItem.selected.addListener(this.handleResetAchievementsSelected);
+
     this.backItem = new TextMenuItem('BACK');
     this.backItem.selected.addListener(this.handleBackSelected);
 
@@ -32,6 +36,7 @@ export class SettingsMenuScene extends GameScene {
       this.keybindingItem,
       this.audioItem,
       this.interfaceItem,
+      this.resetAchievementsItem,
       this.backItem,
     ];
 
@@ -51,6 +56,10 @@ export class SettingsMenuScene extends GameScene {
 
   private handleInterfaceSelected = (): void => {
     this.navigator.push(GameSceneType.SettingsInterface);
+  };
+
+  private handleResetAchievementsSelected = (): void => {
+    this.navigator.push(GameSceneType.SettingsResetAchievements);
   };
 
   private handleBackSelected = (): void => {

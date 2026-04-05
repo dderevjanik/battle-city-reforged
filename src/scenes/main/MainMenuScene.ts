@@ -28,12 +28,10 @@ export class MainMenuScene extends GameScene {
   private menu!: Menu;
   private singlePlayerItem!: TextMenuItem;
   private multiPlayerItem!: TextMenuItem;
-  private triplePlayerItem!: TextMenuItem;
-  private quadPlayerItem!: TextMenuItem;
-  private modesItem!: TextMenuItem;
   private settingsItem!: TextMenuItem;
-  private aboutItem!: TextMenuItem;
   private achievementsItem!: TextMenuItem;
+  private aboutItem!: TextMenuItem;
+  private modesItem!: TextMenuItem;
   private state: State = State.Ready;
   private session!: Session;
   private pointsHighscoreManager!: PointsHighscoreManager;
@@ -81,36 +79,28 @@ export class MainMenuScene extends GameScene {
     this.singlePlayerItem = new TextMenuItem('1 PLAYER');
     this.singlePlayerItem.selected.addListener(this.handleSinglePlayerSelected);
 
-    this.multiPlayerItem = new TextMenuItem('2 PLAYERS');
+    this.multiPlayerItem = new TextMenuItem('MULTIPLAYER');
     this.multiPlayerItem.selected.addListener(this.handleMultiPlayerSelected);
-
-    this.triplePlayerItem = new TextMenuItem('3 PLAYERS');
-    this.triplePlayerItem.selected.addListener(this.handleTriplePlayerSelected);
-
-    this.quadPlayerItem = new TextMenuItem('4 PLAYERS');
-    this.quadPlayerItem.selected.addListener(this.handleQuadPlayerSelected);
-
-    this.modesItem = new TextMenuItem('MODES');
-    this.modesItem.selected.addListener(this.handleModesSelected);
 
     this.settingsItem = new TextMenuItem('SETTINGS');
     this.settingsItem.selected.addListener(this.handleSettingsSelected);
 
+    this.achievementsItem = new TextMenuItem('ACHIEVEMENTS');
+    this.achievementsItem.selected.addListener(this.handleAchievementsSelected);
+
     this.aboutItem = new TextMenuItem('ABOUT');
     this.aboutItem.selected.addListener(this.handleAboutSelected);
 
-    this.achievementsItem = new TextMenuItem('ACHIEVEMENTS');
-    this.achievementsItem.selected.addListener(this.handleAchievementsSelected);
+    this.modesItem = new TextMenuItem('MODES');
+    this.modesItem.selected.addListener(this.handleModesSelected);
 
     const menuItems = [
       this.singlePlayerItem,
       this.multiPlayerItem,
-      this.triplePlayerItem,
-      this.quadPlayerItem,
-      this.modesItem,
       this.settingsItem,
-      this.aboutItem,
       this.achievementsItem,
+      this.aboutItem,
+      this.modesItem,
     ];
 
     this.menu = new Menu();
@@ -198,18 +188,7 @@ export class MainMenuScene extends GameScene {
   };
 
   private handleMultiPlayerSelected = (): void => {
-    this.session.setPlayerCount(2);
-    this.navigator.replace(GameSceneType.LevelSelection);
-  };
-
-  private handleTriplePlayerSelected = (): void => {
-    this.session.setPlayerCount(3);
-    this.navigator.replace(GameSceneType.LevelSelection);
-  };
-
-  private handleQuadPlayerSelected = (): void => {
-    this.session.setPlayerCount(4);
-    this.navigator.replace(GameSceneType.LevelSelection);
+    this.navigator.push(GameSceneType.MainMultiplayer);
   };
 
   private handleModesSelected = (): void => {

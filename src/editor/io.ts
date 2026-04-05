@@ -1,5 +1,5 @@
 import { PLAYTEST_STORAGE_KEY } from '../core/render/BridgeScene';
-import { DEF_PLAYER, DEF_ENEMY, GW, GH, T2I } from './constants';
+import { DEF_PLAYER, DEF_ENEMY, BASE_POS, GW, GH, T2I, TS } from './constants';
 import { gridToRegions, regionsToGrid } from './grid';
 import { pushHistory } from './history';
 import { render } from './renderer';
@@ -44,6 +44,7 @@ export function buildMapDto(): MapDto {
       player: {
         locations: state.playerSpawns.map(s => ({ x: s.x, y: s.y })),
       },
+      base: { x: state.basePos.x, y: state.basePos.y },
     },
     terrain: {
       regions: gridToRegions(),
@@ -58,6 +59,7 @@ export function loadDto(dto: MapDto): void {
 
   state.playerSpawns = ((dto.spawn?.player?.locations ?? DEF_PLAYER) as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
   state.enemySpawns  = ((dto.spawn?.enemy?.locations  ?? DEF_ENEMY)  as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
+  state.basePos      = dto.spawn?.base ? { ...dto.spawn.base } : { ...BASE_POS };
 
   if (dto.spawn?.enemy?.spawnDelay    !== undefined) setInputValue('inp-delay', dto.spawn.enemy.spawnDelay);
   if (dto.spawn?.enemy?.maxAliveCount !== undefined) setInputValue('inp-alive', dto.spawn.enemy.maxAliveCount);
@@ -83,10 +85,11 @@ export function paintBaseDefense(): void {
       }
     }
   };
-  // Base sits at grid col 24, row 48 (world 384,768), 4×4 cells
-  fill(22, 46, 8, 2); // top wall: cols 22-29, rows 46-47
-  fill(22, 48, 2, 4); // left wing: cols 22-23, rows 48-51
-  fill(28, 48, 2, 4); // right wing: cols 28-29, rows 48-51
+  const heartCol = state.basePos.x / TS;
+  const heartRow = state.basePos.y / TS;
+  fill(heartCol - 2, heartRow - 2, 8, 2); // top wall
+  fill(heartCol - 2, heartRow,     2, 4); // left wing
+  fill(heartCol + 4, heartRow,     2, 4); // right wing
 }
 
 export function newMap(): void {
@@ -95,6 +98,7 @@ export function newMap(): void {
   paintBaseDefense();
   state.playerSpawns = DEF_PLAYER.map(s => ({ ...s }));
   state.enemySpawns  = DEF_ENEMY.map(s  => ({ ...s }));
+  state.basePos      = { ...BASE_POS };
   state.enemyList    = Array.from({ length: 20 }, () => ({ type: 'basic', ai: 'classic', drop: '' }));
   setInputValue('inp-delay', 3);
   setInputValue('inp-alive', 4);

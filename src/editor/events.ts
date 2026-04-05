@@ -65,6 +65,11 @@ export function bindViewport(viewport: HTMLElement): void {
       refreshSpawnLists();
       pushHistory();
       render();
+
+    } else if (state.mode === 'base-spawn' && e.button === 0 && inField(world.x, world.y)) {
+      state.basePos = snapToTL(world.x, world.y);
+      pushHistory();
+      render();
     }
   });
 
@@ -179,6 +184,7 @@ export function bindToolbar(): void {
   document.getElementById('mode-terrain')?.addEventListener('click', () => setMode('terrain'));
   document.getElementById('mode-player-spawn')?.addEventListener('click', () => setMode('player-spawn'));
   document.getElementById('mode-enemy-spawn')?.addEventListener('click', () => setMode('enemy-spawn'));
+  document.getElementById('mode-base-spawn')?.addEventListener('click', () => setMode('base-spawn'));
 
   document.getElementById('file-input')?.addEventListener('change', onFileSelected);
 }

@@ -59,7 +59,7 @@ export function selectBrush(i: number): void {
 // ── Mode ──────────────────────────────────────────
 export function setMode(m: EditorMode): void {
   state.mode = m;
-  (['terrain', 'player-spawn', 'enemy-spawn'] as const).forEach(id =>
+  (['terrain', 'player-spawn', 'enemy-spawn', 'base-spawn'] as const).forEach(id =>
     document.getElementById(`mode-${id}`)?.classList.remove('active'),
   );
   document.getElementById(`mode-${m}`)?.classList.add('active');

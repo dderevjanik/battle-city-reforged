@@ -36,13 +36,14 @@ export interface MapDto {
     player: {
       locations: SpawnPoint[];
     };
+    base?: SpawnPoint;
   };
   terrain: {
     regions: TerrainRegion[];
   };
 }
 
-export type EditorMode = 'terrain' | 'player-spawn' | 'enemy-spawn';
+export type EditorMode = 'terrain' | 'player-spawn' | 'enemy-spawn' | 'base-spawn';
 
 export type SpriteRect = [number, number, number, number];
 
@@ -50,4 +51,5 @@ export interface HistorySnapshot {
   grid: Uint8Array;
   playerSpawns: SpawnPoint[];
   enemySpawns: SpawnPoint[];
+  basePos: SpawnPoint;
 }

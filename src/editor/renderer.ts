@@ -1,4 +1,4 @@
-import { FIELD, TS, TM, TL, GW, GH, COLORS, SNAP, BRUSHES, I2T, SRECTS, BASE_POS, SPRITE_SRC } from './constants';
+import { FIELD, TS, TM, TL, GW, GH, COLORS, SNAP, BRUSHES, I2T, SRECTS, SPRITE_SRC } from './constants';
 import { state } from './state';
 
 // ── Canvas refs (set via setup()) ──────────────────
@@ -119,6 +119,7 @@ export function render(): void {
 
   // ── Brush preview ──
   if (state.mode === 'terrain' && !state.isPanning) drawBrushPreview();
+  if (state.mode === 'base-spawn' && !state.isPanning) drawBasePreview();
 }
 
 function drawGridLines(tileSize: number, color: string, lw: number): void {
@@ -140,7 +141,7 @@ function drawGridLines(tileSize: number, color: string, lw: number): void {
 }
 
 function drawBase(): void {
-  const p  = w2c(BASE_POS.x, BASE_POS.y);
+  const p  = w2c(state.basePos.x, state.basePos.y);
   const sz = TL * state.zoom;
 
   if (spriteReady && spriteImg) {
@@ -204,6 +205,24 @@ function drawMarker(
     ctx.textBaseline = 'middle';
     ctx.fillText(label, mid.x, mid.y);
   }
+}
+
+function drawBasePreview(): void {
+  const sx = Math.floor(state.mouseWX / TL) * TL;
+  const sy = Math.floor(state.mouseWY / TL) * TL;
+  const p  = w2c(sx, sy);
+  const sz = TL * state.zoom;
+
+  ctx.globalAlpha = 0.5;
+  if (spriteReady && spriteImg) {
+    const r = SRECTS['base'];
+    ctx.drawImage(spriteImg, r[0], r[1], r[2], r[3], p.x, p.y, sz, sz);
+  } else {
+    ctx.strokeStyle = '#e3b341';
+    ctx.lineWidth   = 2;
+    ctx.strokeRect(p.x, p.y, sz, sz);
+  }
+  ctx.globalAlpha = 1;
 }
 
 function drawBrushPreview(): void {

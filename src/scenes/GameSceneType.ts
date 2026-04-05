@@ -9,6 +9,7 @@ export enum GameSceneType {
   MainGameOver,
   MainHighscore,
   MainMenu,
+  MainMultiplayer,
   MainVictory,
   ModesMenu,
   ModesCustom,

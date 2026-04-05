@@ -32,6 +32,7 @@ export class MapConfig {
           list: [],
         },
         player: { locations: config.PLAYER_DEFAULT_SPAWN_POSITIONS },
+        base: { x: 384, y: 768 },
       },
     });
   }
@@ -114,6 +115,11 @@ export class MapConfig {
 
   public getEnemyMaxAliveCount(): number {
     return this.dto.spawn.enemy.maxAliveCount;
+  }
+
+  public getBasePosition(): Vector {
+    const b = this.dto.spawn.base;
+    return new Vector(b.x - 32, b.y - 32);
   }
 
   public getEnemySpawnPositions(): Vector[] {

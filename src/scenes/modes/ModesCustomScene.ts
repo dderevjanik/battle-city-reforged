@@ -1,6 +1,5 @@
 import { FileOpener } from '../../core/file/FileDialogs';
 import { GameContext } from '../../game/GameUpdateArgs';
-import { Session } from '../../game/Session';
 import { DividerMenuItem } from '../../gameObjects/menu/DividerMenuItem';
 import { MenuDescription } from '../../gameObjects/menu/MenuDescription';
 import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
@@ -11,6 +10,7 @@ import { MapLoader } from '../../map/MapLoader';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
+import { MainMultiplayerLocationParams } from '../main/MainMultiplayerLocationParams';
 
 export class ModesCustomScene extends GameScene {
   private title!: SceneMenuTitle;
@@ -18,17 +18,13 @@ export class ModesCustomScene extends GameScene {
   private loadItem!: TextMenuItem;
   private singlePlayerItem!: TextMenuItem;
   private multiPlayerItem!: TextMenuItem;
-  private triplePlayerItem!: TextMenuItem;
-  private quadPlayerItem!: TextMenuItem;
   private backItem!: TextMenuItem;
   private menu!: SceneMenu;
   private mapLoader!: MapLoader;
-  private session!: Session;
   private fileMapListReader: FileMapListReader | null = null;
 
-  protected setup({ mapLoader, session }: GameContext): void {
+  protected setup({ mapLoader }: GameContext): void {
     this.mapLoader = mapLoader;
-    this.session = session;
 
     this.title = new SceneMenuTitle('MODES → CUSTOM MAPS');
     this.root.add(this.title);
@@ -46,44 +42,30 @@ export class ModesCustomScene extends GameScene {
     this.singlePlayerItem.selected.addListener(this.handleSinglePlayerSelected);
     this.singlePlayerItem.setFocusable(false);
 
-    this.multiPlayerItem = new TextMenuItem('PLAY - 2 PLAYERS');
+    this.multiPlayerItem = new TextMenuItem('PLAY - MULTIPLAYER');
     this.multiPlayerItem.selected.addListener(this.handleMultiPlayerSelected);
     this.multiPlayerItem.setFocusable(false);
-
-    this.triplePlayerItem = new TextMenuItem('PLAY - 3 PLAYERS');
-    this.triplePlayerItem.selected.addListener(this.handleTriplePlayerSelected);
-    this.triplePlayerItem.setFocusable(false);
-
-    this.quadPlayerItem = new TextMenuItem('PLAY - 4 PLAYERS');
-    this.quadPlayerItem.selected.addListener(this.handleQuadPlayerSelected);
-    this.quadPlayerItem.setFocusable(false);
 
     this.backItem = new TextMenuItem('BACK');
     this.backItem.selected.addListener(this.handleBackSelected);
 
     const divider = new DividerMenuItem();
 
-    const menuItems = [
+    this.menu = new SceneMenu();
+    this.menu.position.addY(164);
+    this.menu.setItems([
       this.loadItem,
       this.singlePlayerItem,
       this.multiPlayerItem,
-      this.triplePlayerItem,
-      this.quadPlayerItem,
       divider,
       this.backItem,
-    ];
-
-    this.menu = new SceneMenu();
-    this.menu.position.addY(164);
-    this.menu.setItems(menuItems);
+    ]);
     this.root.add(this.menu);
   }
 
   private updateMenu(): void {
     this.singlePlayerItem.setFocusable(this.canPlay());
     this.multiPlayerItem.setFocusable(this.canPlay());
-    this.triplePlayerItem.setFocusable(this.canPlay());
-    this.quadPlayerItem.setFocusable(this.canPlay());
   }
 
   private canPlay(): boolean {
@@ -105,21 +87,10 @@ export class ModesCustomScene extends GameScene {
   };
 
   private handleMultiPlayerSelected = (): void => {
-    this.session.setPlayerCount(2);
-    this.mapLoader.setListReader(this.fileMapListReader!);
-    this.navigator.replace(GameSceneType.LevelSelection);
-  };
-
-  private handleTriplePlayerSelected = (): void => {
-    this.session.setPlayerCount(3);
-    this.mapLoader.setListReader(this.fileMapListReader!);
-    this.navigator.replace(GameSceneType.LevelSelection);
-  };
-
-  private handleQuadPlayerSelected = (): void => {
-    this.session.setPlayerCount(4);
-    this.mapLoader.setListReader(this.fileMapListReader!);
-    this.navigator.replace(GameSceneType.LevelSelection);
+    const params: MainMultiplayerLocationParams = {
+      fileMapListReader: this.fileMapListReader!,
+    };
+    this.navigator.push(GameSceneType.MainMultiplayer, params);
   };
 
   private handleBackSelected = (): void => {

@@ -12,10 +12,8 @@ export class LevelBaseScript extends LevelScript {
     this.eventBus.powerupPicked.addListener(this.handlePowerupPicked);
 
     this.base = new Base();
-    this.base.position.set(
-      config.BASE_DEFAULT_POSITION.x,
-      config.BASE_DEFAULT_POSITION.y,
-    );
+    const basePos = this.mapConfig.getBasePosition();
+    this.base.position.set(basePos.x, basePos.y);
     this.base.died.addListener(() => {
       this.eventBus.baseDied.notify(null);
     });

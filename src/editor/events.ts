@@ -22,15 +22,6 @@ function snapToTL(wx: number, wy: number): SpawnPoint {
   };
 }
 
-function nearest(list: SpawnPoint[], pos: SpawnPoint): number {
-  let bestI = 0, bestD = Infinity;
-  list.forEach((s, i) => {
-    const d = Math.hypot(s.x - pos.x, s.y - pos.y);
-    if (d < bestD) { bestD = d; bestI = i; }
-  });
-  return bestI;
-}
-
 // ── Mouse ─────────────────────────────────────────
 export function bindViewport(viewport: HTMLElement): void {
   viewport.addEventListener('contextmenu', e => e.preventDefault());
@@ -59,16 +50,18 @@ export function bindViewport(viewport: HTMLElement): void {
 
     } else if (state.mode === 'player-spawn' && e.button === 0 && inField(world.x, world.y)) {
       const snapped = snapToTL(world.x, world.y);
-      if (state.playerSpawns.length < 2) state.playerSpawns.push(snapped);
-      else state.playerSpawns[nearest(state.playerSpawns, snapped)] = snapped;
+      const existIdx = state.playerSpawns.findIndex(s => s.x === snapped.x && s.y === snapped.y);
+      if (existIdx !== -1) state.playerSpawns.splice(existIdx, 1);
+      else if (state.playerSpawns.length < 4) state.playerSpawns.push(snapped);
       refreshSpawnLists();
       pushHistory();
       render();
 
     } else if (state.mode === 'enemy-spawn' && e.button === 0 && inField(world.x, world.y)) {
       const snapped = snapToTL(world.x, world.y);
-      if (state.enemySpawns.length < 6) state.enemySpawns.push(snapped);
-      else state.enemySpawns[nearest(state.enemySpawns, snapped)] = snapped;
+      const existIdx = state.enemySpawns.findIndex(s => s.x === snapped.x && s.y === snapped.y);
+      if (existIdx !== -1) state.enemySpawns.splice(existIdx, 1);
+      else if (state.enemySpawns.length < 6) state.enemySpawns.push(snapped);
       refreshSpawnLists();
       pushHistory();
       render();

@@ -60,9 +60,7 @@ export class SettingsInterfaceScene extends GameScene {
     const isEnabled = this.inputHintSettings.getShowLevelHint();
 
     let checkmark = ' ';
-    if (isEnabled === null) {
-      checkmark = '?';
-    } else if (isEnabled) {
+    if (isEnabled === null || isEnabled) {
       checkmark = '+';
     }
 

@@ -18,6 +18,7 @@ let _canvasIdMap = new WeakMap<HTMLCanvasElement, number>();
 let _canvasIdCounter = 0;
 let _canvasTextureCache = new Map<string, string>();
 let _canvasDimensionCache = new Map<number, { w: number; h: number }>();
+let _canvasTextureUpdated = new Set<string>();
 let _fallbackTextureCounter = 0;
 
 /**
@@ -32,6 +33,7 @@ export function initRenderer(scene: Phaser.Scene, manifest: SpriteManifest): voi
   _canvasIdCounter = 0;
   _canvasTextureCache = new Map();
   _canvasDimensionCache = new Map();
+  _canvasTextureUpdated = new Set();
   _fallbackTextureCounter = 0;
 
   for (const [id, item] of Object.entries(manifest)) {
@@ -85,6 +87,7 @@ export function ensureCanvasTexture(
       if (k.startsWith(prefix)) _canvasTextureCache.delete(k);
     }
     const baseKey = `canvas_base:${canvasId}`;
+    _canvasTextureUpdated.delete(baseKey);
     if (_rendererScene!.textures.exists(baseKey)) _rendererScene!.textures.remove(baseKey);
     _canvasDimensionCache.set(canvasId, { ...currentDims });
   }
@@ -94,8 +97,12 @@ export function ensureCanvasTexture(
 
   const cachedTextureKey = _canvasTextureCache.get(cacheKey);
   if (cachedTextureKey !== undefined) {
-    const texture = _rendererScene!.textures.get(cachedTextureKey);
-    if (texture && texture.source.length > 0) (texture.source[0] as any).update();
+    // Only update the GPU texture once per canvas lifetime (font canvases are static after creation)
+    if (!_canvasTextureUpdated.has(cachedTextureKey)) {
+      const texture = _rendererScene!.textures.get(cachedTextureKey);
+      if (texture && texture.source.length > 0) (texture.source[0] as any).update();
+      _canvasTextureUpdated.add(cachedTextureKey);
+    }
     return { textureKey: cachedTextureKey, frameKey };
   }
 

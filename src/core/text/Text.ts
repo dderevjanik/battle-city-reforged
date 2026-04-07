@@ -34,6 +34,7 @@ export class Text<T> {
   private options: TextOptions;
   private cachedGlyphs: T[] | null = null;
   private dirty = true;
+  public version = 0;
 
   constructor(text = '', options: TextOptions = {}) {
     this.text = text;
@@ -77,6 +78,7 @@ export class Text<T> {
     const textOffset = new Vector(0, 0);
     this.cachedGlyphs = this.buildLinesFromText(this.text, textOffset);
     this.dirty = false;
+    this.version += 1;
     return this.cachedGlyphs;
   }
 

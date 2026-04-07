@@ -723,6 +723,8 @@ export class GameObject {
     graphics.strokePath();
   }
 
+  private _spriteTextVersion = -1;
+
   private _syncSpriteTextPainter(
     phaserNode: Phaser.GameObjects.Container,
     painter: SpriteTextPainter,
@@ -732,14 +734,25 @@ export class GameObject {
       return;
     }
 
+    const glyphs = painter.text.build();
+    const currentVersion = painter.text.version;
+
     let textContainer = getVisualChild(phaserNode, 'spritetext') as Phaser.GameObjects.Container | null;
+
+    // Skip full glyph sync if nothing has changed since last frame
+    if (
+      textContainer !== null &&
+      this._spriteTextVersion === currentVersion &&
+      textContainer.list.length === glyphs.length
+    ) {
+      return;
+    }
+
     if (textContainer === null) {
       textContainer = _rendererScene!.add.container(0, 0);
       textContainer.name = '__visual_spritetext__';
       setVisualChild(phaserNode, textContainer);
     }
-
-    const glyphs = painter.text.build();
 
     while (textContainer.list.length < glyphs.length) {
       const placeholder = _rendererScene!.add.image(0, 0, '__DEFAULT');
@@ -779,6 +792,7 @@ export class GameObject {
     }
 
     textContainer.setAlpha(painter.opacity);
+    this._spriteTextVersion = currentVersion;
   }
 
   // --- Game lifecycle ---

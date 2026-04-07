@@ -32,6 +32,8 @@ export class Text<T> {
   private text = '';
   private font: Font<T> = new NullFont() as unknown as Font<T>;
   private options: TextOptions;
+  private cachedGlyphs: T[] | null = null;
+  private dirty = true;
 
   constructor(text = '', options: TextOptions = {}) {
     this.text = text;
@@ -39,19 +41,24 @@ export class Text<T> {
   }
 
   public setText(text: string): this {
-    this.text = text;
+    if (this.text !== text) {
+      this.text = text;
+      this.dirty = true;
+    }
 
     return this;
   }
 
   public setFont(font: Font<T>): this {
     this.font = font;
+    this.dirty = true;
 
     return this;
   }
 
   public setOptions(options: TextOptions = {}): this {
     this.options = Object.assign({}, this.options, options);
+    this.dirty = true;
 
     return this;
   }
@@ -61,11 +68,16 @@ export class Text<T> {
   }
 
   public build(): T[] {
+    if (!this.dirty && this.cachedGlyphs !== null) {
+      return this.cachedGlyphs;
+    }
+
     // TODO: text offset can be passed from outside, but it won't work now
     // because external offset is scaled, but internal calculated offset is not
     const textOffset = new Vector(0, 0);
-    const items = this.buildLinesFromText(this.text, textOffset);
-    return items;
+    this.cachedGlyphs = this.buildLinesFromText(this.text, textOffset);
+    this.dirty = false;
+    return this.cachedGlyphs;
   }
 
   public getWidth(): number {

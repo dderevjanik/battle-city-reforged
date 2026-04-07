@@ -5,13 +5,16 @@ import { Menu } from '../../gameObjects/menu/Menu';
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
 import { SpriteText } from '../../gameObjects/text/SpriteText';
+import { MenuInputContext } from '../../input/InputContexts';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';
 
+const ITEMS_PER_PAGE = 9;
 const ITEM_HEIGHT = 36;
-// Sprite font: 16px char width + 4px letter spacing = 20px per char.
-// Description starts at MENU_TITLE_DEFAULT_POSITION.x (112). Available: ~45 chars.
+const MENU_Y = 220;
+// Below BACK (index ITEMS_PER_PAGE): MENU_Y + (ITEMS_PER_PAGE + 1) * ITEM_HEIGHT + gap
+const DESCRIPTION_Y = MENU_Y + (ITEMS_PER_PAGE + 1) * ITEM_HEIGHT + 16;
 const DESCRIPTION_WRAP_CHARS = 45;
 
 function wrapText(text: string, maxChars: number): string {
@@ -26,24 +29,31 @@ function wrapText(text: string, maxChars: number): string {
       line = line ? `${line} ${word}` : word;
     }
   }
-  if (line) {
-    lines.push(line);
-  }
+  if (line) lines.push(line);
   return lines.join('\n');
 }
 
 export class MainAchievementsScene extends GameScene {
-  private description!: SpriteText;
   private achievementsManager!: AchievementsManager;
 
-  protected setup({ achievementsManager }: GameContext): void {
-    this.achievementsManager = achievementsManager;
+  private pageIndex = 0;
+  private totalPages = 0;
+  private focusedItemOnPage = 0;
+
+  private pageIndicator!: SpriteText;
+  private description!: SpriteText;
+  private menu!: Menu;
+
+  protected setup(context: GameContext): void {
+    this.achievementsManager = context.achievementsManager;
+
+    this.totalPages = Math.ceil(ACHIEVEMENTS.length / ITEMS_PER_PAGE);
 
     const title = new SceneMenuTitle('ACHIEVEMENTS');
     this.root.add(title);
 
     const unlockedCount = ACHIEVEMENTS.filter((a) =>
-      achievementsManager.isUnlocked(a.id),
+      this.achievementsManager.isUnlocked(a.id),
     ).length;
 
     const summary = new SpriteText(
@@ -56,15 +66,63 @@ export class MainAchievementsScene extends GameScene {
     );
     this.root.add(summary);
 
+    this.pageIndicator = new SpriteText('', { color: config.COLOR_GRAY });
+    this.pageIndicator.position.set(
+      config.MENU_TITLE_DEFAULT_POSITION.x,
+      config.MENU_TITLE_DEFAULT_POSITION.y + 72,
+    );
+    this.root.add(this.pageIndicator);
+
+    this.menu = new Menu({ itemHeight: ITEM_HEIGHT });
+    this.menu.position.set(config.MENU_DEFAULT_POSITION.x, MENU_Y);
+    this.root.add(this.menu);
+
     this.description = new SpriteText('', { color: config.COLOR_GRAY });
     this.description.position.set(
       config.MENU_TITLE_DEFAULT_POSITION.x,
-      config.MENU_TITLE_DEFAULT_POSITION.y + 80,
+      DESCRIPTION_Y,
     );
     this.root.add(this.description);
 
-    const achievementItems = ACHIEVEMENTS.map((achievement) => {
-      const unlocked = achievementsManager.isUnlocked(achievement.id);
+    this.menu.focused.addListener(this.handleMenuFocused);
+    this.menu.back.addListener(this.handleBackSelected);
+
+    this.buildPage(0);
+  }
+
+  protected onUpdate(deltaTime: number): void {
+    const inputMethod = this.context.inputManager.getActiveMethod();
+
+    if (inputMethod.isDownAny(MenuInputContext.HorizontalNext)) {
+      this.changePage(1);
+      return;
+    }
+    if (inputMethod.isDownAny(MenuInputContext.HorizontalPrev)) {
+      this.changePage(-1);
+      return;
+    }
+
+    super.onUpdate(deltaTime);
+  }
+
+  private changePage(delta: number): void {
+    const next = this.pageIndex + delta;
+    if (next < 0 || next >= this.totalPages) {
+      return;
+    }
+    this.pageIndex = next;
+    this.buildPage(this.pageIndex);
+  }
+
+  private currentPageSize = 0;
+
+  private buildPage(page: number): void {
+    const start = page * ITEMS_PER_PAGE;
+    const slice = ACHIEVEMENTS.slice(start, start + ITEMS_PER_PAGE);
+    this.currentPageSize = slice.length;
+
+    const achievementItems = slice.map((achievement) => {
+      const unlocked = this.achievementsManager.isUnlocked(achievement.id);
       const label = (unlocked ? '+ ' : '- ') + achievement.name.toUpperCase();
       const color = unlocked ? config.COLOR_WHITE : config.COLOR_GRAY;
       return new TextMenuItem(label, { color, unfocusableColor: color });
@@ -73,23 +131,34 @@ export class MainAchievementsScene extends GameScene {
     const backItem = new TextMenuItem('BACK');
     backItem.selected.addListener(this.handleBackSelected);
 
-    const menu = new Menu({ itemHeight: ITEM_HEIGHT });
-    menu.setItems([...achievementItems, backItem]);
-    menu.position.set(config.MENU_DEFAULT_POSITION.x, 236);
-    this.root.add(menu);
+    this.menu.setItems([...achievementItems, backItem]);
 
-    menu.focused.addListener(this.handleMenuFocused);
-    menu.back.addListener(this.handleBackSelected);
-    // Show description for initial focused item (index 0)
-    this.updateDescription(0);
+    this.focusedItemOnPage = 0;
+    this.updatePageIndicator();
+    this.updateDescription(start);
   }
 
-  private handleMenuFocused = (index: number): void => {
-    this.updateDescription(index);
+  private updatePageIndicator(): void {
+    const left = this.pageIndex > 0 ? '< ' : '  ';
+    const right = this.pageIndex < this.totalPages - 1 ? ' >' : '  ';
+    this.pageIndicator.setText(
+      `${left}PAGE ${this.pageIndex + 1}/${this.totalPages}${right}`,
+    );
+  }
+
+  private handleMenuFocused = (indexOnPage: number): void => {
+    this.focusedItemOnPage = indexOnPage;
+    // Last item is always BACK — no achievement description for it
+    if (indexOnPage >= this.currentPageSize) {
+      this.description.setText('');
+      return;
+    }
+    const globalIndex = this.pageIndex * ITEMS_PER_PAGE + indexOnPage;
+    this.updateDescription(globalIndex);
   };
 
-  private updateDescription(index: number): void {
-    const achievement = ACHIEVEMENTS[index];
+  private updateDescription(globalIndex: number): void {
+    const achievement = ACHIEVEMENTS[globalIndex];
     if (achievement === undefined) {
       this.description.setText('');
       return;

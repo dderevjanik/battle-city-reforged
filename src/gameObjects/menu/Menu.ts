@@ -117,7 +117,7 @@ export class Menu extends GameObject {
     this.focusedIndex = index;
     this.showCursor();
 
-    this.cursor.position.setY(this.cursor.size.height * this.focusedIndex);
+    this.cursor.position.setY(this.options.itemHeight! * this.focusedIndex);
     this.cursor.updateMatrix(true);
 
     this.focused.notify(this.focusedIndex);

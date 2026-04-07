@@ -7,12 +7,22 @@ import { MainHeading } from '../../gameObjects/text/MainHeading';
 import { SpriteText } from '../../gameObjects/text/SpriteText';
 import { MenuInputContext } from '../../input/InputContexts';
 import { PointsHighscoreManager } from '../../points/PointsHighscoreManager';
+import { ACHIEVEMENTS } from '../../achievements/AchievementsRegistry';
+import { AchievementsManager } from '../../achievements/AchievementsManager';
+import { GameStatsManager } from '../../stats/GameStatsManager';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
 const SLIDE_SPEED = 240;
+
+const STATS_BOTTOM_LEFT_X = 92;
+const STATS_KILLS_DEATHS_Y = 800;
+
+const STATS_ACHIEVEMENTS_Y = 848;
+const STATS_SCORE_X = 640;
+const STATS_SCORE_Y = 64;
 
 enum State {
   Sliding,
@@ -22,27 +32,28 @@ enum State {
 export class MainMenuScene extends GameScene {
   private group!: GameObject;
   private heading!: MainHeading;
-  private primaryPoints!: SpriteText;
-  private secondaryPoints!: SpriteText;
-  private commonHighscore!: SpriteText;
   private menu!: Menu;
   private singlePlayerItem!: TextMenuItem;
   private multiPlayerItem!: TextMenuItem;
   private settingsItem!: TextMenuItem;
   private achievementsItem!: TextMenuItem;
-  private aboutItem!: TextMenuItem;
-  private modesItem!: TextMenuItem;
   private state: State = State.Ready;
   private session!: Session;
   private pointsHighscoreManager!: PointsHighscoreManager;
+  private achievementsManager!: AchievementsManager;
+  private gameStatsManager!: GameStatsManager;
 
   protected setup({
     mapLoader,
     pointsHighscoreManager,
     session,
+    achievementsManager,
+    gameStatsManager,
   }: GameContext): void {
     this.session = session;
     this.pointsHighscoreManager = pointsHighscoreManager;
+    this.achievementsManager = achievementsManager;
+    this.gameStatsManager = gameStatsManager;
 
     // Restore source for maps to default
     mapLoader.restoreDefaultReader();
@@ -50,31 +61,46 @@ export class MainMenuScene extends GameScene {
     this.group = new GameObject();
     this.group.size.copyFrom(this.root.size);
 
-    this.primaryPoints = new SpriteText(this.getPrimaryPointsText(), {
-      color: config.COLOR_WHITE,
-    });
-    this.primaryPoints.position.set(92, 64);
-    this.group.add(this.primaryPoints);
-
-    this.secondaryPoints = new SpriteText(this.getSecondaryPointsText(), {
-      color: config.COLOR_WHITE,
-    });
-    this.secondaryPoints.position.set(704, 64);
-    if (session.secondaryPlayer.wasInLastGame()) {
-      this.group.add(this.secondaryPoints);
-    }
-
-    this.commonHighscore = new SpriteText(this.getCommonHighscoreText(), {
-      color: config.COLOR_WHITE,
-    });
-    this.commonHighscore.position.set(380, 64);
-    this.group.add(this.commonHighscore);
-
     this.heading = new MainHeading();
     this.heading.origin.setX(0.5);
     this.heading.setCenter(this.root.getSelfCenter());
     this.heading.position.setY(160);
     this.group.add(this.heading);
+
+    // Stats panel
+    const stats = this.gameStatsManager.getStats();
+    const unlockedCount = ACHIEVEMENTS.filter((a) =>
+      this.achievementsManager.isUnlocked(a.id),
+    ).length;
+
+    const killsText = new SpriteText(
+      `KILLS ${stats.enemiesKilled.total}`,
+      { color: config.COLOR_WHITE },
+    );
+    killsText.position.set(STATS_BOTTOM_LEFT_X, STATS_KILLS_DEATHS_Y);
+    this.group.add(killsText);
+
+    const deathsText = new SpriteText(
+      `DEATHS ${stats.deaths.total}`,
+      { color: config.COLOR_WHITE },
+    );
+    deathsText.origin.setX(1);
+    deathsText.position.set(this.root.size.width - STATS_BOTTOM_LEFT_X, STATS_KILLS_DEATHS_Y);
+    this.group.add(deathsText);
+
+    const scoreText = new SpriteText(
+      `SCORE ${this.pointsHighscoreManager.getOverallMaxPoints()}`,
+      { color: config.COLOR_WHITE },
+    );
+    scoreText.position.set(STATS_SCORE_X, STATS_SCORE_Y);
+    this.group.add(scoreText);
+
+    const achievementsText = new SpriteText(
+      `ACHIEVEMENTS ${unlockedCount}/${ACHIEVEMENTS.length}`,
+      { color: config.COLOR_WHITE },
+    );
+    achievementsText.position.set(STATS_BOTTOM_LEFT_X, STATS_ACHIEVEMENTS_Y);
+    this.group.add(achievementsText);
 
     this.singlePlayerItem = new TextMenuItem('1 PLAYER');
     this.singlePlayerItem.selected.addListener(this.handleSinglePlayerSelected);
@@ -88,19 +114,11 @@ export class MainMenuScene extends GameScene {
     this.achievementsItem = new TextMenuItem('ACHIEVEMENTS');
     this.achievementsItem.selected.addListener(this.handleAchievementsSelected);
 
-    this.aboutItem = new TextMenuItem('ABOUT');
-    this.aboutItem.selected.addListener(this.handleAboutSelected);
-
-    this.modesItem = new TextMenuItem('MODES');
-    this.modesItem.selected.addListener(this.handleModesSelected);
-
     const menuItems = [
       this.singlePlayerItem,
       this.multiPlayerItem,
       this.settingsItem,
       this.achievementsItem,
-      this.aboutItem,
-      this.modesItem,
     ];
 
     this.menu = new Menu();
@@ -152,37 +170,6 @@ export class MainMenuScene extends GameScene {
     super.onUpdate(deltaTime);
   }
 
-  private getPrimaryPointsText(): string {
-    const points = this.session.primaryPlayer.getLastGamePoints() || 0;
-
-    const pointsNumberText = points > 0 ? points.toString() : '00';
-    const pointsText = pointsNumberText.padStart(6, ' ');
-
-    const text = `Ⅰ-${pointsText}`;
-
-    return text;
-  }
-
-  private getSecondaryPointsText(): string {
-    const points = this.session.secondaryPlayer.getLastGamePoints() || 0;
-
-    const pointsNumberText = points > 0 ? points.toString() : '00';
-    const pointsText = pointsNumberText.padStart(6, ' ');
-
-    const text = `Ⅱ-${pointsText}`;
-
-    return text;
-  }
-
-  private getCommonHighscoreText(): string {
-    const points = this.pointsHighscoreManager.getOverallMaxPoints();
-    const pointsText = points.toString().padStart(6, ' ');
-
-    const text = `HI-${pointsText}`;
-
-    return text;
-  }
-
   private handleSinglePlayerSelected = (): void => {
     this.navigator.replace(GameSceneType.LevelSelection);
   };
@@ -191,16 +178,8 @@ export class MainMenuScene extends GameScene {
     this.navigator.push(GameSceneType.MainMultiplayer);
   };
 
-  private handleModesSelected = (): void => {
-    this.navigator.push(GameSceneType.ModesMenu);
-  };
-
   private handleSettingsSelected = (): void => {
     this.navigator.push(GameSceneType.SettingsMenu);
-  };
-
-  private handleAboutSelected = (): void => {
-    this.navigator.push(GameSceneType.MainAbout);
   };
 
   private handleAchievementsSelected = (): void => {

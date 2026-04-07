@@ -31,6 +31,7 @@ import { LevelPointsScript } from '../../level/scripts/LevelPointsScript';
 import { LevelPowerupScript } from '../../level/scripts/LevelPowerupScript';
 import { LevelSpawnScript } from '../../level/scripts/LevelSpawnScript';
 import { LevelAchievementsScript } from '../../level/scripts/LevelAchievementsScript';
+import { LevelStatsScript } from '../../level/scripts/LevelStatsScript';
 import { LevelWinScript } from '../../level/scripts/LevelWinScript';
 
 import { GameScene } from '../GameScene';
@@ -64,6 +65,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private spawnScript!: LevelSpawnScript;
   private winScript!: LevelWinScript;
   private achievementsScript!: LevelAchievementsScript;
+  private statsScript!: LevelStatsScript;
 
   protected setup(context: GameContext): void {
     const { collisionSystem, inputManager, session } = context;
@@ -125,6 +127,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.spawnScript = new LevelSpawnScript();
     this.winScript = new LevelWinScript();
     this.achievementsScript = new LevelAchievementsScript();
+    this.statsScript = new LevelStatsScript();
 
     this.allScripts = [
       this.audioScript,
@@ -142,6 +145,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       this.spawnScript,
       this.winScript,
       this.achievementsScript,
+      this.statsScript,
     ];
 
     this.allScripts.forEach((script) => {
@@ -171,6 +175,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
         this.pointsScript,
         this.powerupScript,
         this.achievementsScript,
+        this.statsScript,
       );
     });
 

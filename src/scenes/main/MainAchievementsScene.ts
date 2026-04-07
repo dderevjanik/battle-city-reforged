@@ -97,7 +97,7 @@ export class MainAchievementsScene extends GameScene {
     let text = wrapText(achievement.description.toUpperCase(), DESCRIPTION_WRAP_CHARS);
     const unlockedAt = this.achievementsManager.getUnlockedAt(achievement.id);
     if (unlockedAt !== null) {
-      text += '\n\nUNLOCKED: ' + unlockedAt.toISOString().substring(0, 10);
+      text += '\n\nUNLOCKED ' + unlockedAt.toISOString().substring(0, 10);
     }
     this.description.setText(text);
   }

@@ -23,6 +23,7 @@ import { MapLoader } from './map/MapLoader';
 import { AchievementsManager } from './achievements/AchievementsManager';
 import { AchievementsTracker } from './achievements/AchievementsTracker';
 import { PointsHighscoreManager } from './points/PointsHighscoreManager';
+import { GameStatsManager } from './stats/GameStatsManager';
 
 import * as config from './config';
 
@@ -72,6 +73,7 @@ const inputHintSettings = new InputHintSettings(gameStorage);
 
 const achievementsManager = new AchievementsManager(gameStorage);
 const achievementsTracker = new AchievementsTracker();
+const gameStatsManager = new GameStatsManager(gameStorage);
 
 const pointsHighscoreManager = new PointsHighscoreManager(gameStorage);
 
@@ -82,6 +84,7 @@ const gameState = new State<GameState>(GameState.Playing);
 const gameContext: GameContext = {
   achievementsManager,
   achievementsTracker,
+  gameStatsManager,
   audioManager,
   audioLoader,
   collisionSystem,

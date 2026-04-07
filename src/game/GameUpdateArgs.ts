@@ -13,6 +13,7 @@ import { PointsHighscoreManager } from '../points/PointsHighscoreManager';
 
 import { AchievementsManager } from '../achievements/AchievementsManager';
 import { AchievementsTracker } from '../achievements/AchievementsTracker';
+import { GameStatsManager } from '../stats/GameStatsManager';
 
 import { AudioManager } from './AudioManager';
 import { GameState } from './GameState';
@@ -25,6 +26,7 @@ import { Session } from './Session';
 export interface GameContext {
   achievementsManager: AchievementsManager;
   achievementsTracker: AchievementsTracker;
+  gameStatsManager: GameStatsManager;
   audioManager: AudioManager;
   audioLoader: AudioLoader;
   collisionSystem: CollisionSystem;

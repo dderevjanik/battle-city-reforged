@@ -108,6 +108,7 @@ export const STORAGE_KEY_SETTINGS_SHOW_EDITOR_HINT =
   'settings.show-editor-hint';
 
 export const STORAGE_KEY_ACHIEVEMENT_PREFIX = 'achievement.';
+export const STORAGE_KEY_GAME_STATS = 'game.stats';
 
 export const ACHIEVEMENT_NOTIFICATION_DURATION = 3;
 export const ACHIEVEMENT_NOTIFICATION_Z_INDEX = 9;

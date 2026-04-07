@@ -38,6 +38,13 @@ export abstract class GameScene<
       this.input.gamepad!,
     );
 
+    // Phaser fires a shutdown event (not a method call) when stopping a scene.
+    // Reset the shared collision system so stale colliders from the previous
+    // scene don't persist into the next one.
+    this.events.once('shutdown', () => {
+      this.context?.collisionSystem.reset();
+    });
+
     const router = this.game.registry.get('sceneRouter') as GameSceneRouter;
     router.setScenePlugin(this.scene);
     this.navigator = router;
@@ -55,10 +62,6 @@ export abstract class GameScene<
     this.onUpdate(delta / 1000);
     this._renderScene();
     this.context.gameState.update();
-  }
-
-  public shutdown(): void {
-    this.context?.collisionSystem.reset();
   }
 
   // ---------------------------------------------------------------------------

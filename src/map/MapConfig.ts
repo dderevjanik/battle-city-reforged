@@ -6,7 +6,7 @@ import { TerrainFactory } from '../terrain/TerrainFactory';
 import { TerrainRegionConfig } from '../terrain/TerrainRegionConfig';
 import * as config from '../config';
 
-import { MapDto, MapDtoSchema, MapDtoSpawnEnemyListItem } from './MapDto';
+import { MapDto, validateMapDto, MapDtoSpawnEnemyListItem } from './MapDto';
 import { TilesetId } from '../terrain/TilesetId';
 
 export interface MapConfigToJsonOptions {
@@ -46,31 +46,30 @@ export class MapConfig {
   }
 
   public fillAndValidate(dto: MapDto): MapDto {
-    const { value: validatedDto, error: schemaError } =
-      MapDtoSchema.validate(dto);
+    const valid = validateMapDto(dto);
 
-    if (schemaError !== undefined) {
-      throw schemaError;
+    if (!valid) {
+      throw new Error(validateMapDto.errors!.map((e) => e.message).join('; '));
     }
 
     // Normalize: only apply default when `bases` is absent (undefined).
     // An explicit empty array means "no bases" — game ends on player death only.
-    if (validatedDto.spawn.bases === undefined) {
-      if (validatedDto.spawn.base) {
-        validatedDto.spawn.bases = [validatedDto.spawn.base];
+    if (dto.spawn.bases === undefined) {
+      if (dto.spawn.base) {
+        dto.spawn.bases = [dto.spawn.base];
       } else {
-        validatedDto.spawn.bases = [{ x: 384, y: 768 }];
+        dto.spawn.bases = [{ x: 384, y: 768 }];
       }
     }
 
     const terrainError = TerrainFactory.validateRegionConfigs(
-      validatedDto.terrain!.regions!,
+      dto.terrain!.regions!,
     );
     if (terrainError !== undefined) {
       throw terrainError;
     }
 
-    return validatedDto;
+    return dto;
   }
 
   public addTerrainRegion(region: TerrainRegionConfig): void {

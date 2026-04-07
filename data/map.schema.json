@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "map.schema.json",
+  "type": "object",
+  "required": ["width", "height", "spawn"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "number",
+      "default": 1
+    },
+    "tileset": {
+      "type": "string",
+      "enum": ["classic", "modern"],
+      "default": "classic"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "spawn": {
+      "type": "object",
+      "required": ["enemy", "player"],
+      "additionalProperties": false,
+      "properties": {
+        "enemy": {
+          "type": "object",
+          "required": ["spawnDelay", "maxAliveCount", "locations"],
+          "additionalProperties": false,
+          "properties": {
+            "spawnDelay": { "type": "number" },
+            "maxAliveCount": { "type": "integer", "minimum": 1 },
+            "locations": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["x", "y"],
+                "additionalProperties": false,
+                "properties": {
+                  "x": { "type": "number" },
+                  "y": { "type": "number" }
+                }
+              }
+            },
+            "list": {
+              "type": "array",
+              "default": [],
+              "items": {
+                "type": "object",
+                "required": ["type"],
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["basic", "fast", "medium", "heavy"]
+                  },
+                  "ai": {
+                    "type": "string",
+                    "enum": ["classic", "hunter", "ambush", "attack_base"]
+                  },
+                  "drop": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "enum": ["random", "defence", "freeze", "life", "shield", "upgrade", "wipeout"]
+                      },
+                      {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string",
+                          "enum": ["random", "defence", "freeze", "life", "shield", "upgrade", "wipeout"]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "player": {
+          "type": "object",
+          "required": ["locations"],
+          "additionalProperties": false,
+          "properties": {
+            "locations": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["x", "y"],
+                "additionalProperties": false,
+                "properties": {
+                  "x": { "type": "number" },
+                  "y": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "base": {
+          "type": "object",
+          "required": ["x", "y"],
+          "additionalProperties": false,
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          }
+        },
+        "bases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["x", "y"],
+            "additionalProperties": false,
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "terrain": {
+      "type": "object",
+      "additionalProperties": false,
+      "default": {},
+      "properties": {
+        "regions": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "object",
+            "required": ["type", "x", "y", "width", "height"],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["brick", "brick-super", "steel", "jungle", "water", "ice", "menu-brick", "inverse-brick", "blue-brick"]
+              },
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "width": { "type": "number" },
+              "height": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -119,7 +119,7 @@
         "bulletRapidFireDelay": 0.16,
         "bulletSpeed": 600,
         "bulletTankDamage": 1,
-        "bulletWallDamage": 2,
+        "bulletWallDamage": 1,
         "health": 4,
         "moveSpeed": 120
       }

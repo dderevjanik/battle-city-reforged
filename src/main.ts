@@ -1,6 +1,3 @@
-// @ts-ignore
-import Stats from 'stats.js';
-
 import { Logger } from './core/Logger';
 import { State } from './core/State';
 import { CollisionSystem } from './core/collision/CollisionSystem';
@@ -101,11 +98,6 @@ const gameContext: GameContext = {
   spriteLoader,
 };
 
-const stats = new Stats();
-
-if (config.IS_DEV) {
-  document.body.appendChild(stats.dom);
-}
 
 async function main(): Promise<void> {
   log.time('Rect font preload');

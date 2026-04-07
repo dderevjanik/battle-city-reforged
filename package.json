@@ -11,8 +11,7 @@
   },
   "dependencies": {
     "joi": "^18.1.2",
-    "phaser": "^3.90.0",
-    "stats.js": "^0.17.0"
+    "phaser": "^3.90.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

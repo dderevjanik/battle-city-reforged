@@ -6,7 +6,7 @@ import { TerrainFactory } from '../terrain/TerrainFactory';
 import { TerrainRegionConfig } from '../terrain/TerrainRegionConfig';
 import * as config from '../config';
 
-import { MapDto, MapDtoSchema } from './MapDto';
+import { MapDto, MapDtoSchema, MapDtoSpawnEnemyListItem } from './MapDto';
 import { TilesetId } from '../terrain/TilesetId';
 
 export interface MapConfigToJsonOptions {
@@ -149,6 +149,18 @@ export class MapConfig {
 
   public getEnemyAiModes(): (TankAiMode | undefined)[] {
     return this.dto.spawn.enemy.list!.map((item) => item.ai);
+  }
+
+  public setEnemySpawnDelay(delay: number): void {
+    this.dto.spawn.enemy.spawnDelay = delay;
+  }
+
+  public setEnemyMaxAliveCount(count: number): void {
+    this.dto.spawn.enemy.maxAliveCount = count;
+  }
+
+  public appendToEnemySpawnList(item: MapDtoSpawnEnemyListItem): void {
+    this.dto.spawn.enemy.list!.push(item);
   }
 
   public isEnemySpawnListEmpty(): boolean {

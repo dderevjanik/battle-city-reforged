@@ -1,3 +1,4 @@
+import { Difficulty } from '../../game/Difficulty';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
@@ -14,6 +15,8 @@ import { GameSceneType } from '../GameSceneType';
 
 export class LevelSelectionScene extends GameScene {
   private stageItem!: SelectorMenuItem<number>;
+  private difficultyLabelItem!: TextMenuItem;
+  private difficultyItem!: SelectorMenuItem<Difficulty>;
   private enemyPowerupsItem!: TextMenuItem;
   private startItem!: TextMenuItem;
   private menu!: SceneMenu;
@@ -34,6 +37,16 @@ export class LevelSelectionScene extends GameScene {
 
     this.stageItem = new SelectorMenuItem(stageChoices);
 
+    this.difficultyLabelItem = new TextMenuItem('DIFFICULTY');
+    this.difficultyLabelItem.setFocusable(false);
+
+    const difficultyChoices: SelectorMenuItemChoice<Difficulty>[] = [
+      { value: Difficulty.Classic, text: 'CLASSIC' },
+      { value: Difficulty.Hard, text: 'HARD' },
+      { value: Difficulty.Extreme, text: 'EXTREME' },
+    ];
+    this.difficultyItem = new SelectorMenuItem(difficultyChoices);
+
     this.enemyPowerupsItem = new TextMenuItem(this.getEnemyPowerupsText());
     this.enemyPowerupsItem.selected.addListener(this.handleEnemyPowerupsSelected);
 
@@ -41,13 +54,14 @@ export class LevelSelectionScene extends GameScene {
     this.startItem.selected.addListener(this.handleStartSelected);
 
     this.menu = new SceneMenu();
-    this.menu.setItems([this.stageItem, this.enemyPowerupsItem, this.startItem]);
+    this.menu.setItems([this.stageItem, this.difficultyLabelItem, this.difficultyItem, this.enemyPowerupsItem, this.startItem]);
     this.menu.back.addListener(this.handleBack);
     this.root.add(this.menu);
   }
 
   private handleStartSelected = (): void => {
     const stageNumber = this.stageItem.getValue()!;
+    this.session.setDifficulty(this.difficultyItem.getValue()!);
     this.session.start(stageNumber, this.mapLoader.getItemsCount());
     this.navigator.replace(GameSceneType.LevelLoad);
   };

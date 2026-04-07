@@ -1,3 +1,4 @@
+import { Difficulty } from './Difficulty';
 import { SessionPlayer } from './SessionPlayer';
 
 enum State {
@@ -18,6 +19,7 @@ export class Session {
   private seenIntro!: boolean;
   private state!: State;
   private enemyPowerupsEnabled!: boolean;
+  private difficulty!: Difficulty;
 
   constructor() {
     this.players.push(
@@ -50,6 +52,7 @@ export class Session {
     this.playtest = false;
     this.playerCount = 1;
     this.enemyPowerupsEnabled = false;
+    this.difficulty = Difficulty.Classic;
 
     for (const player of this.players) {
       player.reset();
@@ -76,6 +79,7 @@ export class Session {
     this.endLevelNumber = 1;
     this.state = State.Idle;
     this.playtest = false;
+    this.difficulty = Difficulty.Classic;
 
     for (const player of this.players) {
       player.reset();
@@ -176,6 +180,14 @@ export class Session {
 
   public isMultiplayer(): boolean {
     return this.playerCount > 1;
+  }
+
+  public setDifficulty(difficulty: Difficulty): void {
+    this.difficulty = difficulty;
+  }
+
+  public getDifficulty(): Difficulty {
+    return this.difficulty;
   }
 
   public setEnemyPowerupsEnabled(enabled: boolean): void {

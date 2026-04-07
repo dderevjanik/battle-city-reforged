@@ -1,6 +1,7 @@
 import { Logger } from '../../core/Logger';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
+import { DifficultyModifier } from '../../level/DifficultyModifier';
 import { Curtain } from '../../gameObjects/Curtain';
 import { AlertModal } from '../../gameObjects/modals/AlertModal';
 import { LevelTitle } from '../../gameObjects/text/LevelTitle';
@@ -84,6 +85,8 @@ export class LevelLoadScene extends GameScene {
 
   private handleMapLoaded = (mapConfig: MapConfig): void => {
     this.mapLoader.error.removeListener(this.handleMapLoadError);
+
+    DifficultyModifier.apply(mapConfig, this.session.getDifficulty());
 
     if (this.session.isMultiplayer()) {
       // Check if players already selected their variants.

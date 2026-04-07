@@ -108,6 +108,9 @@ export const STORAGE_KEY_SETTINGS_SHOW_EDITOR_HINT =
   'settings.show-editor-hint';
 
 export const STORAGE_KEY_ACHIEVEMENT_PREFIX = 'achievement.';
+
+export const ACHIEVEMENT_NOTIFICATION_DURATION = 3;
+export const ACHIEVEMENT_NOTIFICATION_Z_INDEX = 9;
 export const STORAGE_KEY_ACHIEVEMENT_UNLOCKED_AT_SUFFIX = '.unlockedAt';
 
 export const PLAYER_DEFAULT_SPAWN_POSITIONS = [

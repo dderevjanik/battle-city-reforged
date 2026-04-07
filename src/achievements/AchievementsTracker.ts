@@ -92,6 +92,10 @@ export class AchievementsTracker {
     this.state.gameOverOccurred = true;
   }
 
+  public isWipeoutUsedWithoutKill(): boolean {
+    return this.state.wipeoutUsedWithoutKill;
+  }
+
   public recordWipeoutPickup(): void {
     this.state.pendingWipeoutKills = 0;
   }

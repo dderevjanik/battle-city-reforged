@@ -38,8 +38,6 @@ export class MainAchievementsScene extends GameScene {
 
   private pageIndex = 0;
   private totalPages = 0;
-  private focusedItemOnPage = 0;
-
   private pageIndicator!: SpriteText;
   private description!: SpriteText;
   private menu!: Menu;
@@ -124,7 +122,7 @@ export class MainAchievementsScene extends GameScene {
     const achievementItems = slice.map((achievement) => {
       const unlocked = this.achievementsManager.isUnlocked(achievement.id);
       const label = (unlocked ? '+ ' : '- ') + achievement.name.toUpperCase();
-      const color = unlocked ? config.COLOR_WHITE : config.COLOR_GRAY;
+      const color = unlocked ? config.COLOR_YELLOW : config.COLOR_GRAY;
       return new TextMenuItem(label, { color, unfocusableColor: color });
     });
 
@@ -133,7 +131,6 @@ export class MainAchievementsScene extends GameScene {
 
     this.menu.setItems([...achievementItems, backItem]);
 
-    this.focusedItemOnPage = 0;
     this.updatePageIndicator();
     this.updateDescription(start);
   }
@@ -147,7 +144,6 @@ export class MainAchievementsScene extends GameScene {
   }
 
   private handleMenuFocused = (indexOnPage: number): void => {
-    this.focusedItemOnPage = indexOnPage;
     // Last item is always BACK — no achievement description for it
     if (indexOnPage >= this.currentPageSize) {
       this.description.setText('');

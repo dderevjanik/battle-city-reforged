@@ -47,9 +47,11 @@ export class SpriteFont implements Font<Sprite> {
     scale = new Vector(1, 1),
     offset = new Vector(0, 0),
   ): Sprite {
-    const characterIndex = this.config.characterSet.indexOf(character);
+    let characterIndex = this.config.characterSet.indexOf(character);
     if (characterIndex === -1) {
-      throw new Error(`Font character "${character}" is not defined`);
+      // Fall back to space if defined, otherwise use index 0
+      const spaceIndex = this.config.characterSet.indexOf(' ');
+      characterIndex = spaceIndex !== -1 ? spaceIndex : 0;
     }
 
     const {

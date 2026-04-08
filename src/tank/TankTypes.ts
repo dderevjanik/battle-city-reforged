@@ -24,6 +24,7 @@ export enum TankBulletWallDamage {
 export enum TankKind {
   Basic = 'basic',
   Fast = 'fast',
+  FastArmored = 'fast_armored',
   Medium = 'medium',
   Heavy = 'heavy',
 }
@@ -39,11 +40,16 @@ export class TankType {
   public party: TankParty;
   public kind: TankKind;
   public drop: TankDrop | null;
+  public spriteKind?: TankKind;
 
   constructor(party: TankParty, kind: TankKind, drop: TankDrop | null = null) {
     this.party = party;
     this.kind = kind;
     this.drop = drop;
+  }
+
+  public getDisplayKind(): TankKind {
+    return this.spriteKind ?? this.kind;
   }
 
   public setDrop(drop: TankDrop | null): this {
@@ -139,7 +145,7 @@ export class TankSpriteId {
       SPRITE_TANK_PREFIX,
       type.party.toString(),
       color.toString(),
-      type.kind.toString(),
+      type.getDisplayKind().toString(),
       this.getRotationString(rotation),
       frameNumber.toString(),
     ];

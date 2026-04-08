@@ -106,6 +106,10 @@ export class Tank extends GameObject {
 
     this.attributes = TankAttributesFactory.create(this.type);
 
+    if (this.attributes.sprite !== undefined) {
+      this.type.spriteKind = this.attributes.sprite;
+    }
+
     this.shieldTimer.done.addListener(this.handleShieldTimer);
     this.stunTimer.done.addListener(this.handleStunTimer);
   }

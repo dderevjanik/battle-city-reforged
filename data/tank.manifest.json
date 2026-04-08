@@ -95,6 +95,23 @@
     {
       "selector": {
         "party": "enemy",
+        "kind": "fast_armored"
+      },
+      "attributes": {
+        "ai": "classic",
+        "sprite": "fast",
+        "bulletMaxCount": 1,
+        "bulletRapidFireDelay": 0.16,
+        "bulletSpeed": 900,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 1,
+        "health": 2,
+        "moveSpeed": 240
+      }
+    },
+    {
+      "selector": {
+        "party": "enemy",
         "kind": "medium"
       },
       "attributes": {

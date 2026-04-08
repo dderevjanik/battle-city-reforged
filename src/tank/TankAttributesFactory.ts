@@ -4,6 +4,7 @@ import tankManifest from '../../data/tank.manifest.json';
 
 export interface TankAttributes {
   ai?: TankAiMode;
+  sprite?: TankKind;
   bulletMaxCount: number;
   bulletRapidFireDelay: number;
   bulletSpeed: number;

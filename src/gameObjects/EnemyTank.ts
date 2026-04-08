@@ -120,6 +120,16 @@ export class EnemyTank extends Tank {
       );
     }
 
+    if (this.type.kind === TankKind.FastArmored) {
+      this.healthSkinAnimations.set(
+        2,
+        new TankSkinAnimation(this.spriteLoader, this.type, [
+          TankColor.Default,
+          TankColor.Secondary,
+        ]),
+      );
+    }
+
     this.healthSkinAnimations.set(
       1,
       new TankSkinAnimation(this.spriteLoader, this.type, [TankColor.Default]),

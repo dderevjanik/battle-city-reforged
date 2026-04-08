@@ -20,7 +20,7 @@ enum State {
   Done,
 }
 
-const KINDS = [TankKind.Basic, TankKind.Fast, TankKind.Medium, TankKind.Heavy];
+const KINDS = [TankKind.Basic, TankKind.Fast, TankKind.FastArmored, TankKind.Medium, TankKind.Heavy];
 const TRANSITION_DELAY = 0.4;
 
 export class ScoreTable extends GameObject {

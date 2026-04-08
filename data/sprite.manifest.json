@@ -2365,5 +2365,21 @@
       60,
       56
     ]
-  }
+  },
+  "tank.enemy.primary.fast.up.1": { "file": "data/graphics/sprite.png", "rect": [4, 328, 52, 60] },
+  "tank.enemy.primary.fast.up.2": { "file": "data/graphics/sprite.png", "rect": [68, 328, 52, 60] },
+  "tank.enemy.primary.fast.down.1": { "file": "data/graphics/sprite.png", "rect": [264, 332, 52, 60] },
+  "tank.enemy.primary.fast.down.2": { "file": "data/graphics/sprite.png", "rect": [328, 332, 52, 60] },
+  "tank.enemy.primary.fast.left.1": { "file": "data/graphics/sprite.png", "rect": [128, 336, 60, 52] },
+  "tank.enemy.primary.fast.left.2": { "file": "data/graphics/sprite.png", "rect": [196, 336, 60, 52] },
+  "tank.enemy.primary.fast.right.1": { "file": "data/graphics/sprite.png", "rect": [388, 332, 60, 52] },
+  "tank.enemy.primary.fast.right.2": { "file": "data/graphics/sprite.png", "rect": [456, 332, 60, 52] },
+  "tank.enemy.secondary.fast.up.1": { "file": "data/graphics/sprite.png", "rect": [4, 852, 52, 60] },
+  "tank.enemy.secondary.fast.up.2": { "file": "data/graphics/sprite.png", "rect": [68, 852, 52, 60] },
+  "tank.enemy.secondary.fast.down.1": { "file": "data/graphics/sprite.png", "rect": [264, 856, 52, 60] },
+  "tank.enemy.secondary.fast.down.2": { "file": "data/graphics/sprite.png", "rect": [328, 856, 52, 60] },
+  "tank.enemy.secondary.fast.left.1": { "file": "data/graphics/sprite.png", "rect": [128, 860, 60, 52] },
+  "tank.enemy.secondary.fast.left.2": { "file": "data/graphics/sprite.png", "rect": [196, 860, 60, 52] },
+  "tank.enemy.secondary.fast.right.1": { "file": "data/graphics/sprite.png", "rect": [388, 856, 60, 52] },
+  "tank.enemy.secondary.fast.right.2": { "file": "data/graphics/sprite.png", "rect": [456, 856, 60, 52] }
 }

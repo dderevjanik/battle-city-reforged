@@ -1,14 +1,16 @@
 import { Timer } from '../../core/Timer';
+import { RandomUtils } from '../../core/utils';
 import { Bomb } from '../../gameObjects/Bomb';
 import { Tank } from '../../gameObjects/Tank';
 import { GameContext } from '../../game/GameUpdateArgs';
 
 import { TankBehavior } from '../TankBehavior';
 
-const BOMB_DROP_INTERVAL = 5; // seconds between bomb drops
+const BOMB_DROP_MIN_DELAY = 3;
+const BOMB_DROP_MAX_DELAY = 8;
 
 export class FastBomberTankBehavior extends TankBehavior {
-  private bombTimer = new Timer(BOMB_DROP_INTERVAL);
+  private bombTimer = new Timer(RandomUtils.number(BOMB_DROP_MIN_DELAY, BOMB_DROP_MAX_DELAY));
 
   constructor(private readonly baseBehavior: TankBehavior) {
     super();
@@ -24,7 +26,7 @@ export class FastBomberTankBehavior extends TankBehavior {
     this.bombTimer.update(deltaTime);
     if (this.bombTimer.isDone()) {
       this.dropBomb(tank);
-      this.bombTimer.reset(BOMB_DROP_INTERVAL);
+      this.bombTimer.reset(RandomUtils.number(BOMB_DROP_MIN_DELAY, BOMB_DROP_MAX_DELAY));
     }
   }
 

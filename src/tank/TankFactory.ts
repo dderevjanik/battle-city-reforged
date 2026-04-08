@@ -34,7 +34,7 @@ export class TankFactory {
     const baseBehavior = behavior ?? TankFactory.createBehaviorForType(type);
     const resolvedBehavior =
       type.kind === TankKind.FastBomber
-        ? new FastBomberTankBehavior(baseBehavior)
+        ? new FastBomberTankBehavior(new AiTankBehavior())
         : baseBehavior;
     return new EnemyTank(type, resolvedBehavior, partyIndex);
   }

@@ -1,40 +1,29 @@
 import { GameObject } from '../../core/GameObject';
+import { SpritePainter } from '../../core/painters/SpritePainter';
+import { GameContext } from '../../game/GameUpdateArgs';
 
-import { LevelEnemyCounterItem } from './LevelEnemyCounterItem';
+import { SpriteText } from '../text/SpriteText';
 
 export class LevelEnemyCounter extends GameObject {
-  // TODO: can only display 20 items as in original game there can only be
-  // max 20 enemy tanks
-
-  private count = 0;
+  private icon = new GameObject(32, 32);
+  private countText = new SpriteText('0');
 
   constructor(count = 0) {
-    super(64, 320);
+    super(64, 80);
 
-    this.count = count;
+    this.countText.setText(count.toString());
   }
 
   public setCount(nextCount: number): void {
-    this.count = nextCount;
-
-    this.removeAllChildren();
-    this.addItems(nextCount);
+    this.countText.setText(nextCount.toString());
   }
 
-  protected setup(): void {
-    this.addItems(this.count);
-  }
+  protected setup({ spriteLoader }: GameContext): void {
+    this.icon.painter = new SpritePainter(spriteLoader.load('ui.enemy'));
+    this.icon.position.set(0, 0);
+    this.add(this.icon);
 
-  private addItems(count: number): void {
-    for (let i = 0; i < count; i += 1) {
-      const item = new LevelEnemyCounterItem();
-
-      const x = item.size.width * (i % 2);
-      const y = item.size.height * Math.floor(i / 2);
-
-      item.position.set(x, y);
-
-      this.add(item);
-    }
+    this.countText.position.set(8, 36);
+    this.add(this.countText);
   }
 }

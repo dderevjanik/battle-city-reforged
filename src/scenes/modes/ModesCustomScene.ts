@@ -84,7 +84,7 @@ export class ModesCustomScene extends GameScene {
 
   private handleSinglePlayerSelected = (): void => {
     this.mapLoader.setListReader(this.fileMapListReader!);
-    this.navigator.replace(GameSceneType.LevelSelection);
+    this.navigator.push(GameSceneType.LevelSelection);
   };
 
   private handleMultiPlayerSelected = (): void => {

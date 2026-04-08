@@ -171,7 +171,7 @@ export class MainMenuScene extends GameScene {
   }
 
   private handleSinglePlayerSelected = (): void => {
-    this.navigator.replace(GameSceneType.LevelSelection);
+    this.navigator.push(GameSceneType.LevelSelection);
   };
 
   private handleMultiPlayerSelected = (): void => {

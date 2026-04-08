@@ -2,6 +2,7 @@ import { GameObject } from '../../core/GameObject';
 import { SpritePainter } from '../../core/painters/SpritePainter';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Rotation } from '../../game/Rotation';
+import { TankAttributesFactory } from '../../tank/TankAttributesFactory';
 import { TankColor, TankKind, TankParty, TankSpriteId, TankType } from '../../tank/TankTypes';
 import * as config from '../../config';
 
@@ -27,6 +28,10 @@ export class ScoreTableTierIcon extends GameObject {
 
   protected setup({ spriteLoader }: GameContext): void {
     const type = new TankType(TankParty.Enemy, this.tier);
+    const attributes = TankAttributesFactory.create(type);
+    if (attributes.sprite !== undefined) {
+      type.spriteKind = attributes.sprite;
+    }
     const spriteId = TankSpriteId.create(type, TankColor.Default, Rotation.Up);
     const sprite = spriteLoader.load(spriteId);
 

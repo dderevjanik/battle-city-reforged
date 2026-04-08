@@ -7,6 +7,7 @@ export enum Tag {
   Player = 'Player',
 
   Bullet = 'Bullet',
+  BombBlast = 'BombBlast',
 
   Powerup = 'Powerup',
 

@@ -57,7 +57,7 @@
                 "properties": {
                   "type": {
                     "type": "string",
-                    "enum": ["basic", "fast", "fast_armored", "medium", "heavy"]
+                    "enum": ["basic", "fast", "fast_armored", "fast_bomber", "medium", "heavy"]
                   },
                   "ai": {
                     "type": "string",

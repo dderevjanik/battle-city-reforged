@@ -25,6 +25,7 @@ export enum TankKind {
   Basic = 'basic',
   Fast = 'fast',
   FastArmored = 'fast_armored',
+  FastBomber = 'fast_bomber',
   Medium = 'medium',
   Heavy = 'heavy',
 }

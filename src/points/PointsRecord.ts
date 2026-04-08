@@ -6,6 +6,7 @@ const TANK_POINTS_MAP: Record<TankKind, number> = {
   [TankKind.Basic]: 100,
   [TankKind.Fast]: 200,
   [TankKind.FastArmored]: 300,
+  [TankKind.FastBomber]: 300,
   [TankKind.Medium]: 300,
   [TankKind.Heavy]: 400,
 };

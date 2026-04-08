@@ -3,6 +3,7 @@ import { EnemyTank } from '../gameObjects/EnemyTank';
 import { PlayerTank } from '../gameObjects/PlayerTank';
 
 import { AiTankBehavior } from './behaviors/AiTankBehavior';
+import { FastBomberTankBehavior } from './behaviors/FastBomberTankBehavior';
 import { AmbushTankBehavior } from './behaviors/AmbushTankBehavior';
 import { AttackBaseTankBehavior } from './behaviors/AttackBaseTankBehavior';
 import { HunterTankBehavior } from './behaviors/HunterTankBehavior';
@@ -10,7 +11,7 @@ import { PlayerTankBehavior } from './behaviors/PlayerTankBehavior';
 import { TankAiMode } from './TankAiMode';
 import { TankAttributesFactory } from './TankAttributesFactory';
 import { TankBehavior } from './TankBehavior';
-import { TankType } from './TankTypes';
+import { TankKind, TankType } from './TankTypes';
 
 export class TankFactory {
   public static createPlayer(
@@ -30,7 +31,11 @@ export class TankFactory {
     type: TankType = TankType.EnemyA(),
     behavior?: TankBehavior,
   ): EnemyTank {
-    const resolvedBehavior = behavior ?? TankFactory.createBehaviorForType(type);
+    const baseBehavior = behavior ?? TankFactory.createBehaviorForType(type);
+    const resolvedBehavior =
+      type.kind === TankKind.FastBomber
+        ? new FastBomberTankBehavior(baseBehavior)
+        : baseBehavior;
     return new EnemyTank(type, resolvedBehavior, partyIndex);
   }
 

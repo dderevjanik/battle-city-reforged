@@ -112,6 +112,23 @@
     {
       "selector": {
         "party": "enemy",
+        "kind": "fast_bomber"
+      },
+      "attributes": {
+        "ai": "classic",
+        "sprite": "fast",
+        "bulletMaxCount": 1,
+        "bulletRapidFireDelay": 0.16,
+        "bulletSpeed": 600,
+        "bulletTankDamage": 1,
+        "bulletWallDamage": 1,
+        "health": 1,
+        "moveSpeed": 240
+      }
+    },
+    {
+      "selector": {
+        "party": "enemy",
         "kind": "medium"
       },
       "attributes": {

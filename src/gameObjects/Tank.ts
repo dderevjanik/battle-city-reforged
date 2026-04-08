@@ -21,6 +21,7 @@ import { TankBehavior } from '../tank/TankBehavior';
 import { TankSkinAnimation } from '../tank/TankSkinAnimation';
 import * as config from '../config';
 
+import { BombBlast } from './BombBlast';
 import { Bullet } from './Bullet';
 import { Shield } from './Shield';
 
@@ -250,6 +251,7 @@ export class Tank extends GameObject {
     this.collideWalls(collision);
     this.collideTanks(collision);
     this.collideBullets(collision);
+    this.collideBombs(collision);
   }
 
   public fire(): boolean | void {
@@ -902,6 +904,31 @@ export class Tank extends GameObject {
       }
 
       this.receiveHit(bullet.tankDamage, bullet.ownerPartyIndex);
+    });
+  }
+
+  private collideBombs(collision: Collision): void {
+    // Only player tanks are damaged by enemy bomb blasts
+    if (!this.tags.includes(Tag.Player)) {
+      return;
+    }
+
+    const bombBlastContacts = collision.contacts.filter((contact) => {
+      return contact.collider.object.tags.includes(Tag.BombBlast);
+    });
+
+    if (bombBlastContacts.length === 0) {
+      return;
+    }
+
+    // Shield absorbs the blast
+    if (this.shield !== null) {
+      return;
+    }
+
+    bombBlastContacts.forEach((contact) => {
+      const blast = contact.collider.object as BombBlast;
+      this.receiveHit(blast.tankDamage, blast.ownerPartyIndex);
     });
   }
 

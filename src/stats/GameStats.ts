@@ -39,6 +39,8 @@ export function createDefaultGameStats(): GameStats {
       byKind: {
         [TankKind.Basic]: 0,
         [TankKind.Fast]: 0,
+        [TankKind.FastArmored]: 0,
+        [TankKind.FastBomber]: 0,
         [TankKind.Medium]: 0,
         [TankKind.Heavy]: 0,
       },

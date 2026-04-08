@@ -146,6 +146,7 @@ export const BASE_HEART_Z_INDEX = 0;
 export const LEVEL_INFO_Z_INDEX = 1;
 export const ENEMY_TANK_Z_INDEX = 1;
 export const PLAYER_TANK_Z_INDEX = 2;
+export const BOMB_Z_INDEX = 1;
 export const BULLET_Z_INDEX = 3;
 export const SHIELD_Z_INDEX = 3;
 export const SMALL_EXPLOSION_Z_INDEX = 4;

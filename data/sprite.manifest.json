@@ -1,4 +1,13 @@
 {
+  "bomb": {
+    "file": "data/graphics/bomb.png",
+    "rect": [
+      0,
+      0,
+      64,
+      32
+    ]
+  },
   "bullet.down": {
     "file": "data/graphics/sprite.png",
     "rect": [

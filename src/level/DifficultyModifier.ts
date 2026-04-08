@@ -16,23 +16,24 @@ export class DifficultyModifier {
       mapConfig.setEnemySpawnDelay(originalDelay * 0.8);
       mapConfig.setEnemyMaxAliveCount(Math.max(originalMaxAlive, 6));
 
-      // Upgrade every 3rd tank: basic/fast → medium
-      for (let i = 0; i < originalList.length; i += 1) {
-        if (i % 3 === 0) {
-          const kind = originalList[i].kind;
-          if (kind === TankKind.Basic || kind === TankKind.Fast) {
-            mapConfig.setEnemySpawnListItem(
-              i,
-              originalList[i].clone().increaseKind(TankKind.Medium),
-            );
-          }
-        }
-      }
-
-      // Append 4 extra enemies from original list
+      // Append 4 extra enemies first, then upgrade from the end so tougher tanks appear later
       for (let i = 0; i < 4; i += 1) {
         const source = originalList[i % originalList.length];
         mapConfig.appendToEnemySpawnList({ type: source.kind, ai: undefined });
+      }
+
+      // Upgrade every 3rd tank from the end: basic/fast → medium
+      const hardList = mapConfig.getEnemySpawnList();
+      for (let i = hardList.length - 1; i >= 0; i -= 1) {
+        if ((hardList.length - 1 - i) % 3 === 0) {
+          const kind = hardList[i].kind;
+          if (kind === TankKind.Basic || kind === TankKind.Fast) {
+            mapConfig.setEnemySpawnListItem(
+              i,
+              hardList[i].clone().increaseKind(TankKind.Medium),
+            );
+          }
+        }
       }
     }
 
@@ -40,23 +41,24 @@ export class DifficultyModifier {
       mapConfig.setEnemySpawnDelay(originalDelay * 0.6);
       mapConfig.setEnemyMaxAliveCount(Math.max(originalMaxAlive, 8));
 
-      // Upgrade every 2nd tank: basic/fast/medium → heavy
-      for (let i = 0; i < originalList.length; i += 1) {
-        if (i % 2 === 0) {
-          const kind = originalList[i].kind;
-          if (kind !== TankKind.Heavy) {
-            mapConfig.setEnemySpawnListItem(
-              i,
-              originalList[i].clone().increaseKind(TankKind.Heavy),
-            );
-          }
-        }
-      }
-
-      // Append 8 extra enemies from original list
+      // Append 8 extra enemies first, then upgrade from the end so tougher tanks appear later
       for (let i = 0; i < 8; i += 1) {
         const source = originalList[i % originalList.length];
         mapConfig.appendToEnemySpawnList({ type: source.kind, ai: undefined });
+      }
+
+      // Upgrade every 2nd tank from the end: basic/fast/medium → heavy
+      const extremeList = mapConfig.getEnemySpawnList();
+      for (let i = extremeList.length - 1; i >= 0; i -= 1) {
+        if ((extremeList.length - 1 - i) % 2 === 0) {
+          const kind = extremeList[i].kind;
+          if (kind !== TankKind.Heavy) {
+            mapConfig.setEnemySpawnListItem(
+              i,
+              extremeList[i].clone().increaseKind(TankKind.Heavy),
+            );
+          }
+        }
       }
     }
   }

@@ -13,8 +13,8 @@ import { GameScene } from '../GameScene';
 const ITEMS_PER_PAGE = 9;
 const ITEM_HEIGHT = 36;
 const MENU_Y = 220;
-// Below BACK (index ITEMS_PER_PAGE): MENU_Y + (ITEMS_PER_PAGE + 1) * ITEM_HEIGHT + gap
-const DESCRIPTION_Y = MENU_Y + (ITEMS_PER_PAGE + 1) * ITEM_HEIGHT + 16;
+// Below BACK (index ITEMS_PER_PAGE + 1, with spacer): MENU_Y + (ITEMS_PER_PAGE + 2) * ITEM_HEIGHT + gap
+const DESCRIPTION_Y = MENU_Y + (ITEMS_PER_PAGE + 2) * ITEM_HEIGHT + 16;
 const DESCRIPTION_WRAP_CHARS = 45;
 
 function wrapText(text: string, maxChars: number): string {
@@ -126,10 +126,16 @@ export class MainAchievementsScene extends GameScene {
       return new TextMenuItem(label, { color, unfocusableColor: color });
     });
 
+    const spacerItem = new TextMenuItem('', {
+      color: config.COLOR_GRAY,
+      unfocusableColor: config.COLOR_GRAY,
+    });
+    spacerItem.setFocusable(false);
+
     const backItem = new TextMenuItem('BACK');
     backItem.selected.addListener(this.handleBackSelected);
 
-    this.menu.setItems([...achievementItems, backItem]);
+    this.menu.setItems([...achievementItems, spacerItem, backItem]);
 
     this.updatePageIndicator();
     this.updateDescription(start);

@@ -45,6 +45,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private session!: Session;
   private inputManager!: InputManager;
   private debugCollisionMenu!: DebugCollisionMenu;
+  private debugPanelAttached = false;
 
   private allScripts: LevelScript[] = [];
   private alwaysUpdateScripts: LevelScript[] = [];
@@ -75,10 +76,6 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       this.root,
       { top: 470 },
     );
-    if (config.IS_DEV) {
-      this.debugCollisionMenu.attach();
-      this.debugCollisionMenu.show();
-    }
 
     this.eventBus = new LevelEventBus();
 
@@ -225,7 +222,19 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     collisionSystem.update();
 
     if (config.IS_DEV) {
-      this.debugCollisionMenu.update();
+      const enabled = this.context.debugSettings.getDevPanelEnabled();
+      if (enabled && !this.debugPanelAttached) {
+        this.debugCollisionMenu.attach();
+        this.debugCollisionMenu.show();
+        this.debugPanelAttached = true;
+      } else if (!enabled && this.debugPanelAttached) {
+        this.debugCollisionMenu.hide();
+        this.debugCollisionMenu.detach();
+        this.debugPanelAttached = false;
+      }
+      if (enabled) {
+        this.debugCollisionMenu.update();
+      }
     }
 
     collisionSystem.collide();

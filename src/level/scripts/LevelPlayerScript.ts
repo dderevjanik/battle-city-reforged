@@ -21,7 +21,7 @@ export class LevelPlayerScript extends LevelScript {
   private tanks: (PlayerTank | null)[] = [];
   private playerFreezeTimer = new Timer();
 
-  protected setup({ session }: GameContext): void {
+  protected setup({ debugSettings, session }: GameContext): void {
     this.eventBus.playerSpawnCompleted.addListener(this.handleSpawnCompleted);
     this.eventBus.powerupPicked.addListener(this.handlePowerupPicked);
     this.eventBus.enemyPowerupPicked.addListener(this.handleEnemyPowerupPicked);
@@ -45,7 +45,7 @@ export class LevelPlayerScript extends LevelScript {
       this.tanks.push(null);
     });
 
-    if (config.IS_DEV) {
+    if (config.IS_DEV && debugSettings.getDevPanelEnabled()) {
       const debugMenu = new DebugLevelPlayerMenu({
         top: 300,
       });

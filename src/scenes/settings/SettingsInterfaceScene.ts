@@ -3,8 +3,10 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
+import { DebugSettings } from '../../debug/DebugSettings';
 import { InputHintSettings } from '../../input/InputHintSettings';
 import { InputManager } from '../../input/InputManager';
+import * as config from '../../config';
 
 import { GameScene } from '../GameScene';
 
@@ -12,14 +14,17 @@ export class SettingsInterfaceScene extends GameScene {
   private title!: SceneMenuTitle;
   private levelControlsHintItem!: TextMenuItem;
   private touchInputItem!: TextMenuItem;
+  private devPanelItem!: TextMenuItem;
   private backItem!: TextMenuItem;
   private menu!: SceneMenu;
   private audioManager!: AudioManager;
+  private debugSettings!: DebugSettings;
   private inputHintSettings!: InputHintSettings;
   private inputManager!: InputManager;
 
-  protected setup({ audioManager, inputHintSettings, inputManager }: GameContext): void {
+  protected setup({ audioManager, debugSettings, inputHintSettings, inputManager }: GameContext): void {
     this.audioManager = audioManager;
+    this.debugSettings = debugSettings;
     this.inputHintSettings = inputHintSettings;
     this.inputManager = inputManager;
 
@@ -39,11 +44,18 @@ export class SettingsInterfaceScene extends GameScene {
     this.backItem = new TextMenuItem('BACK');
     this.backItem.selected.addListener(this.handleBackSelected);
 
-    const menuItems = [
+    const menuItems: TextMenuItem[] = [
       this.levelControlsHintItem,
       this.touchInputItem,
-      this.backItem,
     ];
+
+    if (config.IS_DEV) {
+      this.devPanelItem = new TextMenuItem(this.getDevPanelText());
+      this.devPanelItem.selected.addListener(this.handleDevPanelSelected);
+      menuItems.push(this.devPanelItem);
+    }
+
+    menuItems.push(this.backItem);
 
     this.menu = new SceneMenu();
     this.menu.setItems(menuItems);
@@ -65,6 +77,11 @@ export class SettingsInterfaceScene extends GameScene {
     this.touchInputItem.setText(this.getTouchInputText());
   };
 
+  private handleDevPanelSelected = (): void => {
+    this.debugSettings.setDevPanelEnabled(!this.debugSettings.getDevPanelEnabled());
+    this.devPanelItem.setText(this.getDevPanelText());
+  };
+
   private handleBackSelected = (): void => {
     this.navigator.back();
   };
@@ -83,5 +100,10 @@ export class SettingsInterfaceScene extends GameScene {
   private getTouchInputText(): string {
     const checkmark = this.inputManager.getTouchEnabled() ? '+' : ' ';
     return `TOUCH INPUT [${checkmark}]`;
+  }
+
+  private getDevPanelText(): string {
+    const checkmark = this.debugSettings.getDevPanelEnabled() ? '+' : ' ';
+    return `DEV PANEL [${checkmark}]`;
   }
 }

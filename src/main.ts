@@ -14,6 +14,7 @@ import { GameStorage } from './game/GameStorage';
 import { GameContext } from './game/GameUpdateArgs';
 import { Session } from './game/Session';
 import { InputHintSettings } from './input/InputHintSettings';
+import { DebugSettings } from './debug/DebugSettings';
 import { InputManager } from './input/InputManager';
 import { ManifestMapListReader } from './map/MapListReaders';
 import { MapLoader } from './map/MapLoader';
@@ -67,6 +68,7 @@ audioManager.loadSettings();
 const session = new Session();
 
 const inputHintSettings = new InputHintSettings(gameStorage);
+const debugSettings = new DebugSettings(gameStorage);
 
 const achievementsManager = new AchievementsManager(gameStorage);
 const achievementsTracker = new AchievementsTracker();
@@ -79,6 +81,7 @@ const collisionSystem = new CollisionSystem();
 const gameState = new State<GameState>(GameState.Playing);
 
 const gameContext: GameContext = {
+  debugSettings,
   achievementsManager,
   achievementsTracker,
   gameStatsManager,

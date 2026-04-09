@@ -10,6 +10,7 @@ import { PowerupType } from '../../powerup/PowerupType';
 import { TerrainType } from '../../terrain/TerrainType';
 import * as config from '../../config';
 
+import { GameContext } from '../../game/GameUpdateArgs';
 import { LevelScript } from '../LevelScript';
 import {
   LevelEnemyHitEvent,
@@ -31,7 +32,7 @@ export class LevelPowerupScript extends LevelScript {
   private activePowerup: Powerup | null = null;
   private grid!: PowerupGrid;
 
-  protected setup(): void {
+  protected setup({ debugSettings }: GameContext): void {
     this.eventBus.enemyHit.addListener(this.handleEnemyHit);
     this.eventBus.enemySpawnCompleted.addListener(
       this.handleEnemySpawnCompleted,
@@ -45,7 +46,7 @@ export class LevelPowerupScript extends LevelScript {
     this.blockGridDefaults();
     this.blockGridInitialMap();
 
-    if (config.IS_DEV) {
+    if (config.IS_DEV && debugSettings.getDevPanelEnabled()) {
       const debugMenu = new DebugLevelPowerupMenu(this.world, this.grid, {
         top: 125,
       });

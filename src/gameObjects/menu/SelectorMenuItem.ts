@@ -2,6 +2,7 @@ import { GameObject } from '../../core/GameObject';
 import { Subject } from '../../core/Subject';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { MenuInputContext } from '../../input/InputContexts';
+import { _rendererScene } from '../../core/GameObjectRenderer';
 import * as config from '../../config';
 
 import { SpriteText } from '../text/SpriteText';
@@ -41,6 +42,7 @@ export class SelectorMenuItem<T> extends MenuItem {
   private container!: GameObject;
   private selectedIndex = 0;
   private items: SpriteText[] = [];
+  private prevPointerStates = new Map<number, boolean>();
 
   constructor(
     choices: SelectorMenuItemChoice<T>[] = [],
@@ -86,6 +88,54 @@ export class SelectorMenuItem<T> extends MenuItem {
     if (inputMethod.isDownAny(MenuInputContext.HorizontalPrev)) {
       this.selectPrev();
       this.emitChange();
+    }
+
+    this.updatePointerInput();
+  }
+
+  // Returns true if the pointer was released over one of the arrows this frame
+  // (so callers can suppress other actions like "tap to continue").
+  public wasArrowClicked(): boolean {
+    return this._arrowClickedThisFrame;
+  }
+
+  private _arrowClickedThisFrame = false;
+
+  private updatePointerInput(): void {
+    if (_rendererScene === null) return;
+
+    this._arrowClickedThisFrame = false;
+    this.pointerReleaseConsumed = false;
+
+    const pointers: Phaser.Input.Pointer[] = _rendererScene.input.manager.pointers;
+    const box = this.getWorldBoundingBox();
+    const midX = (box.min.x + box.max.x) / 2;
+
+    for (const pointer of pointers) {
+      if (pointer.x === 0 && pointer.y === 0 && !pointer.isDown) continue;
+
+      const wasDown = this.prevPointerStates.get(pointer.id) ?? false;
+      const eventTarget = (pointer.event?.target ?? null) as Element | null;
+      const onTouchOverlay = eventTarget?.closest('.touch-gamepad') !== null;
+      const justReleased = !pointer.isDown && wasDown && !onTouchOverlay;
+
+      this.prevPointerStates.set(pointer.id, pointer.isDown);
+
+      if (!justReleased) continue;
+
+      const px = pointer.x;
+      const py = pointer.y;
+      if (px < box.min.x || px > box.max.x || py < box.min.y || py > box.max.y) continue;
+
+      // Left half → prev, right half → next
+      if (px < midX) {
+        this.selectPrev();
+      } else {
+        this.selectNext();
+      }
+      this.emitChange();
+      this._arrowClickedThisFrame = true;
+      this.pointerReleaseConsumed = true;
     }
   }
 

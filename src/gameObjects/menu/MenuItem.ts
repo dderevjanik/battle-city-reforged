@@ -34,4 +34,8 @@ export abstract class MenuItem extends GameObject {
   public select(): void {
     this.selected.notify(null);
   }
+
+  // Set to true by subclasses when they fully handle a pointer release so that
+  // the parent Menu skips calling select() for the same event.
+  public pointerReleaseConsumed = false;
 }

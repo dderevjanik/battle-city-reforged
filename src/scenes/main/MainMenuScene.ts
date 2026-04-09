@@ -12,6 +12,8 @@ import { AchievementsManager } from '../../achievements/AchievementsManager';
 import { GameStatsManager } from '../../stats/GameStatsManager';
 import * as config from '../../config';
 
+import { _rendererScene } from '../../core/GameObjectRenderer';
+
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
@@ -147,7 +149,8 @@ export class MainMenuScene extends GameScene {
         nextPosition = 0;
       }
 
-      const isSkipped = inputMethod.isDownAny(MenuInputContext.Skip);
+      const isSkipped = inputMethod.isDownAny(MenuInputContext.Skip)
+        || this.isPointerDown();
       if (isSkipped) {
         nextPosition = 0;
       }
@@ -168,6 +171,11 @@ export class MainMenuScene extends GameScene {
     }
 
     super.onUpdate(deltaTime);
+  }
+
+  private isPointerDown(): boolean {
+    if (_rendererScene === null) return false;
+    return _rendererScene.input.manager.pointers.some((p) => p.isDown);
   }
 
   private handleSinglePlayerSelected = (): void => {

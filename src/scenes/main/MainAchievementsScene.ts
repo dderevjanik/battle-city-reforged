@@ -2,10 +2,10 @@ import { ACHIEVEMENTS } from '../../achievements/AchievementsRegistry';
 import { AchievementsManager } from '../../achievements/AchievementsManager';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Menu } from '../../gameObjects/menu/Menu';
+import { SelectorMenuItem, SelectorMenuItemChoice } from '../../gameObjects/menu/SelectorMenuItem';
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
 import { SpriteText } from '../../gameObjects/text/SpriteText';
-import { MenuInputContext } from '../../input/InputContexts';
 import * as config from '../../config';
 
 import { GameScene } from '../GameScene';
@@ -13,8 +13,7 @@ import { GameScene } from '../GameScene';
 const ITEMS_PER_PAGE = 9;
 const ITEM_HEIGHT = 36;
 const MENU_Y = 220;
-// Below BACK (index ITEMS_PER_PAGE + 1, with spacer): MENU_Y + (ITEMS_PER_PAGE + 2) * ITEM_HEIGHT + gap
-const DESCRIPTION_Y = MENU_Y + (ITEMS_PER_PAGE + 2) * ITEM_HEIGHT + 16;
+const DESCRIPTION_Y = MENU_Y + (ITEMS_PER_PAGE + 3) * ITEM_HEIGHT + 16;
 const DESCRIPTION_WRAP_CHARS = 45;
 
 function wrapText(text: string, maxChars: number): string {
@@ -36,11 +35,11 @@ function wrapText(text: string, maxChars: number): string {
 export class MainAchievementsScene extends GameScene {
   private achievementsManager!: AchievementsManager;
 
-  private pageIndex = 0;
   private totalPages = 0;
-  private pageIndicator!: SpriteText;
+  private pageSelector!: SelectorMenuItem<number>;
   private description!: SpriteText;
   private menu!: Menu;
+  private currentPageSize = 0;
 
   protected setup(context: GameContext): void {
     this.achievementsManager = context.achievementsManager;
@@ -56,7 +55,7 @@ export class MainAchievementsScene extends GameScene {
 
     const summary = new SpriteText(
       `${unlockedCount}/${ACHIEVEMENTS.length} UNLOCKED`,
-      { color: config.COLOR_GRAY },
+      { color: config.COLOR_WHITE },
     );
     summary.position.set(
       config.MENU_TITLE_DEFAULT_POSITION.x,
@@ -64,12 +63,16 @@ export class MainAchievementsScene extends GameScene {
     );
     this.root.add(summary);
 
-    this.pageIndicator = new SpriteText('', { color: config.COLOR_GRAY });
-    this.pageIndicator.position.set(
-      config.MENU_TITLE_DEFAULT_POSITION.x,
-      config.MENU_TITLE_DEFAULT_POSITION.y + 72,
-    );
-    this.root.add(this.pageIndicator);
+    const pageChoices: SelectorMenuItemChoice<number>[] = [];
+    for (let i = 0; i < this.totalPages; i++) {
+      pageChoices.push({ value: i, text: `PAGE ${i + 1}/${this.totalPages}` });
+    }
+
+    this.pageSelector = new SelectorMenuItem(pageChoices, {
+      color: config.COLOR_WHITE,
+      containerWidth: 256,
+    });
+    this.pageSelector.changed.addListener(this.handlePageChanged);
 
     this.menu = new Menu({ itemHeight: ITEM_HEIGHT });
     this.menu.position.set(config.MENU_DEFAULT_POSITION.x, MENU_Y);
@@ -88,31 +91,9 @@ export class MainAchievementsScene extends GameScene {
     this.buildPage(0);
   }
 
-  protected onUpdate(deltaTime: number): void {
-    const inputMethod = this.context.inputManager.getActiveMethod();
-
-    if (inputMethod.isDownAny(MenuInputContext.HorizontalNext)) {
-      this.changePage(1);
-      return;
-    }
-    if (inputMethod.isDownAny(MenuInputContext.HorizontalPrev)) {
-      this.changePage(-1);
-      return;
-    }
-
-    super.onUpdate(deltaTime);
-  }
-
-  private changePage(delta: number): void {
-    const next = this.pageIndex + delta;
-    if (next < 0 || next >= this.totalPages) {
-      return;
-    }
-    this.pageIndex = next;
-    this.buildPage(this.pageIndex);
-  }
-
-  private currentPageSize = 0;
+  private handlePageChanged = (choice: SelectorMenuItemChoice<number>): void => {
+    this.buildPage(choice.value);
+  };
 
   private buildPage(page: number): void {
     const start = page * ITEMS_PER_PAGE;
@@ -135,27 +116,20 @@ export class MainAchievementsScene extends GameScene {
     const backItem = new TextMenuItem('BACK');
     backItem.selected.addListener(this.handleBackSelected);
 
-    this.menu.setItems([...achievementItems, spacerItem, backItem]);
+    this.menu.setItems([this.pageSelector, ...achievementItems, spacerItem, backItem]);
 
-    this.updatePageIndicator();
+    this.pageSelector.setValue(page);
     this.updateDescription(start);
   }
 
-  private updatePageIndicator(): void {
-    const left = this.pageIndex > 0 ? '< ' : '  ';
-    const right = this.pageIndex < this.totalPages - 1 ? ' >' : '  ';
-    this.pageIndicator.setText(
-      `${left}PAGE ${this.pageIndex + 1}/${this.totalPages}${right}`,
-    );
-  }
-
   private handleMenuFocused = (indexOnPage: number): void => {
-    // Last item is always BACK — no achievement description for it
-    if (indexOnPage >= this.currentPageSize) {
+    // index 0 is the pageSelector; achievement items start at 1
+    const achievementIndex = indexOnPage - 1;
+    if (achievementIndex < 0 || achievementIndex >= this.currentPageSize) {
       this.description.setText('');
       return;
     }
-    const globalIndex = this.pageIndex * ITEMS_PER_PAGE + indexOnPage;
+    const globalIndex = this.pageSelector.getValue()! * ITEMS_PER_PAGE + achievementIndex;
     this.updateDescription(globalIndex);
   };
 

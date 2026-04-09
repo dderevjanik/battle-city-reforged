@@ -1,5 +1,6 @@
 import { GameObject } from '../../core/GameObject';
 import { RectPainter } from '../../core/painters/RectPainter';
+import { _rendererScene } from '../../core/GameObjectRenderer';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { LevelInputHint } from '../../gameObjects/LevelInputHint';
@@ -24,6 +25,7 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
   private levelHint!: LevelInputHint;
   private continueHint!: GameObject;
   private session!: Session;
+  private prevPointerStates = new Map<number, boolean>();
 
   protected setup({
     inputHintSettings,
@@ -191,6 +193,30 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
     // Usually it is handled by menu, but here we are using it outside menu
     if (this.params.canSelectVariant) {
       this.selector.updateFocused(this.context);
+    }
+
+    this.updatePointerContinue();
+  }
+
+  private updatePointerContinue(): void {
+    if (_rendererScene === null) return;
+
+    const pointers: Phaser.Input.Pointer[] = _rendererScene.input.manager.pointers;
+
+    for (const pointer of pointers) {
+      if (pointer.x === 0 && pointer.y === 0 && !pointer.isDown) continue;
+
+      const wasDown = this.prevPointerStates.get(pointer.id) ?? false;
+      const eventTarget = (pointer.event?.target ?? null) as Element | null;
+      const onTouchOverlay = eventTarget?.closest('.touch-gamepad') !== null;
+      const justReleased = !pointer.isDown && wasDown && !onTouchOverlay;
+
+      this.prevPointerStates.set(pointer.id, pointer.isDown);
+
+      if (justReleased && !this.selector.wasArrowClicked()) {
+        this.finish();
+        return;
+      }
     }
   }
 

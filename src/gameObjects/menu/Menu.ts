@@ -79,7 +79,7 @@ export class Menu extends GameObject {
     this.focusItem(0);
   }
 
-  protected update(deltaTime: number): void {
+  protected update(_deltaTime: number): void {
     const { inputManager } = this.context;
 
     const inputMethod = inputManager.getActiveMethod();
@@ -171,7 +171,10 @@ export class Menu extends GameObject {
 
     if (justReleasedIndex !== -1) {
       this.focusItem(justReleasedIndex);
-      this.notifyItemSelected();
+      const focusedItem = this.items[this.focusedIndex];
+      if (!focusedItem?.pointerReleaseConsumed) {
+        this.notifyItemSelected();
+      }
     }
   }
 

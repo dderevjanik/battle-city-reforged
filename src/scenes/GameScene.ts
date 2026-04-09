@@ -43,6 +43,7 @@ export abstract class GameScene<
     // scene don't persist into the next one.
     this.events.once('shutdown', () => {
       this.context?.collisionSystem.reset();
+      this.game.canvas.style.cursor = '';
     });
 
     const router = this.game.registry.get('sceneRouter') as GameSceneRouter;

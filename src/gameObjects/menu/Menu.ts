@@ -2,6 +2,7 @@ import { GameObject } from '../../core/GameObject';
 import { Subject } from '../../core/Subject';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { MenuInputContext } from '../../input/InputContexts';
+import { _rendererScene } from '../../core/GameObjectRenderer';
 
 import { MenuCursor } from './MenuCursor';
 import { MenuItem } from './MenuItem';
@@ -28,6 +29,10 @@ export class Menu extends GameObject {
   private cursor: MenuCursor = new MenuCursor();
   private focusedIndex = -1;
   private context!: GameContext;
+  private prevPointerX = -1;
+  private prevPointerY = -1;
+  // Tracks wasDown per Phaser pointer id so each finger/button is independent
+  private prevPointerStates = new Map<number, boolean>();
 
   constructor(options: MenuOptions = {}) {
     super();
@@ -100,6 +105,74 @@ export class Menu extends GameObject {
         menuItem.updateFocused(this.context);
       }
     });
+
+    this.updatePointerInput();
+  }
+
+  private updatePointerInput(): void {
+    if (_rendererScene === null) return;
+
+    const pointers: Phaser.Input.Pointer[] = _rendererScene.input.manager.pointers;
+
+    const menuBox = this.getWorldBoundingBox();
+    const itemHeight = this.options.itemHeight!;
+
+    let anyMoved = false;
+    let justReleasedIndex = -1;
+    let hoveredIndex = -1;
+
+    for (const pointer of pointers) {
+      // Skip pointers that have never been used
+      if (pointer.x === 0 && pointer.y === 0 && !pointer.isDown) continue;
+
+      const px = pointer.x;
+      const py = pointer.y;
+      const id = pointer.id;
+      const wasDown = this.prevPointerStates.get(id) ?? false;
+
+      const moved = px !== this.prevPointerX || py !== this.prevPointerY;
+      // Only fire on release, and only if this menu saw the press first
+      // Ignore releases that originated on the touch gamepad overlay so that
+      // tapping a virtual button never also triggers a menu selection.
+      const eventTarget = (pointer.event?.target ?? null) as Element | null;
+      const onTouchOverlay = eventTarget?.closest('.touch-gamepad') !== null;
+      const justReleased = !pointer.isDown && wasDown && !onTouchOverlay;
+
+      this.prevPointerStates.set(id, pointer.isDown);
+
+      if (moved) {
+        this.prevPointerX = px;
+        this.prevPointerY = py;
+        anyMoved = true;
+      }
+
+      // Find which row this pointer is over
+      let idx = -1;
+      this.items.forEach((item, index) => {
+        if (!item.isFocusable()) return;
+        const rowTop = menuBox.min.y + index * itemHeight;
+        const rowBottom = rowTop + itemHeight;
+        if (px >= menuBox.min.x && px <= menuBox.max.x && py >= rowTop && py < rowBottom) {
+          idx = index;
+        }
+      });
+
+      if (idx !== -1) hoveredIndex = idx;
+      if (justReleased && idx !== -1) justReleasedIndex = idx;
+    }
+
+    if (anyMoved) {
+      _rendererScene.game.canvas.style.cursor = hoveredIndex !== -1 ? 'pointer' : '';
+    }
+
+    if (anyMoved && hoveredIndex !== -1 && hoveredIndex !== this.focusedIndex) {
+      this.focusItem(hoveredIndex);
+    }
+
+    if (justReleasedIndex !== -1) {
+      this.focusItem(justReleasedIndex);
+      this.notifyItemSelected();
+    }
   }
 
   private focusItem(index: number): void {

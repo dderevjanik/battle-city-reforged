@@ -11,6 +11,7 @@ const BOMB_DROP_MAX_DELAY = 8;
 
 export class FastBomberTankBehavior extends TankBehavior {
   private bombTimer = new Timer(RandomUtils.number(BOMB_DROP_MIN_DELAY, BOMB_DROP_MAX_DELAY));
+  private hasDroppedBomb = false;
 
   constructor(private readonly baseBehavior: TankBehavior) {
     super();
@@ -30,7 +31,14 @@ export class FastBomberTankBehavior extends TankBehavior {
     }
   }
 
+  public dropBombOnDeath(tank: Tank): void {
+    if (!this.hasDroppedBomb) {
+      this.dropBomb(tank);
+    }
+  }
+
   private dropBomb(tank: Tank): void {
+    this.hasDroppedBomb = true;
     const bomb = new Bomb(tank.partyIndex);
     tank.parent!.add(bomb);
     bomb.updateMatrix();

@@ -32,11 +32,16 @@ export class TankFactory {
     behavior?: TankBehavior,
   ): EnemyTank {
     const baseBehavior = behavior ?? TankFactory.createBehaviorForType(type);
-    const resolvedBehavior =
-      type.kind === TankKind.FastBomber
-        ? new FastBomberTankBehavior(new AiTankBehavior())
-        : baseBehavior;
-    return new EnemyTank(type, resolvedBehavior, partyIndex);
+
+    if (type.kind === TankKind.FastBomber) {
+      const bomberBehavior = new FastBomberTankBehavior(new AiTankBehavior());
+      const tank = new EnemyTank(type, bomberBehavior, partyIndex);
+      // Register before LevelEnemyScript's died listener so parent is still valid
+      tank.died.addListenerOnce(() => bomberBehavior.dropBombOnDeath(tank));
+      return tank;
+    }
+
+    return new EnemyTank(type, baseBehavior, partyIndex);
   }
 
   public static createBehaviorForAiMode(ai: TankAiMode, basePositions: Vector[] = []): TankBehavior {

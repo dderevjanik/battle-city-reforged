@@ -4,20 +4,24 @@ import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
 import { InputHintSettings } from '../../input/InputHintSettings';
+import { InputManager } from '../../input/InputManager';
 
 import { GameScene } from '../GameScene';
 
 export class SettingsInterfaceScene extends GameScene {
   private title!: SceneMenuTitle;
   private levelControlsHintItem!: TextMenuItem;
+  private touchInputItem!: TextMenuItem;
   private backItem!: TextMenuItem;
   private menu!: SceneMenu;
   private audioManager!: AudioManager;
   private inputHintSettings!: InputHintSettings;
+  private inputManager!: InputManager;
 
-  protected setup({ audioManager, inputHintSettings }: GameContext): void {
+  protected setup({ audioManager, inputHintSettings, inputManager }: GameContext): void {
     this.audioManager = audioManager;
     this.inputHintSettings = inputHintSettings;
+    this.inputManager = inputManager;
 
     this.title = new SceneMenuTitle('SETTINGS → INTERFACE');
     this.root.add(this.title);
@@ -29,11 +33,15 @@ export class SettingsInterfaceScene extends GameScene {
       this.handleLevelControlsHintSelected,
     );
 
+    this.touchInputItem = new TextMenuItem(this.getTouchInputText());
+    this.touchInputItem.selected.addListener(this.handleTouchInputSelected);
+
     this.backItem = new TextMenuItem('BACK');
     this.backItem.selected.addListener(this.handleBackSelected);
 
     const menuItems = [
       this.levelControlsHintItem,
+      this.touchInputItem,
       this.backItem,
     ];
 
@@ -52,6 +60,11 @@ export class SettingsInterfaceScene extends GameScene {
     this.levelControlsHintItem.setText(this.getLevelControlsHintText());
   };
 
+  private handleTouchInputSelected = (): void => {
+    this.inputManager.setTouchEnabled(!this.inputManager.getTouchEnabled());
+    this.touchInputItem.setText(this.getTouchInputText());
+  };
+
   private handleBackSelected = (): void => {
     this.navigator.back();
   };
@@ -65,5 +78,10 @@ export class SettingsInterfaceScene extends GameScene {
     }
 
     return `GAMEPLAY CONTROLS HINT [${checkmark}]`;
+  }
+
+  private getTouchInputText(): string {
+    const checkmark = this.inputManager.getTouchEnabled() ? '+' : ' ';
+    return `TOUCH INPUT [${checkmark}]`;
   }
 }

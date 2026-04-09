@@ -109,8 +109,10 @@ export class InputManager {
       new GamepadInputDevice(gamepad, 1),
     ]);
 
-    // Re-register touch device after scene transition (deviceMap was rebuilt)
-    if (this.touchDevice !== null) {
+    // Re-register touch device after scene transition (deviceMap was rebuilt),
+    // but only when it is enabled — otherwise listen() would be called on it
+    // below and show the overlay unexpectedly.
+    if (this.touchDevice !== null && this.getTouchEnabled()) {
       this.deviceMap.set(InputDeviceType.Touch, [this.touchDevice]);
     }
 
@@ -129,8 +131,6 @@ export class InputManager {
     const device = new TouchInputDevice();
     this.touchDevice = device;
 
-    this.deviceMap.set(InputDeviceType.Touch, [device]);
-
     this.bindings.set(
       InputBindingType.PrimaryTouch,
       new PrimaryTouchInputBinding(),
@@ -138,7 +138,34 @@ export class InputManager {
 
     this.presenters.set(InputDeviceType.Touch, new TouchButtonCodePresenter());
 
-    device.listen();
+    if (this.getTouchEnabled()) {
+      this.deviceMap.set(InputDeviceType.Touch, [device]);
+      device.listen();
+    }
+  }
+
+  public getTouchEnabled(): boolean {
+    const stored = this.storage.getBoolean(
+      config.STORAGE_KEY_SETTINGS_TOUCH_ENABLED,
+      null,
+    );
+    // Default: enabled when device has touch support
+    return stored !== null ? stored : navigator.maxTouchPoints > 0;
+  }
+
+  public setTouchEnabled(enabled: boolean): void {
+    this.storage.setBoolean(config.STORAGE_KEY_SETTINGS_TOUCH_ENABLED, enabled);
+    this.storage.save();
+
+    if (this.touchDevice === null) return;
+
+    if (enabled) {
+      this.deviceMap.set(InputDeviceType.Touch, [this.touchDevice]);
+      this.touchDevice.listen();
+    } else {
+      this.touchDevice.unlisten();
+      this.deviceMap.delete(InputDeviceType.Touch);
+    }
   }
 
   public getBinding(bindingType: InputBindingType): InputBinding {

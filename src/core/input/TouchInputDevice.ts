@@ -31,18 +31,6 @@ export class TouchInputDevice implements InputDevice {
   private upCodes: number[] = [];
 
   private isListening = false;
-  private isTouchVisible = false;
-
-  private handleFirstTouch = (): void => {
-    this.showOverlay();
-    window.removeEventListener('touchstart', this.handleFirstTouch);
-  };
-
-  private showOverlay(): void {
-    if (this.isTouchVisible) return;
-    this.isTouchVisible = true;
-    this.overlay.style.display = 'flex';
-  }
 
   constructor() {
     this.overlay = this.buildOverlay();
@@ -56,18 +44,13 @@ export class TouchInputDevice implements InputDevice {
   public listen(): void {
     if (this.isListening) return;
     this.isListening = true;
-
-    if (navigator.maxTouchPoints > 0) {
-      this.showOverlay();
-    } else {
-      window.addEventListener('touchstart', this.handleFirstTouch, { once: true });
-    }
+    this.overlay.style.display = 'flex';
   }
 
   public unlisten(): void {
     if (!this.isListening) return;
     this.isListening = false;
-    window.removeEventListener('touchstart', this.handleFirstTouch);
+    this.overlay.style.display = 'none';
   }
 
   public update(): void {

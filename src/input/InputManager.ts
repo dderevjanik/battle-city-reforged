@@ -128,6 +128,15 @@ export class InputManager {
    * Initialises the touch virtual gamepad overlay and registers it as a device.
    */
   public initTouchDevice(): void {
+    // Persist default on first launch based on hardware touch support
+    const neverSet = this.storage.getBoolean(
+      config.STORAGE_KEY_SETTINGS_TOUCH_ENABLED,
+      null,
+    ) === null;
+    if (neverSet) {
+      this.setTouchEnabled(navigator.maxTouchPoints > 0);
+    }
+
     const device = new TouchInputDevice();
     this.touchDevice = device;
 
@@ -145,12 +154,10 @@ export class InputManager {
   }
 
   public getTouchEnabled(): boolean {
-    const stored = this.storage.getBoolean(
+    return this.storage.getBoolean(
       config.STORAGE_KEY_SETTINGS_TOUCH_ENABLED,
-      null,
-    );
-    // Default: enabled when device has touch support
-    return stored !== null ? stored : navigator.maxTouchPoints > 0;
+      false,
+    ) as boolean;
   }
 
   public setTouchEnabled(enabled: boolean): void {

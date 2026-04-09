@@ -148,6 +148,9 @@ async function main(): Promise<void> {
     height: config.CANVAS_HEIGHT,
   });
 
+  // Initialise touch virtual gamepad now that the canvas exists in the DOM
+  inputManager.initTouchDevice();
+
   // Inject the game context into the Phaser registry BEFORE BridgeScene.create() runs
   phaserGame.registry.set('gameContext', gameContext);
 }

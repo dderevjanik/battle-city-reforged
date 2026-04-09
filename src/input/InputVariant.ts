@@ -63,4 +63,9 @@ export class InputVariant {
     InputBindingType.SecondaryGamepad,
     1,
   );
+
+  public static PrimaryTouch0 = new InputVariant(
+    InputBindingType.PrimaryTouch,
+    0,
+  );
 }

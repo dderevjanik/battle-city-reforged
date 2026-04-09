@@ -1,6 +1,7 @@
 import { GamepadButtonCode } from '../core/input/GamepadButtonCode';
 import { InputBinding } from '../core/input/InputBinding';
 import { KeyboardButtonCode } from '../core/input/KeyboardButtonCode';
+import { TouchButtonCode } from '../core/input/TouchButtonCode';
 
 import { InputControl } from './InputControl';
 
@@ -103,6 +104,21 @@ export class PrimaryGamepadInputBinding extends InputBinding {
     this.setDefault(InputControl.SecondaryAction, GamepadButtonCode.Y);
     this.setDefault(InputControl.Rewind, GamepadButtonCode.A);
     this.setDefault(InputControl.FastForward, GamepadButtonCode.B);
+  }
+}
+
+export class PrimaryTouchInputBinding extends InputBinding {
+  constructor() {
+    super();
+
+    this.setDefault(InputControl.Up, TouchButtonCode.Up);
+    this.setDefault(InputControl.Down, TouchButtonCode.Down);
+    this.setDefault(InputControl.Left, TouchButtonCode.Left);
+    this.setDefault(InputControl.Right, TouchButtonCode.Right);
+    this.setDefault(InputControl.Select, TouchButtonCode.Select);
+    this.setDefault(InputControl.PrimaryAction, TouchButtonCode.PrimaryAction);
+    this.setDefault(InputControl.SecondaryAction, TouchButtonCode.SecondaryAction);
+    this.setDefault(InputControl.Back, TouchButtonCode.Back);
   }
 }
 

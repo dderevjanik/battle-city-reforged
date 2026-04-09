@@ -19,3 +19,74 @@ body {
   font-family: Lucida Console, Courier, monospace;
   font-size: 32px;
 }
+
+/* Touch virtual gamepad overlay */
+.touch-gamepad {
+  align-items: flex-end;
+  bottom: 0;
+  display: none;
+  justify-content: space-between;
+  left: 0;
+  padding: 16px;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.touch-dpad,
+.touch-actions {
+  display: grid;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.touch-dpad {
+  grid-template-areas:
+    '.    up    .'
+    'left .     right'
+    '.    down  .';
+  grid-template-columns: 64px 64px 64px;
+  grid-template-rows: 64px 64px 64px;
+}
+
+.touch-actions {
+  grid-template-areas:
+    'fire sec'
+    'sel  back';
+  grid-template-columns: 72px 72px;
+  grid-template-rows: 72px 72px;
+}
+
+.touch-btn {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-family: Lucida Console, Courier, monospace;
+  font-size: 13px;
+  font-weight: bold;
+  justify-content: center;
+  pointer-events: all;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.touch-btn:active,
+.touch-btn.pressed {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.touch-btn-up    { grid-area: up; }
+.touch-btn-down  { grid-area: down; }
+.touch-btn-left  { grid-area: left; }
+.touch-btn-right { grid-area: right; }
+.touch-btn-fire      { grid-area: fire; background: rgba(220, 50, 50, 0.25); border-color: rgba(220, 80, 80, 0.6); }
+.touch-btn-secondary { grid-area: sec; }
+.touch-btn-select    { grid-area: sel; }
+.touch-btn-back      { grid-area: back; }

@@ -99,3 +99,28 @@ export class GamepadButtonCodePresenter implements InputButtonCodePresenter {
     return `GP[${code}]`;
   }
 }
+
+export class TouchButtonCodePresenter implements InputButtonCodePresenter {
+  public asString(code: number): string {
+    switch (code) {
+      case 2000:
+        return 'TOUCH UP';
+      case 2001:
+        return 'TOUCH DOWN';
+      case 2002:
+        return 'TOUCH LEFT';
+      case 2003:
+        return 'TOUCH RIGHT';
+      case 2004:
+        return 'TOUCH FIRE';
+      case 2005:
+        return 'TOUCH SEC';
+      case 2006:
+        return 'TOUCH START';
+      case 2007:
+        return 'TOUCH BACK';
+    }
+
+    return `TOUCH[${code}]`;
+  }
+}

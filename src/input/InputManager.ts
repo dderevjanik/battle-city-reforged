@@ -5,17 +5,19 @@ import { InputBinding } from '../core/input/InputBinding';
 import { InputDevice } from '../core/input/InputDevice';
 import { InputMethod } from '../core/input/InputMethod';
 import { KeyboardInputDevice } from '../core/input/KeyboardInputDevice';
+import { TouchInputDevice } from '../core/input/TouchInputDevice';
 import { GameStorage } from '../game/GameStorage';
 import * as config from '../config';
 
 import { PrimaryGamepadInputBinding } from './InputBindings';
 import { PrimaryKeyboardInputBinding } from './InputBindings';
+import { PrimaryTouchInputBinding } from './InputBindings';
 import { QuaternaryKeyboardInputBinding } from './InputBindings';
 import { QuinaryKeyboardInputBinding } from './InputBindings';
 import { SecondaryGamepadInputBinding } from './InputBindings';
 import { SecondaryKeyboardInputBinding } from './InputBindings';
 import { TertiaryKeyboardInputBinding } from './InputBindings';
-import { GamepadButtonCodePresenter, InputButtonCodePresenter, KeyboardButtonCodePresenter } from './InputButtonCodePresenters';
+import { GamepadButtonCodePresenter, InputButtonCodePresenter, KeyboardButtonCodePresenter, TouchButtonCodePresenter } from './InputButtonCodePresenters';
 import { InputBindingType } from './InputBindingType';
 import { InputControl } from './InputControl';
 import { InputDeviceType } from './InputDeviceType';
@@ -26,6 +28,7 @@ export class InputManager {
   private bindings = new Map<InputBindingType, InputBinding>();
   private presenters = new Map<InputDeviceType, InputButtonCodePresenter>();
   private storage: GameStorage;
+  private touchDevice: TouchInputDevice | null = null;
   // Active device is always the one last interacted with. Use it only for
   // single-player interactions. It might be helpful when user for example
   // was playing on keyboard and then started pressing buttons on gamepad -
@@ -106,11 +109,36 @@ export class InputManager {
       new GamepadInputDevice(gamepad, 1),
     ]);
 
+    // Re-register touch device after scene transition (deviceMap was rebuilt)
+    if (this.touchDevice !== null) {
+      this.deviceMap.set(InputDeviceType.Touch, [this.touchDevice]);
+    }
+
     if (this.activeDeviceType === null && this.deviceMap.size > 0) {
       this.activeDeviceType = Array.from(this.deviceMap.keys())[0];
     }
 
     this.listen();
+  }
+
+  /**
+   * Call once after the Phaser game canvas has been created.
+   * Initialises the touch virtual gamepad overlay and registers it as a device.
+   */
+  public initTouchDevice(): void {
+    const device = new TouchInputDevice();
+    this.touchDevice = device;
+
+    this.deviceMap.set(InputDeviceType.Touch, [device]);
+
+    this.bindings.set(
+      InputBindingType.PrimaryTouch,
+      new PrimaryTouchInputBinding(),
+    );
+
+    this.presenters.set(InputDeviceType.Touch, new TouchButtonCodePresenter());
+
+    device.listen();
   }
 
   public getBinding(bindingType: InputBindingType): InputBinding {

@@ -60,6 +60,8 @@ export class InputBindingType {
         return '0';
       case InputDeviceType.Gamepad:
         return '1';
+      case InputDeviceType.Touch:
+        return '2';
     }
     return '?';
   }
@@ -97,5 +99,10 @@ export class InputBindingType {
   public static QuinaryKeyboard = new InputBindingType(
     4,
     InputDeviceType.Keyboard,
+  );
+
+  public static PrimaryTouch = new InputBindingType(
+    0,
+    InputDeviceType.Touch,
   );
 }

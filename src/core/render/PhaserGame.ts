@@ -20,5 +20,9 @@ export function createPhaserGame(options: PhaserGameOptions): Phaser.Game {
     audio: { disableWebAudio: false },
     input: { gamepad: true },
     parent: options.parent,
+    scale: {
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.NO_CENTER,
+    },
   });
 }

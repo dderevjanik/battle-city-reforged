@@ -35,6 +35,22 @@ export class DifficultyModifier {
           }
         }
       }
+
+      // Convert 2nd remaining fast enemy into fast_bomber
+      let fastCount = 0;
+      const hardListAfter = mapConfig.getEnemySpawnList();
+      for (let i = 0; i < hardListAfter.length; i += 1) {
+        if (hardListAfter[i].kind === TankKind.Fast) {
+          fastCount += 1;
+          if (fastCount === 2) {
+            mapConfig.setEnemySpawnListItem(
+              i,
+              hardListAfter[i].clone().increaseKind(TankKind.FastBomber),
+            );
+            break;
+          }
+        }
+      }
     }
 
     if (difficulty === Difficulty.Extreme) {
@@ -57,6 +73,27 @@ export class DifficultyModifier {
               i,
               extremeList[i].clone().increaseKind(TankKind.Heavy),
             );
+          }
+        }
+      }
+
+      // Convert 2nd remaining fast → fast_bomber, 3rd remaining fast → fast_armored
+      let extremeFastCount = 0;
+      const extremeListAfter = mapConfig.getEnemySpawnList();
+      for (let i = 0; i < extremeListAfter.length; i += 1) {
+        if (extremeListAfter[i].kind === TankKind.Fast) {
+          extremeFastCount += 1;
+          if (extremeFastCount === 2) {
+            mapConfig.setEnemySpawnListItem(
+              i,
+              extremeListAfter[i].clone().increaseKind(TankKind.FastBomber),
+            );
+          } else if (extremeFastCount === 3) {
+            mapConfig.setEnemySpawnListItem(
+              i,
+              extremeListAfter[i].clone().increaseKind(TankKind.FastArmored),
+            );
+            break;
           }
         }
       }

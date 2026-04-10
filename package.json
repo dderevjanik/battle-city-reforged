@@ -5,9 +5,7 @@
   },
   "scripts": {
     "start": "vite --open",
-    "build:dev": "vite build --mode development",
     "build:prod": "vite build",
-    "start:prod": "vite preview --open",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

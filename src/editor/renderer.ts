@@ -32,6 +32,10 @@ export function resizeCanvas(): void {
 }
 
 export function centerView(): void {
+  const padding = 40;
+  const scaleX  = (canvas.width  - padding * 2) / FIELD;
+  const scaleY  = (canvas.height - padding * 2) / FIELD;
+  state.zoom    = Math.min(scaleX, scaleY, 1);
   const fs      = FIELD * state.zoom;
   state.panX    = (canvas.width  - fs) / 2;
   state.panY    = (canvas.height - fs) / 2;
@@ -120,6 +124,8 @@ export function render(): void {
   // ── Brush preview ──
   if (state.mode === 'terrain' && !state.isPanning) drawBrushPreview();
   if (state.mode === 'base-spawn' && !state.isPanning) drawBasePreview();
+  if (state.mode === 'player-spawn' && !state.isPanning) drawSpawnPreview('#1f6feb', SRECTS.playerTank);
+  if (state.mode === 'enemy-spawn' && !state.isPanning) drawSpawnPreview('#da3633', SRECTS.enemyTank);
 }
 
 function drawGridLines(tileSize: number, color: string, lw: number): void {
@@ -226,6 +232,31 @@ function drawBasePreview(): void {
     ctx.strokeStyle = '#e3b341';
     ctx.lineWidth   = 2;
     ctx.strokeRect(p.x, p.y, sz, sz);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawSpawnPreview(color: string, sprRect: [number, number, number, number]): void {
+  const sx  = Math.floor(state.mouseWX / TL) * TL;
+  const sy  = Math.floor(state.mouseWY / TL) * TL;
+  const p   = w2c(sx, sy);
+  const sz  = TL * state.zoom;
+  const mid = { x: p.x + sz / 2, y: p.y + sz / 2 };
+
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  ctx.arc(mid.x, mid.y, sz * 0.45, 0, Math.PI * 2);
+  ctx.fillStyle   = color + '44';
+  ctx.fill();
+  ctx.strokeStyle = color + 'cc';
+  ctx.lineWidth   = 1.5;
+  ctx.stroke();
+
+  if (spriteReady && spriteImg) {
+    const sw = sprRect[2], sh = sprRect[3];
+    const dw = sw * state.zoom, dh = sh * state.zoom;
+    ctx.drawImage(spriteImg, sprRect[0], sprRect[1], sw, sh,
+      p.x + (sz - dw) / 2, p.y + (sz - dh) / 2, dw, dh);
   }
   ctx.globalAlpha = 1;
 }

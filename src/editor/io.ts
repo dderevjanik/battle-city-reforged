@@ -16,18 +16,9 @@ function setInputValue(id: string, v: string | number): void {
   if (el) el.value = String(v);
 }
 
-function getTilesetValue(): string {
-  return (document.getElementById('sel-tileset') as HTMLSelectElement | null)?.value ?? 'classic';
-}
-
-function setTilesetValue(v: string): void {
-  const el = document.getElementById('sel-tileset') as HTMLSelectElement | null;
-  if (el) el.value = v;
-}
-
 export function buildMapDto(): MapDto {
   return {
-    tileset: getTilesetValue(),
+    tileset: 'classic',
     width:   832,
     height:  832,
     spawn: {
@@ -53,8 +44,6 @@ export function buildMapDto(): MapDto {
 }
 
 export function loadDto(dto: MapDto): void {
-  if (dto.tileset) setTilesetValue(dto.tileset);
-
   regionsToGrid(dto.terrain?.regions ?? []);
 
   state.playerSpawns = ((dto.spawn?.player?.locations ?? DEF_PLAYER) as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
@@ -105,7 +94,6 @@ export function newMap(): void {
   state.enemyList    = Array.from({ length: 20 }, () => ({ type: 'basic', ai: 'classic', drop: '' }));
   setInputValue('inp-delay', 3);
   setInputValue('inp-alive', 4);
-  setTilesetValue('classic');
   refreshSpawnLists();
   buildEnemyRows();
   pushHistory();

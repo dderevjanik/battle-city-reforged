@@ -71,8 +71,10 @@
     .spawn-del     { background: none; border: 1px solid #6e7681; color: #6e7681; padding: 1px 5px; cursor: pointer; font-size: 9px; }
     .spawn-del:hover { border-color: #f85149; color: #f85149; }
 
-    .enemy-header { display: grid; grid-template-columns: 20px 1fr 1fr 1fr; gap: 2px; font-size: 9px; color: #6e7681; margin-bottom: 3px; }
-    .enemy-row    { display: grid; grid-template-columns: 20px 1fr 1fr 1fr; gap: 2px; margin-bottom: 2px; align-items: center; }
+    .enemy-header { display: grid; grid-template-columns: 20px 1fr 1fr 1fr 18px; gap: 2px; font-size: 9px; color: #6e7681; margin-bottom: 3px; }
+    .enemy-row    { display: grid; grid-template-columns: 20px 1fr 1fr 1fr 18px; gap: 2px; margin-bottom: 2px; align-items: center; }
+    .enemy-del    { background: none; border: 1px solid #6e7681; color: #6e7681; padding: 0; cursor: pointer; font-size: 9px; line-height: 14px; width: 16px; height: 16px; text-align: center; }
+    .enemy-del:hover { border-color: #f85149; color: #f85149; }
     .enemy-num    { color: #6e7681; font-size: 9px; text-align: right; }
     .enemy-row select { background: #0d1117; border: 1px solid #21262d; color: #c9d1d9; padding: 2px; font: inherit; font-size: 9px; margin-bottom: 0; width: 100%; }
 
@@ -87,19 +89,18 @@
     <span class="t-title">BCR EDITOR</span>
     <div class="t-sep"></div>
     <button class="t-btn" id="btn-new">New</button>
-    <button class="t-btn" id="btn-load">Load</button>
-    <button class="t-btn" id="btn-browse">Browse</button>
+    <div style="position:relative; display:inline-block;">
+      <button class="t-btn" id="btn-load-menu">Load ▾</button>
+      <div id="load-dropdown" style="display:none; position:absolute; top:100%; left:0; margin-top:2px; background:#21262d; border:1px solid #30363d; z-index:100; min-width:140px;">
+        <button class="t-btn" id="btn-load" style="display:block; width:100%; text-align:left; border:none; border-bottom:1px solid #30363d;">From Computer</button>
+        <button class="t-btn" id="btn-browse" style="display:block; width:100%; text-align:left; border:none;">Existing Level</button>
+      </div>
+    </div>
     <button class="t-btn" id="btn-save">Save</button>
     <button class="t-btn" id="btn-test" title="Open map in game (new tab)" style="color:#3fb950;">▶ Test</button>
     <div class="t-sep"></div>
     <button class="t-btn" id="btn-undo" title="Ctrl+Z">Undo</button>
     <button class="t-btn" id="btn-redo" title="Ctrl+Y">Redo</button>
-    <div class="t-sep"></div>
-    <span class="t-label">Tileset</span>
-    <select class="t-select" id="sel-tileset">
-      <option value="classic">Classic</option>
-      <option value="modern">Modern</option>
-    </select>
     <div class="t-sep"></div>
     <button class="t-btn" id="btn-grid">Grid ON</button>
     <button class="t-btn" id="btn-center">Center</button>
@@ -143,20 +144,16 @@
       <input  class="field-inp" type="number" id="inp-alive" value="4" min="1" max="6">
     </div>
 
-    <div class="panel-sec">
-      <h3>Player Spawns <span style="font-weight:normal;color:#6e7681;">(click map)</span></h3>
-      <div id="list-player-spawns"></div>
-    </div>
-
-    <div class="panel-sec">
-      <h3>Enemy Spawns <span style="font-weight:normal;color:#6e7681;">(click map)</span></h3>
-      <div id="list-enemy-spawns"></div>
-    </div>
+    <div id="list-player-spawns" style="display:none;"></div>
+    <div id="list-enemy-spawns" style="display:none;"></div>
 
     <div class="panel-sec" style="flex:1; display:flex; flex-direction:column; min-height:0;">
-      <h3>Enemy List (20 slots)</h3>
+      <h3 style="display:flex; align-items:center;">
+        <span style="flex:1;">Enemy List</span>
+        <button class="spawn-del" id="btn-enemy-add" title="Add enemy" style="font-size:11px;padding:1px 6px;border-color:#3fb950;color:#3fb950;">+</button>
+      </h3>
       <div class="enemy-header">
-        <div></div><div>Type</div><div>AI</div><div>Drop</div>
+        <div></div><div>Type</div><div>AI</div><div>Drop</div><div></div>
       </div>
       <div id="enemy-list" style="overflow-y:auto; flex:1;"></div>
     </div>

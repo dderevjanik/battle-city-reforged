@@ -3,7 +3,7 @@ import { paint } from './grid';
 import { stepUndo, stepRedo, pushHistory } from './history';
 import { render, resizeCanvas, centerView, c2w, w2c } from './renderer';
 import { state } from './state';
-import { selectBrush, setMode, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus } from './ui';
+import { selectBrush, setMode, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus, addEnemy } from './ui';
 import { newMap, saveMap, openFile, onFileSelected, testMap, openMapBrowser } from './io';
 import type { SpawnPoint } from './types';
 
@@ -175,8 +175,6 @@ function cycleBrushGroup(start: number, count: number): void {
 // ── Toolbar buttons ───────────────────────────────
 export function bindToolbar(): void {
   document.getElementById('btn-new')?.addEventListener('click', newMap);
-  document.getElementById('btn-load')?.addEventListener('click', openFile);
-  document.getElementById('btn-browse')?.addEventListener('click', openMapBrowser);
   document.getElementById('btn-save')?.addEventListener('click', saveMap);
   document.getElementById('btn-test')?.addEventListener('click', testMap);
   document.getElementById('btn-undo')?.addEventListener('click', () => { stepUndo(); refreshSpawnLists(); render(); });
@@ -184,10 +182,33 @@ export function bindToolbar(): void {
   document.getElementById('btn-grid')?.addEventListener('click', toggleGrid);
   document.getElementById('btn-center')?.addEventListener('click', () => { centerView(); render(); });
 
+  // Load dropdown menu
+  const loadMenuBtn = document.getElementById('btn-load-menu');
+  const loadDropdown = document.getElementById('load-dropdown');
+  loadMenuBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const shown = loadDropdown!.style.display !== 'none';
+    loadDropdown!.style.display = shown ? 'none' : 'block';
+  });
+  document.getElementById('btn-load')?.addEventListener('click', () => {
+    loadDropdown!.style.display = 'none';
+    openFile();
+  });
+  document.getElementById('btn-browse')?.addEventListener('click', () => {
+    loadDropdown!.style.display = 'none';
+    openMapBrowser();
+  });
+  document.addEventListener('click', () => {
+    if (loadDropdown) loadDropdown.style.display = 'none';
+  });
+
   document.getElementById('mode-terrain')?.addEventListener('click', () => setMode('terrain'));
   document.getElementById('mode-player-spawn')?.addEventListener('click', () => setMode('player-spawn'));
   document.getElementById('mode-enemy-spawn')?.addEventListener('click', () => setMode('enemy-spawn'));
   document.getElementById('mode-base-spawn')?.addEventListener('click', () => setMode('base-spawn'));
+
+  // Enemy list add
+  document.getElementById('btn-enemy-add')?.addEventListener('click', addEnemy);
 
   document.getElementById('file-input')?.addEventListener('change', onFileSelected);
 }

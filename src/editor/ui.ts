@@ -63,6 +63,12 @@ export function setMode(m: EditorMode): void {
     document.getElementById(`mode-${id}`)?.classList.remove('active'),
   );
   document.getElementById(`mode-${m}`)?.classList.add('active');
+
+  if (m !== 'terrain') {
+    document.getElementById(`brush-${state.brushIdx}`)?.classList.remove('active');
+  } else {
+    document.getElementById(`brush-${state.brushIdx}`)?.classList.add('active');
+  }
 }
 
 // ── Grid toggle ───────────────────────────────────
@@ -78,7 +84,7 @@ export function buildEnemyRows(): void {
   const el = document.getElementById('enemy-list')!;
   el.innerHTML = '';
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < state.enemyList.length; i++) {
     const row     = document.createElement('div');
     row.className = 'enemy-row';
 
@@ -99,21 +105,35 @@ export function buildEnemyRows(): void {
       return s;
     };
 
+    const del = document.createElement('button');
+    del.className   = 'enemy-del';
+    del.textContent = '×';
+    del.title       = 'Remove';
+    del.addEventListener('click', () => removeEnemy(idx));
+
     row.appendChild(num);
     row.appendChild(mkSel(typeOpts, state.enemyList[idx].type, v => { state.enemyList[idx].type = v; }));
     row.appendChild(mkSel(aiOpts,   state.enemyList[idx].ai,   v => { state.enemyList[idx].ai   = v; }));
     row.appendChild(mkSel(dropOpts, state.enemyList[idx].drop, v => { state.enemyList[idx].drop = v; }));
+    row.appendChild(del);
     el.appendChild(row);
   }
 }
 
+export function addEnemy(): void {
+  state.enemyList.push({ type: 'basic', ai: 'classic', drop: '' });
+  buildEnemyRows();
+}
+
+export function removeEnemy(index?: number): void {
+  if (state.enemyList.length <= 1) return;
+  if (index !== undefined) state.enemyList.splice(index, 1);
+  else state.enemyList.pop();
+  buildEnemyRows();
+}
+
 export function syncEnemyRows(): void {
-  document.querySelectorAll('#enemy-list .enemy-row').forEach((row, i) => {
-    const sels = row.querySelectorAll('select');
-    (sels[0] as HTMLSelectElement).value = state.enemyList[i].type;
-    (sels[1] as HTMLSelectElement).value = state.enemyList[i].ai;
-    (sels[2] as HTMLSelectElement).value = state.enemyList[i].drop;
-  });
+  buildEnemyRows();
 }
 
 // ── Spawn lists ───────────────────────────────────
@@ -193,9 +213,3 @@ export function updateZoomStatus(): void {
   if (el) el.textContent = `Zoom: ${Math.round(state.zoom * 100)}%`;
 }
 
-// ── Wire toolbar buttons ──────────────────────────
-export function wireModeButtons(): void {
-  document.getElementById('mode-terrain')?.addEventListener('click', () => setMode('terrain'));
-  document.getElementById('mode-player-spawn')?.addEventListener('click', () => setMode('player-spawn'));
-  document.getElementById('mode-enemy-spawn')?.addEventListener('click', () => setMode('enemy-spawn'));
-}

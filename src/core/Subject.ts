@@ -1,27 +1,36 @@
-import * as Phaser from 'phaser';
-
-const EVENT_KEY = 'e';
+type Listener<T> = (event: T) => void;
 
 export class Subject<T> {
-  private emitter = new Phaser.Events.EventEmitter();
+  private listeners: Listener<T>[] = [];
+  private onceSet = new Set<Listener<T>>();
 
-  public addListener(listener: (event: T) => void): () => void {
-    this.emitter.on(EVENT_KEY, listener);
-    return () => this.emitter.off(EVENT_KEY, listener);
+  public addListener(listener: Listener<T>): () => void {
+    this.listeners.push(listener);
+    return () => this.removeListener(listener);
   }
 
-  public addListenerOnce(listener: (event: T) => void): () => void {
-    this.emitter.once(EVENT_KEY, listener);
-    return () => this.emitter.off(EVENT_KEY, listener);
+  public addListenerOnce(listener: Listener<T>): () => void {
+    this.onceSet.add(listener);
+    this.listeners.push(listener);
+    return () => this.removeListener(listener);
   }
 
-  public removeListener(listener: (event: T) => void): this {
-    this.emitter.off(EVENT_KEY, listener);
+  public removeListener(listener: Listener<T>): this {
+    const idx = this.listeners.indexOf(listener);
+    if (idx !== -1) this.listeners.splice(idx, 1);
+    this.onceSet.delete(listener);
     return this;
   }
 
   public notify = (event: T): this => {
-    this.emitter.emit(EVENT_KEY, event);
+    // Snapshot to allow listener removal during iteration
+    const snapshot = this.listeners.slice();
+    for (const fn of snapshot) {
+      fn(event);
+      if (this.onceSet.has(fn)) {
+        this.removeListener(fn);
+      }
+    }
     return this;
   };
 }

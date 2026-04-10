@@ -569,8 +569,22 @@ export class GameObject {
    * Called once per frame from GameScene after world matrices are updated.
    * Assumes worldBoundingBox, worldVisible, and worldZIndex are up to date.
    */
+  /**
+   * When true, this object's rendering is handled by a SpriteGPULayer instead
+   * of the per-object Phaser Container/Image pipeline.
+   */
+  public gpuRendered = false;
+
   public _syncPainter(): void {
     if (_rendererScene === null) return;
+    if (this.gpuRendered) {
+      // Clean up the per-object Phaser node if it was created before GPU takeover
+      if (this._phaserNode !== null) {
+        this._phaserNode.destroy(true);
+        this._phaserNode = null;
+      }
+      return;
+    }
 
     // Lazily create, or recreate if the container was destroyed by a scene transition
     if (this._phaserNode === null || !this._phaserNode.active) {
@@ -724,6 +738,7 @@ export class GameObject {
   }
 
   private _spriteTextVersion = -1;
+  private _spriteTextColor: string | null = null;
 
   private _syncSpriteTextPainter(
     phaserNode: Phaser.GameObjects.Container,
@@ -743,6 +758,7 @@ export class GameObject {
     if (
       textContainer !== null &&
       this._spriteTextVersion === currentVersion &&
+      this._spriteTextColor === painter.color &&
       textContainer.list.length === glyphs.length
     ) {
       return;
@@ -763,6 +779,9 @@ export class GameObject {
       const last = textContainer.list[textContainer.list.length - 1] as Phaser.GameObjects.Image;
       textContainer.remove(last, true);
     }
+
+    // Resolve tint color once for the whole text block
+    const tintColor = painter.color !== null ? cssColorToHex(painter.color) : null;
 
     for (let i = 0; i < glyphs.length; i++) {
       const glyph = glyphs[i];
@@ -787,12 +806,21 @@ export class GameObject {
         }
       }
 
+      // Apply FILL tint for font color (replaces canvas-based font recoloring)
+      if (tintColor !== null) {
+        phaserGlyph.setTint(tintColor);
+        phaserGlyph.setTintMode(Phaser.TintModes.FILL);
+      } else {
+        phaserGlyph.clearTint();
+      }
+
       phaserGlyph.setPosition(glyph.destinationRect.x, glyph.destinationRect.y);
       phaserGlyph.setDisplaySize(glyph.destinationRect.width, glyph.destinationRect.height);
     }
 
     textContainer.setAlpha(painter.opacity);
     this._spriteTextVersion = currentVersion;
+    this._spriteTextColor = painter.color;
   }
 
   // --- Game lifecycle ---

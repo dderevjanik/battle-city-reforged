@@ -8,6 +8,8 @@ import { LevelProgressManager } from '../../progress/LevelProgressManager';
 import { PowerupType } from '../../powerup/PowerupType';
 import { TankDeathReason } from '../../tank/TankTypes';
 import { TerrainFactory } from '../../terrain/TerrainFactory';
+import { TerrainGPULayer } from '../../terrain/TerrainGPULayer';
+import { TerrainTile } from '../../gameObjects/TerrainTile';
 import * as config from '../../config';
 
 import { LevelEventBus } from '../../level/LevelEventBus';
@@ -52,6 +54,10 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private allScripts: LevelScript[] = [];
   private alwaysUpdateScripts: LevelScript[] = [];
   private playingUpdateScripts: LevelScript[] = [];
+
+  private terrainGPULayer: TerrainGPULayer | null = null;
+  private terrainTiles: TerrainTile[] = [];
+  private gpuLayerInitialized = false;
 
   private audioScript!: LevelAudioScript;
   private baseScript!: LevelBaseScript;
@@ -111,6 +117,8 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     }
 
     this.world.field.add(...tiles);
+    this.terrainTiles = tiles;
+    this.terrainGPULayer = new TerrainGPULayer(this);
 
     this.audioScript = new LevelAudioScript();
     this.baseScript = new LevelBaseScript();
@@ -257,6 +265,13 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     }
 
     collisionSystem.collide();
+
+    // Initialize GPU terrain layer after the first update frame, when all
+    // tile setup() methods have run and sprites are loaded.
+    if (!this.gpuLayerInitialized && this.terrainGPULayer) {
+      this.gpuLayerInitialized = true;
+      this.terrainGPULayer.initFromTiles(this.terrainTiles);
+    }
   }
 
   private handlePlayerDied = (event: LevelPlayerDiedEvent): void => {

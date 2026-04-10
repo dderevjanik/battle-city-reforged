@@ -19,6 +19,8 @@ let _canvasIdCounter = 0;
 let _canvasTextureCache = new Map<string, string>();
 let _canvasDimensionCache = new Map<number, { w: number; h: number }>();
 let _canvasTextureUpdated = new Set<string>();
+// Use a module-level counter that persists across scene transitions to avoid
+// colliding with texture keys already registered in Phaser's global TextureManager.
 let _fallbackTextureCounter = 0;
 
 /**
@@ -34,7 +36,8 @@ export function initRenderer(scene: Phaser.Scene, manifest: SpriteManifest): voi
   _canvasTextureCache = new Map();
   _canvasDimensionCache = new Map();
   _canvasTextureUpdated = new Set();
-  _fallbackTextureCounter = 0;
+  // NOTE: _fallbackTextureCounter is intentionally NOT reset — Phaser's
+  // TextureManager is global and keeps textures across scene transitions.
 
   for (const [id, item] of Object.entries(manifest)) {
     const absoluteUrl = new URL(item.file, window.location.href).href;
@@ -116,6 +119,21 @@ export function ensureCanvasTexture(
   }
   _canvasTextureCache.set(cacheKey, baseKey);
   return { textureKey: baseKey, frameKey };
+}
+
+/**
+ * Resolve a Sprite's source image and rect to Phaser texture/frame keys.
+ * Used by SpriteGPULayer to identify frames without going through the
+ * full _syncPainter pipeline.
+ */
+export function resolveSpriteFrame(
+  sprite: { image: { getElement(): CanvasImageSource }; sourceRect: Rect },
+): { textureKey: string; frameKey: string } | null {
+  const element = sprite.image.getElement();
+  if (!(element instanceof HTMLImageElement)) return null;
+  const textureKey = getOrCreateTextureKey(element);
+  const frameKey = getOrCreateFrameKey(textureKey, sprite.sourceRect);
+  return { textureKey, frameKey };
 }
 
 export function cssColorToHex(color: string): number {

@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 // Extends Phaser.Math.Vector2 so Vector instances are compatible with any
 // Phaser API that expects a Vector2 (physics bodies, tweens, etc.).

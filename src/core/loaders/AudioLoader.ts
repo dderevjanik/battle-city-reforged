@@ -1,5 +1,5 @@
 import Ajv from 'ajv';
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 import { Logger } from '../Logger';
 import { Sound } from '../Sound';

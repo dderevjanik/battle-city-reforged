@@ -9,9 +9,11 @@ export class DebugSettings {
   }
 
   public getDevPanelEnabled(): boolean {
-    return this.storage.getBoolean(
-      config.STORAGE_KEY_SETTINGS_DEV_PANEL_ENABLED,
-      false,
+    return (
+      this.storage.getBoolean(
+        config.STORAGE_KEY_SETTINGS_DEV_PANEL_ENABLED,
+        false,
+      ) ?? false
     );
   }
 

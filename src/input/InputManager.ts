@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 import { GamepadInputDevice } from '../core/input/GamepadInputDevice';
 import { InputBinding } from '../core/input/InputBinding';

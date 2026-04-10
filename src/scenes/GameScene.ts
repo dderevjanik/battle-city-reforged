@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 import { GameObject, initRenderer } from '../core/GameObject';
 import { setActiveScene } from '../core/scene/ActiveScene';

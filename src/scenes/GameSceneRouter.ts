@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 import { SceneNavigator, SceneParams } from '../core/scene/Scene';
 

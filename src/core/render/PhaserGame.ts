@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 import { BridgeScene } from './BridgeScene';
 
@@ -16,6 +16,7 @@ export function createPhaserGame(options: PhaserGameOptions): Phaser.Game {
     backgroundColor: '#000000',
     antialias: false,
     pixelArt: true,
+    roundPixels: true,
     scene: [BridgeScene],
     audio: { disableWebAudio: false },
     input: { gamepad: true },

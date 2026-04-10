@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 import { GameContext } from '../../game/GameUpdateArgs';
 import { LevelControlsScene } from '../../scenes/level/LevelControlsScene';

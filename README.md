@@ -16,7 +16,7 @@ Project is not commercial and was created for learning purposes only.
 
 - Up to 4 players on one PC (original supported 2)
 - 3 difficulty levels: Classic, Hard, Extreme
-- 17 unlockable achievements
+- 17 unlockable achievements (based on [RetroAchievements](https://retroachievements.org/game/2420))
 - Full level editor with JSON save/load
 - Custom maps mode
 - Gun powerup with instant max-tier upgrade and rare weighted spawning
@@ -38,7 +38,7 @@ Project is not commercial and was created for learning purposes only.
 - 7 powerups with weighted spawn distribution
 - 6 tank types (Basic, Fast, Fast Armored, Fast Bomber, Medium, Heavy)
 - Multiple enemy AI behaviors
-- 17 achievements
+- 17 achievements (based on [RetroAchievements](https://retroachievements.org/game/2420))
 - Level editor with save/load
 - Custom maps mode
 - Demo mode

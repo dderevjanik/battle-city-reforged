@@ -1,8 +1,10 @@
+import Ajv from 'ajv';
 import Phaser from 'phaser';
 
 import { Logger } from '../Logger';
 import { Sound } from '../Sound';
 import { Subject } from '../Subject';
+import audioSchema from '../../../data/audio.schema.json';
 
 interface AudioManifestItem {
   file: string;
@@ -11,6 +13,8 @@ interface AudioManifestItem {
 interface AudioManifest {
   [id: string]: AudioManifestItem;
 }
+
+const validateAudioManifest = new Ajv().compile<AudioManifest>(audioSchema);
 
 export class AudioLoader {
   public loaded = new Subject<Sound>();
@@ -23,6 +27,11 @@ export class AudioLoader {
   private readonly manifest: AudioManifest;
 
   constructor(manifest: AudioManifest) {
+    if (!validateAudioManifest(manifest)) {
+      throw new Error(
+        `Invalid audio manifest: ${new Ajv().errorsText(validateAudioManifest.errors)}`,
+      );
+    }
     this.manifest = manifest;
   }
 

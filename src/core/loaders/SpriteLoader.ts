@@ -1,8 +1,13 @@
+import Ajv from 'ajv';
+
 import { Sprite } from '../graphics/Sprite';
 
 import { Rect } from '../Rect';
 
+import spriteSchema from '../../../data/sprite.schema.json';
 import { ImageLoader } from './ImageLoader';
+
+const validateSpriteManifest = new Ajv().compile<SpriteManifest>(spriteSchema);
 
 interface SpriteManifestItem {
   file: string;
@@ -31,6 +36,11 @@ export class SpriteLoader {
     manifest: SpriteManifest,
     options: SpriteLoaderOptions = {},
   ) {
+    if (!validateSpriteManifest(manifest)) {
+      throw new Error(
+        `Invalid sprite manifest: ${new Ajv().errorsText(validateSpriteManifest.errors)}`,
+      );
+    }
     this.imageLoader = imageLoader;
     this.manifest = manifest;
     this.options = Object.assign({}, DEFAULT_OPTIONS, options);

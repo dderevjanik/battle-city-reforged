@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "audio.schema.json",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "required": ["file"],
+    "additionalProperties": false,
+    "properties": {
+      "file": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

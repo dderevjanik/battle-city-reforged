@@ -1,5 +1,8 @@
+import Ajv from 'ajv';
+
 import { Subject } from '../core/Subject';
 
+import mapManifestSchema from '../../data/map-manifest.schema.json';
 import { MapConfig } from './MapConfig';
 import { MapFileReader } from './MapFileReader';
 
@@ -65,6 +68,8 @@ interface MapManifest {
   list: MapManifestListItem[];
 }
 
+const validateMapManifest = new Ajv().compile<MapManifest>(mapManifestSchema);
+
 // Used to load out-of-the-box maps.
 // Reads map list from JSON manifest. Maps are loaded over HTTP.
 export class ManifestMapListReader extends MapListReader {
@@ -73,6 +78,11 @@ export class ManifestMapListReader extends MapListReader {
   constructor(manifest: MapManifest) {
     super();
 
+    if (!validateMapManifest(manifest)) {
+      throw new Error(
+        `Invalid map manifest: ${new Ajv().errorsText(validateMapManifest.errors)}`,
+      );
+    }
     this.manifest = manifest;
   }
 

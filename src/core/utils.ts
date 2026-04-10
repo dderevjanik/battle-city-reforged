@@ -48,8 +48,8 @@ export class MathUtils {
 }
 
 export class ArrayUtils {
-  public static flatten(array: any[]): any[] {
-    let result: any[] = [];
+  public static flatten<T>(array: (T | T[])[]): T[] {
+    let result: T[] = [];
 
     array.forEach((item) => {
       if (Array.isArray(item)) {

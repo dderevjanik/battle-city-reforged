@@ -15,17 +15,18 @@ export class TextFileReader<T = string> {
     fileReader.readAsText(file);
   }
 
-  protected onLoad(ev: any): void {
-    const text = ev.target.result as T;
+  protected onLoad(ev: ProgressEvent<FileReader>): void {
+    const text = (ev.target as FileReader).result as T;
     this.loaded.notify(text);
   }
 
-  protected throwError(err: any): void {
-    this.log.error('Error:', err);
-    this.error.notify(err);
+  protected throwError(err: unknown): void {
+    const error = err instanceof Error ? err : new Error(String(err));
+    this.log.error('Error:', error);
+    this.error.notify(error);
   }
 
-  private handleLoad = (ev: any): void => {
+  private handleLoad = (ev: ProgressEvent<FileReader>): void => {
     this.onLoad(ev);
   };
 

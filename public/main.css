@@ -44,7 +44,7 @@ canvas {
 .touch-actions {
   display: grid;
   gap: 4px;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .touch-dpad {

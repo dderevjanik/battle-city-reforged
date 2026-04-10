@@ -25,11 +25,11 @@ export class State<T> {
     return this;
   }
 
-  public is(value: any): boolean {
+  public is(value: T): boolean {
     return this.value === value;
   }
 
-  public not(value: any): boolean {
+  public not(value: T): boolean {
     return this.value !== value;
   }
   public hasChanged(): boolean {

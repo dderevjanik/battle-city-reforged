@@ -50,14 +50,14 @@ export class GameObject {
   public removedChildren: this[] = [];
   public isRemoved = false;
 
-  public add(...childrenToAdd: any[]): this {
+  public add(...childrenToAdd: GameObject[]): this {
     for (const childToAdd of childrenToAdd) {
       if (childToAdd.parent !== null) {
         childToAdd.parent.remove(childToAdd, false);
       }
 
       childToAdd.parent = this;
-      this.children.push(childToAdd);
+      this.children.push(childToAdd as this);
     }
 
     return this;
@@ -74,8 +74,8 @@ export class GameObject {
     return this;
   }
 
-  public remove(childToRemove: any, addToRemoved = true): boolean {
-    const index = this.children.indexOf(childToRemove);
+  public remove(childToRemove: GameObject, addToRemoved = true): boolean {
+    const index = this.children.indexOf(childToRemove as this);
 
     if (index === -1) {
       return false;
@@ -83,7 +83,7 @@ export class GameObject {
 
     if (addToRemoved) {
       childToRemove.isRemoved = true;
-      this.removedChildren.push(childToRemove);
+      this.removedChildren.push(childToRemove as this);
     }
 
     this.children.splice(index, 1);
@@ -803,7 +803,7 @@ export class GameObject {
 
   private needsSetup = true;
 
-  public invokeUpdate(context: any, deltaTime: number): void {
+  public invokeUpdate(context: unknown, deltaTime: number): void {
     if (this.needsSetup === true) {
       this.needsSetup = false;
       this.setup(context);
@@ -827,7 +827,7 @@ export class GameObject {
     return !this.needsSetup;
   }
 
-  protected setup(context: any): void {
+  protected setup(context: unknown): void {
     return undefined;
   }
 

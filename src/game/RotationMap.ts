@@ -13,7 +13,7 @@ export class RotationMap<T> {
     return this.map.get(this.round(rotation))!;
   }
 
-  public forEach(callbackFn: any): this {
+  public forEach(callbackFn: (value: T, rotation: Rotation) => void): this {
     this.map.forEach(callbackFn);
 
     return this;

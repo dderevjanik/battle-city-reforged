@@ -11,7 +11,7 @@ export class LevelScoreCounter extends GameObject {
   }
 
   protected setup(_ctx: GameContext): void {
-    this.title = new SpriteText('S:');
+    this.title = new SpriteText('S-');
 
     this.title.position.set(0, 0);
     this.add(this.title);

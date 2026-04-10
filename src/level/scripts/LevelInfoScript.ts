@@ -28,7 +28,7 @@ export class LevelInfoScript extends LevelScript {
 
     if (this.session.getPlayerCount() === 1) {
       this.scoreInfo = new LevelScoreInfo();
-      this.scoreInfo.position.set(0, 0);
+      this.scoreInfo.position.set(5, 0);
       this.world.sceneRoot.add(this.scoreInfo);
     }
 

@@ -1,6 +1,7 @@
 import { GameObject } from '../core/GameObject';
 import { Sound } from '../core/Sound';
 import { Subject } from '../core/Subject';
+import { assertNever } from '../core/assertNever';
 import { Collision } from '../core/collision/Collision';
 import { SweptBoxCollider } from '../core/collision/SweptBoxCollider';
 import { SpritePainter } from '../core/painters/SpritePainter';
@@ -232,7 +233,7 @@ export class Bullet extends GameObject {
       case Rotation.Right:
         return 'right';
       default:
-        return 'unknown';
+        return assertNever(rotation);
     }
   }
 }

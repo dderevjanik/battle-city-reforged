@@ -1,5 +1,6 @@
 import { Sprite } from '../core/graphics/Sprite';
 import { SpriteLoader } from '../core/loaders/SpriteLoader';
+import { assertNever } from '../core/assertNever';
 import { Rotation } from '../game/Rotation';
 import { PowerupType } from '../powerup/PowerupType';
 
@@ -79,7 +80,10 @@ export class TankType {
         break;
       case TankKind.Medium:
         this.kind = TankKind.Heavy;
-      default:
+        break;
+      case TankKind.Heavy:
+      case TankKind.FastArmored:
+      case TankKind.FastBomber:
         break;
     }
 
@@ -167,7 +171,7 @@ export class TankSpriteId {
       case Rotation.Right:
         return 'right';
       default:
-        return 'unknown';
+        return assertNever(rotation);
     }
   }
 }

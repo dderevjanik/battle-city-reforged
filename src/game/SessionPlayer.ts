@@ -27,12 +27,12 @@ export class SessionPlayer {
   public reset(): void {
     this.levelPointsRecord = new PointsRecord();
     this.gamePoints = 0;
-    this.lastGamePoints = null as null;
+    this.lastGamePoints = null;
     this.lives = config.PLAYER_INITIAL_LIVES;
     this.nextLifePointThreshold = config.PLAYER_EXTRA_LIVE_POINTS;
     this.tankKind = TankKind.Basic;
     this.levelFirstSpawned = true;
-    this.inputVariant = null as null;
+    this.inputVariant = null;
   }
 
   public addKillPoints(kind: TankKind): void {

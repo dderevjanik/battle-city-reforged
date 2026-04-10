@@ -51,29 +51,31 @@ export class GameStatsManager {
   }
 
   private merge(defaults: GameStats, saved: Record<string, unknown>): GameStats {
-    const result: Record<string, unknown> = { ...defaults };
+    const result = { ...defaults };
 
     for (const key of Object.keys(defaults) as (keyof GameStats)[]) {
       const savedVal = saved[key];
-      const defaultVal = defaults[key];
+      if (savedVal === undefined || savedVal === null) {
+        continue;
+      }
 
+      const defaultVal = defaults[key];
       if (
-        savedVal !== null &&
-        savedVal !== undefined &&
         typeof savedVal === 'object' &&
         !Array.isArray(savedVal) &&
         typeof defaultVal === 'object' &&
         !Array.isArray(defaultVal)
       ) {
-        result[key] = {
+        // Shallow-merge nested objects so new fields from defaults are preserved
+        (result as Record<string, unknown>)[key] = {
           ...(defaultVal as Record<string, unknown>),
           ...(savedVal as Record<string, unknown>),
         };
-      } else if (savedVal !== undefined && savedVal !== null) {
-        result[key] = savedVal;
+      } else {
+        (result as Record<string, unknown>)[key] = savedVal;
       }
     }
 
-    return result as unknown as GameStats;
+    return result;
   }
 }

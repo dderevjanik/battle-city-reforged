@@ -159,6 +159,6 @@ export class PowerupGrid {
       this.grid[rowIndex] = this.backupGrid[rowIndex].slice();
     }
 
-    this.backupGrid = null as null;
+    this.backupGrid = null;
   }
 }

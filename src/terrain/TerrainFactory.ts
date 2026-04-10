@@ -1,6 +1,7 @@
 import { Rect } from '../core/Rect';
 import { Size } from '../core/Size';
 import { Vector } from '../core/Vector';
+import { assertNever } from '../core/assertNever';
 import { TerrainTile } from '../gameObjects/TerrainTile';
 import { BlueBrickTerrainTile } from '../gameObjects/terrain/BlueBrickTerrainTile';
 import { BrickSuperTerrainTile } from '../gameObjects/terrain/BrickSuperTerrainTile';
@@ -293,8 +294,10 @@ export class TerrainFactory {
         return new InverseBrickTerrainTile();
       case TerrainType.BlueBrick:
         return new BlueBrickTerrainTile();
-      default:
+      case TerrainType.BrickSuper:
         throw new Error(`Tile object for "${type}" not defined`);
+      default:
+        return assertNever(type);
     }
   }
 
@@ -322,7 +325,7 @@ export class TerrainFactory {
       case TerrainType.BlueBrick:
         return new Size(config.BRICK_TILE_SIZE, config.BRICK_TILE_SIZE);
       default:
-        throw new Error(`Tile size for "${type}" not defined`);
+        return assertNever(type);
     }
   }
 

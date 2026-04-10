@@ -40,7 +40,7 @@ export class LevelPauseScript extends LevelScript {
           }
           return this.inputManager.getMethodByVariant(playerVariant);
         })
-        .filter((m) => m !== null) as typeof inputMethods;
+        .filter((m) => m !== null);
 
       if (methods.length > 0) {
         inputMethods = methods;

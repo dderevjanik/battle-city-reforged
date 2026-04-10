@@ -98,7 +98,7 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
       const pickedVariants = this.session.players
         .slice(0, this.params.playerIndex)
         .map((p) => p.getInputVariant())
-        .filter((v) => v !== null) as InputVariant[];
+        .filter((v) => v !== null);
 
       variantChoices = variantChoices.filter((choice) => {
         const choiceVariant = choice.value;

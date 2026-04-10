@@ -1,6 +1,7 @@
 import { Animation } from '../core/Animation';
 import { GameObject } from '../core/GameObject';
 import { Subject } from '../core/Subject';
+import { assertNever } from '../core/assertNever';
 import { BoxCollider } from '../core/collision/BoxCollider';
 import { Collision } from '../core/collision/Collision';
 import { Sprite } from '../core/graphics/Sprite';
@@ -131,7 +132,8 @@ export class Powerup extends GameObject {
         return 'powerup.star';
       case PowerupType.Wipeout:
         return 'powerup.grenade';
+      default:
+        return assertNever(this.type);
     }
-    return 'unknown';
   }
 }

@@ -61,7 +61,7 @@ export function bindViewport(viewport: HTMLElement): void {
       const snapped = snapToTL(world.x, world.y);
       const existIdx = state.enemySpawns.findIndex(s => s.x === snapped.x && s.y === snapped.y);
       if (existIdx !== -1) state.enemySpawns.splice(existIdx, 1);
-      else if (state.enemySpawns.length < 6) state.enemySpawns.push(snapped);
+      else state.enemySpawns.push(snapped);
       refreshSpawnLists();
       pushHistory();
       render();

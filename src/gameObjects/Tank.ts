@@ -19,6 +19,7 @@ import { TankAnimationFrame, TankDeathReason, TankType } from '../tank/TankTypes
 import { TankAttributes, TankAttributesFactory } from '../tank/TankAttributesFactory';
 import { TankBehavior } from '../tank/TankBehavior';
 import { TankSkinAnimation } from '../tank/TankSkinAnimation';
+import { TankWeaponSystem } from '../tank/TankWeaponSystem';
 import * as config from '../config';
 
 import { BombBlast } from './BombBlast';
@@ -64,9 +65,8 @@ export class Tank extends GameObject {
   public behavior: TankBehavior;
   public attributes: TankAttributes;
   public skinAnimation!: TankSkinAnimation;
-  public bullets: Bullet[] = [];
+  public weapon = new TankWeaponSystem();
   public shield: Shield | null = null;
-  public fired = new Subject();
   public died = new Subject<{
     hitterPartyIndex: number | null;
     reason: TankDeathReason;
@@ -79,7 +79,8 @@ export class Tank extends GameObject {
   protected shieldTimer = new Timer();
   protected animation!: Animation<TankAnimationFrame>;
   protected skinLayers: GameObject[] = [];
-  protected lastFireTimer = new Timer();
+  public get fired(): Subject<null> { return this.weapon.fired; }
+  public get bullets(): Bullet[] { return this.weapon.bullets; }
   protected slideTimer = new Timer();
   protected stunTimer = new Timer();
   protected stunBlinkTimer = new Timer();
@@ -217,7 +218,7 @@ export class Tank extends GameObject {
     // is sliding
     this.behavior.update(this, deltaTime);
 
-    this.lastFireTimer.update(deltaTime);
+    this.weapon.updateTimer(deltaTime);
 
     this.updateAnimation(deltaTime);
 
@@ -255,58 +256,7 @@ export class Tank extends GameObject {
   }
 
   public fire(): boolean | void {
-    if (this.bullets.length >= this.attributes.bulletMaxCount) {
-      return;
-    }
-
-    // Throttle how fast next bullet comes out during rapid fire
-    if (this.lastFireTimer.isActive()) {
-      return;
-    }
-
-    const bullet = new Bullet(
-      this.partyIndex,
-      this.attributes.bulletSpeed,
-      this.attributes.bulletTankDamage,
-      this.attributes.bulletWallDamage,
-    );
-
-    // First, add bullet inside a tank and position it at the north center
-    // of the tank (where the gun is). Bullet will inherit tank's rotation.
-
-    // Update tank position
-    this.updateWorldMatrix(true);
-    // Add bullet - it will inherit rotation
-    this.add(bullet);
-    // Make sure rotation is in matrix
-    bullet.updateMatrix();
-    // Position bullet
-    bullet.setCenter(this.getSelfCenter());
-    bullet.translateY(this.size.height / 2 - bullet.size.height / 2);
-    bullet.updateMatrix();
-
-    // Then, detach bullet from a tank and move it to a field
-    this.parent!.attach(bullet);
-
-    if (this.tags.includes(Tag.Player)) {
-      bullet.tags.push(Tag.Player);
-    } else if (this.tags.includes(Tag.Enemy)) {
-      bullet.tags.push(Tag.Enemy);
-    }
-
-    this.bullets.push(bullet);
-
-    bullet.died.addListener(() => {
-      this.bullets = this.bullets.filter((tankBullet) => {
-        return tankBullet !== bullet;
-      });
-    });
-
-    this.fired.notify(null);
-
-    this.lastFireTimer.reset(this.attributes.bulletRapidFireDelay);
-
-    return true;
+    return this.weapon.fire(this);
   }
 
   public move(deltaTime: number): void {
@@ -871,7 +821,7 @@ export class Tank extends GameObject {
       const bullet = contact.collider.object as Bullet;
 
       // Prevent self-destruction
-      if (this.bullets.includes(bullet)) {
+      if (this.weapon.hasBullet(bullet)) {
         return;
       }
 

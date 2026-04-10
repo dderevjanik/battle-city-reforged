@@ -21,6 +21,7 @@ export class LevelSelectionScene extends GameScene {
   private difficultyLabelItem!: TextMenuItem;
   private difficultyItem!: SelectorMenuItem<Difficulty>;
   private enemyPowerupsItem!: TextMenuItem;
+  private friendlyFireItem!: TextMenuItem;
   private startItem!: TextMenuItem;
   private menu!: SceneMenu;
   private preview!: LevelMapPreview;
@@ -56,17 +57,29 @@ export class LevelSelectionScene extends GameScene {
       this.handleEnemyPowerupsSelected,
     );
 
+    if (this.session.getPlayerCount() > 1) {
+      this.friendlyFireItem = new TextMenuItem(this.getFriendlyFireText());
+      this.friendlyFireItem.selected.addListener(
+        this.handleFriendlyFireSelected,
+      );
+    }
+
     this.startItem = new TextMenuItem("START");
     this.startItem.selected.addListener(this.handleStartSelected);
 
-    this.menu = new SceneMenu();
-    this.menu.setItems([
+    const menuItems = [
       this.stageItem,
       this.difficultyLabelItem,
       this.difficultyItem,
       this.enemyPowerupsItem,
-      this.startItem,
-    ]);
+    ];
+    if (this.session.getPlayerCount() > 1) {
+      menuItems.push(this.friendlyFireItem);
+    }
+    menuItems.push(this.startItem);
+
+    this.menu = new SceneMenu();
+    this.menu.setItems(menuItems);
     this.menu.back.addListener(this.handleBack);
     this.root.add(this.menu);
 
@@ -93,6 +106,11 @@ export class LevelSelectionScene extends GameScene {
     this.enemyPowerupsItem.setText(this.getEnemyPowerupsText());
   };
 
+  private handleFriendlyFireSelected = (): void => {
+    this.session.setFriendlyFireEnabled(!this.session.isFriendlyFireEnabled());
+    this.friendlyFireItem.setText(this.getFriendlyFireText());
+  };
+
   private handleBack = (): void => {
     this.navigator.back();
   };
@@ -109,5 +127,9 @@ export class LevelSelectionScene extends GameScene {
 
   private getEnemyPowerupsText(): string {
     return `ENEMY POWERUPS [${this.session.isEnemyPowerupsEnabled() ? "ON" : "OFF"}]`;
+  }
+
+  private getFriendlyFireText(): string {
+    return `FRIENDLY FIRE [${this.session.isFriendlyFireEnabled() ? "ON" : "OFF"}]`;
   }
 }

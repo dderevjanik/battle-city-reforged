@@ -891,6 +891,12 @@ export class Tank extends GameObject {
       // When friendly-fire - stun the tank which was hit so he can't move
       // but can still fire
       if (bullet.tags.includes(Tag.Player) && this.tags.includes(Tag.Player)) {
+        // If friendly fire is disabled - swallow the bullet
+        if (!this.context.session.isFriendlyFireEnabled()) {
+          bullet.nullify();
+          return;
+        }
+
         // If already stunned - ignore
         if (this.isStunned()) {
           return;

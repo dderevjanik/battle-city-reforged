@@ -19,6 +19,7 @@ export class Session {
   private seenIntro!: boolean;
   private state!: State;
   private enemyPowerupsEnabled!: boolean;
+  private friendlyFireEnabled!: boolean;
   private difficulty!: Difficulty;
   private demo!: boolean;
 
@@ -54,6 +55,7 @@ export class Session {
     this.demo = false;
     this.playerCount = 1;
     this.enemyPowerupsEnabled = false;
+    this.friendlyFireEnabled = true;
     this.difficulty = Difficulty.Classic;
 
     for (const player of this.players) {
@@ -84,6 +86,7 @@ export class Session {
     this.demo = false;
     this.playerCount = 1;
     this.enemyPowerupsEnabled = false;
+    this.friendlyFireEnabled = true;
     this.difficulty = Difficulty.Classic;
 
     for (const player of this.players) {
@@ -209,5 +212,13 @@ export class Session {
 
   public isEnemyPowerupsEnabled(): boolean {
     return this.enemyPowerupsEnabled;
+  }
+
+  public setFriendlyFireEnabled(enabled: boolean): void {
+    this.friendlyFireEnabled = enabled;
+  }
+
+  public isFriendlyFireEnabled(): boolean {
+    return this.friendlyFireEnabled;
   }
 }

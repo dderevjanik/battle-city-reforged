@@ -111,6 +111,7 @@ export const STORAGE_KEY_SETTINGS_DEV_PANEL_ENABLED = 'settings.dev-panel-enable
 
 export const STORAGE_KEY_ACHIEVEMENT_PREFIX = 'achievement.';
 export const STORAGE_KEY_GAME_STATS = 'game.stats';
+export const STORAGE_KEY_LEVELS_COMPLETED = 'levels.completed';
 
 export const ACHIEVEMENT_NOTIFICATION_DURATION = 3;
 export const ACHIEVEMENT_NOTIFICATION_Z_INDEX = 9;

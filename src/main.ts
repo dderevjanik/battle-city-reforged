@@ -20,6 +20,7 @@ import { ManifestMapListReader } from './map/MapListReaders';
 import { MapLoader } from './map/MapLoader';
 import { AchievementsManager } from './achievements/AchievementsManager';
 import { AchievementsTracker } from './achievements/AchievementsTracker';
+import { LevelProgressManager } from './progress/LevelProgressManager';
 import { PointsHighscoreManager } from './points/PointsHighscoreManager';
 import { GameStatsManager } from './stats/GameStatsManager';
 
@@ -74,6 +75,7 @@ const achievementsManager = new AchievementsManager(gameStorage);
 const achievementsTracker = new AchievementsTracker();
 const gameStatsManager = new GameStatsManager(gameStorage);
 
+const levelProgressManager = new LevelProgressManager(gameStorage);
 const pointsHighscoreManager = new PointsHighscoreManager(gameStorage);
 
 const collisionSystem = new CollisionSystem();
@@ -93,6 +95,7 @@ const gameContext: GameContext = {
   inputHintSettings,
   inputManager,
   gameState,
+  levelProgressManager,
   mapLoader,
   pointsHighscoreManager,
   rectFontLoader,

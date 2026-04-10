@@ -9,8 +9,10 @@ import {
 } from "../../gameObjects/menu/SelectorMenuItem";
 import { TextMenuItem } from "../../gameObjects/menu/TextMenuItem";
 import { SceneMenuTitle } from "../../gameObjects/text/SceneMenuTitle";
+import { SpriteText } from "../../gameObjects/text/SpriteText";
 import { MapConfig } from "../../map/MapConfig";
 import { MapLoader } from "../../map/MapLoader";
+import { LevelProgressManager } from "../../progress/LevelProgressManager";
 import * as config from "../../config";
 
 import { GameScene } from "../GameScene";
@@ -25,12 +27,15 @@ export class LevelSelectionScene extends GameScene {
   private startItem!: TextMenuItem;
   private menu!: SceneMenu;
   private preview!: LevelMapPreview;
+  private completeText!: SpriteText;
   private session!: Session;
   private mapLoader!: MapLoader;
+  private levelProgressManager!: LevelProgressManager;
 
-  protected setup({ mapLoader, session }: GameContext): void {
+  protected setup({ levelProgressManager, mapLoader, session }: GameContext): void {
     this.session = session;
     this.mapLoader = mapLoader;
+    this.levelProgressManager = levelProgressManager;
 
     const title = new SceneMenuTitle("SELECT STAGE");
     this.root.add(title);
@@ -87,6 +92,16 @@ export class LevelSelectionScene extends GameScene {
     this.preview.position.set(560, 96);
     this.root.add(this.preview);
 
+    this.completeText = new SpriteText("COMPLETE", {
+      color: config.COLOR_YELLOW,
+    });
+    this.completeText.origin.setX(0.5);
+    this.completeText.position.set(660, 304);
+    this.completeText.setVisible(
+      this.levelProgressManager.isLevelCompleted(this.stageItem.getValue()!),
+    );
+    this.root.add(this.completeText);
+
     this.mapLoader.loaded.addListener(this.handleMapLoaded);
     this.stageItem.changed.addListener(this.handleStageChanged);
     this.mapLoader.loadAsync(this.stageItem.getValue()!);
@@ -119,6 +134,9 @@ export class LevelSelectionScene extends GameScene {
     choice: SelectorMenuItemChoice<number>,
   ): void => {
     this.mapLoader.loadAsync(choice.value);
+    this.completeText.setVisible(
+      this.levelProgressManager.isLevelCompleted(choice.value),
+    );
   };
 
   private handleMapLoaded = (mapConfig: MapConfig): void => {

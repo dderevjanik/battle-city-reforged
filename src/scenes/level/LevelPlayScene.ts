@@ -4,6 +4,7 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { Border } from '../../gameObjects/Border';
 import { InputManager } from '../../input/InputManager';
+import { LevelProgressManager } from '../../progress/LevelProgressManager';
 import { PowerupType } from '../../powerup/PowerupType';
 import { TankDeathReason } from '../../tank/TankTypes';
 import { TerrainFactory } from '../../terrain/TerrainFactory';
@@ -44,6 +45,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private eventBus!: LevelEventBus;
   private session!: Session;
   private inputManager!: InputManager;
+  private levelProgressManager!: LevelProgressManager;
   private debugCollisionMenu!: DebugCollisionMenu;
   private debugPanelAttached = false;
 
@@ -69,7 +71,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private statsScript!: LevelStatsScript;
 
   protected setup(context: GameContext): void {
-    const { collisionSystem, inputManager, session } = context;
+    const { collisionSystem, inputManager, levelProgressManager, session } = context;
 
     this.debugCollisionMenu = new DebugCollisionMenu(
       collisionSystem,
@@ -80,6 +82,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.eventBus = new LevelEventBus();
 
     this.inputManager = inputManager;
+    this.levelProgressManager = levelProgressManager;
     this.session = session;
 
     const { mapConfig } = this.params;
@@ -353,6 +356,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       return;
     }
 
+    this.levelProgressManager.markLevelCompleted(this.session.getLevelNumber());
     this.navigator.replace(GameSceneType.LevelScore);
   };
 }

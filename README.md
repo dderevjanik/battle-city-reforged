@@ -1,4 +1,4 @@
-# cattle-bity
+# Battle City Reforged
 
 Battle City (1985, Namco) remake written from scratch in TypeScript.
 
@@ -53,7 +53,7 @@ Prerequisites: Node >= 22
 ```bash
 npm install
 npm start        # dev server (opens browser)
-npm run build:prod  # production build
+npm run build  # production build
 npm run typecheck   # type checking
 ```
 

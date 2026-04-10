@@ -1,6 +1,6 @@
-Any file in this project that doesn't state otherwise, and isn't listed as an exception below, is Copyright 2020 _The cattle-bity authors_, and licensed under the terms of the MIT License. A copy of the license can be found in [docs/legal/MIT](docs/legal/MIT).
+Any file in this project that doesn't state otherwise, and isn't listed as an exception below, is Copyright 2020 _The Battle City Reforged authors_, and licensed under the terms of the MIT License. A copy of the license can be found in [docs/legal/MIT](docs/legal/MIT).
 
-_The cattle-bity authors_ are:
+_The Battle City Reforged authors_ are:
 
 | Full name        | aliases   | E-Mail                              |
 | ---------------- | --------- | ----------------------------------- |
@@ -10,7 +10,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 All 3rd-party files **must** be included in the following list.
 
-List of all 3rd-party files in _cattle-bity_:
+List of all 3rd-party files in _Battle City Reforged_:
 
 From https://www.zophar.net/music/nintendo-nes-nsf/battle-city
 

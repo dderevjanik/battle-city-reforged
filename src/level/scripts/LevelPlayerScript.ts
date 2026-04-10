@@ -4,7 +4,7 @@ import { DebugLevelPlayerMenu } from '../../debug/DebugLevelPlayerMenu';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { PlayerTank } from '../../gameObjects/PlayerTank';
 import { PowerupType } from '../../powerup/PowerupType';
-import { TankDeathReason, TankParty } from '../../tank/TankTypes';
+import { TankDeathReason, TankKind, TankParty } from '../../tank/TankTypes';
 import { TankFactory } from '../../tank/TankFactory';
 import * as config from '../../config';
 
@@ -167,6 +167,10 @@ export class LevelPlayerScript extends LevelScript {
 
     if (powerupType === PowerupType.Shield) {
       tank!.activateShield(config.SHIELD_POWERUP_DURATION);
+    }
+
+    if (powerupType === PowerupType.Gun) {
+      tank!.upgrade(TankKind.Heavy);
     }
 
     if (powerupType === PowerupType.Upgrade) {

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/cattle-bity/' : '/',
   build: {
     rollupOptions: {
       input: {

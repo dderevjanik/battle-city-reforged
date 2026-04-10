@@ -88,6 +88,11 @@ export class LevelLoadScene extends GameScene {
 
     DifficultyModifier.apply(mapConfig, this.session.getDifficulty());
 
+    if (this.session.isDemo()) {
+      this.navigator.replace(GameSceneType.LevelPlay, { mapConfig });
+      return;
+    }
+
     if (this.session.isMultiplayer()) {
       // Check if players already selected their variants.
       // It happens before first level.

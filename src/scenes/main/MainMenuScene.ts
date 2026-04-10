@@ -18,6 +18,7 @@ import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
 
 const SLIDE_SPEED = 240;
+const DEMO_IDLE_TIMEOUT = 10; // seconds
 
 const STATS_BOTTOM_LEFT_X = 92;
 const STATS_KILLS_DEATHS_Y = 800;
@@ -40,6 +41,7 @@ export class MainMenuScene extends GameScene {
   private settingsItem!: TextMenuItem;
   private achievementsItem!: TextMenuItem;
   private state: State = State.Ready;
+  private idleTimer = 0;
   private session!: Session;
   private pointsHighscoreManager!: PointsHighscoreManager;
   private achievementsManager!: AchievementsManager;
@@ -170,7 +172,27 @@ export class MainMenuScene extends GameScene {
       return;
     }
 
+    if (inputManager.hasAnyInputThisFrame() || this.isPointerDown()) {
+      this.idleTimer = 0;
+    } else {
+      this.idleTimer += deltaTime;
+      if (this.idleTimer >= DEMO_IDLE_TIMEOUT) {
+        this.startDemo();
+        return;
+      }
+    }
+
     super.onUpdate(deltaTime);
+  }
+
+  private startDemo(): void {
+    const seenIntro = this.session.haveSeenIntro();
+    this.session.reset();
+    this.session.setSeenIntro(seenIntro);
+    this.session.setDemo(true);
+    this.session.setPlayerCount(1);
+    this.session.start(1, 1);
+    this.navigator.push(GameSceneType.LevelLoad);
   }
 
   private isPointerDown(): boolean {

@@ -8,6 +8,7 @@ import { TankDeathReason, TankParty } from '../../tank/TankTypes';
 import { TankFactory } from '../../tank/TankFactory';
 import * as config from '../../config';
 
+import { AiTankBehavior } from '../../tank/behaviors/AiTankBehavior';
 import { LevelScript } from '../LevelScript';
 import {
   LevelEnemyPowerupPickedEvent,
@@ -107,7 +108,8 @@ export class LevelPlayerScript extends LevelScript {
 
     const { partyIndex } = event;
 
-    const tank = TankFactory.createPlayer(partyIndex);
+    const behavior = this.session.isDemo() ? new AiTankBehavior() : undefined;
+    const tank = TankFactory.createPlayer(partyIndex, undefined, behavior);
     tank.updateMatrix();
     tank.setCenter(event.centerPosition);
     tank.updateMatrix();

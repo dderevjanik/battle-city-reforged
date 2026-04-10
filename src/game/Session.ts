@@ -20,6 +20,7 @@ export class Session {
   private state!: State;
   private enemyPowerupsEnabled!: boolean;
   private difficulty!: Difficulty;
+  private demo!: boolean;
 
   constructor() {
     this.players.push(
@@ -50,6 +51,7 @@ export class Session {
     this.endLevelNumber = 1;
     this.state = State.Idle;
     this.playtest = false;
+    this.demo = false;
     this.playerCount = 1;
     this.enemyPowerupsEnabled = false;
     this.difficulty = Difficulty.Classic;
@@ -79,6 +81,9 @@ export class Session {
     this.endLevelNumber = 1;
     this.state = State.Idle;
     this.playtest = false;
+    this.demo = false;
+    this.playerCount = 1;
+    this.enemyPowerupsEnabled = false;
     this.difficulty = Difficulty.Classic;
 
     for (const player of this.players) {
@@ -164,6 +169,14 @@ export class Session {
 
   public isPlaytest(): boolean {
     return this.playtest;
+  }
+
+  public setDemo(enabled: boolean): void {
+    this.demo = enabled;
+  }
+
+  public isDemo(): boolean {
+    return this.demo;
   }
 
   public setPlayerCount(count: number): void {

@@ -149,6 +149,10 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       script.invokeInit(this.world, this.eventBus, session, mapConfig);
     });
 
+    if (session.isDemo()) {
+      this.pauseScript.disable();
+    }
+
     // When intro starts, enable only it and audio
     this.alwaysUpdateScripts = [this.audioScript, this.introScript];
     this.playingUpdateScripts = [];
@@ -190,8 +194,20 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.eventBus.levelWinCompleted.addListener(this.handleLevelWinCompleted);
   }
 
+  private exitDemo(): void {
+    const seenIntro = this.session.haveSeenIntro();
+    this.session.reset();
+    this.session.setSeenIntro(seenIntro);
+    this.navigator.replace(GameSceneType.MainMenu);
+  }
+
   protected onUpdate(deltaTime: number): void {
     const { collisionSystem, gameState } = this.context;
+
+    if (this.session.isDemo() && this.inputManager.hasAnyInputThisFrame()) {
+      this.exitDemo();
+      return;
+    }
 
     this.alwaysUpdateScripts.forEach((script) => {
       script.invokeUpdate(this.context, deltaTime);
@@ -313,6 +329,11 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     // Restore input
     this.inputManager.listen();
 
+    if (this.session.isDemo()) {
+      this.exitDemo();
+      return;
+    }
+
     if (this.session.isPlaytest()) {
       this.navigator.replace(GameSceneType.MainMenu);
       return;
@@ -322,6 +343,11 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   };
 
   private handleLevelWinCompleted = (): void => {
+    if (this.session.isDemo()) {
+      this.exitDemo();
+      return;
+    }
+
     if (this.session.isPlaytest()) {
       this.navigator.replace(GameSceneType.MainMenu);
       return;

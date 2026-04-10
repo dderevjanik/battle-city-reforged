@@ -282,6 +282,17 @@ export class InputManager {
     return foundBindingType;
   }
 
+  public hasAnyInputThisFrame(): boolean {
+    for (const devices of this.deviceMap.values()) {
+      for (const device of devices) {
+        if (device.getDownCodes().length > 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   public listen(): void {
     this.deviceMap.forEach((devices) => {
       for (const device of devices) {

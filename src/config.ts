@@ -73,7 +73,7 @@ export const FRIENDLY_FIRE_STUN_DURATION = 5;
 export const ICE_SLIDE_DURATION = 0.5;
 
 export const POINTS_POWERUP_DURATION = 0.8;
-export const POINTS_ENEMY_TANK_DURATION = 0.16;
+export const POINTS_ENEMY_TANK_DURATION = 0.5;
 
 export const LEVEL_START_DELAY = 2;
 
@@ -108,10 +108,15 @@ export const STORAGE_KEY_SETTINGS_SHOW_EDITOR_HINT =
   'settings.show-editor-hint';
 export const STORAGE_KEY_SETTINGS_TOUCH_ENABLED = 'settings.touch-enabled';
 export const STORAGE_KEY_SETTINGS_DEV_PANEL_ENABLED = 'settings.dev-panel-enabled';
+export const STORAGE_KEY_SETTINGS_SCREEN_SHAKE_ENABLED = 'settings.screen-shake-enabled';
 
 export const STORAGE_KEY_ACHIEVEMENT_PREFIX = 'achievement.';
 export const STORAGE_KEY_GAME_STATS = 'game.stats';
 export const STORAGE_KEY_LEVELS_COMPLETED = 'levels.completed';
+
+export const SCREEN_SHAKE_DURATION = 60;
+export const SCREEN_SHAKE_INTENSITY = 0.003;
+export const SCREEN_SHAKE_INTENSITY_LARGE = 0.01;
 
 export const ACHIEVEMENT_NOTIFICATION_DURATION = 3;
 export const ACHIEVEMENT_NOTIFICATION_Z_INDEX = 9;

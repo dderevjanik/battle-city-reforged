@@ -203,6 +203,30 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       this.handleLevelGameOverMoveBlocked,
     );
     this.eventBus.levelWinCompleted.addListener(this.handleLevelWinCompleted);
+
+    // Screen shake on deaths (respects settings toggle)
+    const { screenShakeSettings } = context;
+    this.eventBus.enemyDied.addListener(() => {
+      if (!screenShakeSettings.getEnabled()) return;
+      this.cameras.main.shake(
+        config.SCREEN_SHAKE_DURATION,
+        config.SCREEN_SHAKE_INTENSITY,
+      );
+    });
+    this.eventBus.playerDied.addListener(() => {
+      if (!screenShakeSettings.getEnabled()) return;
+      this.cameras.main.shake(
+        config.SCREEN_SHAKE_DURATION * 2,
+        config.SCREEN_SHAKE_INTENSITY_LARGE,
+      );
+    });
+    this.eventBus.baseDied.addListener(() => {
+      if (!screenShakeSettings.getEnabled()) return;
+      this.cameras.main.shake(
+        config.SCREEN_SHAKE_DURATION * 3,
+        config.SCREEN_SHAKE_INTENSITY_LARGE,
+      );
+    });
   }
 
   private exitDemo(): void {

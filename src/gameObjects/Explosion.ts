@@ -21,8 +21,12 @@ export class Explosion extends GameObject {
 
   protected setup({ spriteLoader }: GameContext): void {
     this.animation = new Animation(
-      spriteLoader.loadList(['explosion.large.1', 'explosion.large.2']),
-      { delay: 0.066, loop: false },
+      spriteLoader.loadList([
+        'explosion.large.1',
+        'explosion.large.2',
+        'explosion.large.1',
+      ]),
+      { delay: 0.08, loop: false },
     );
   }
 

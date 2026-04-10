@@ -26,7 +26,7 @@ export class SmallExplosion extends GameObject {
         'explosion.small.2',
         'explosion.small.3',
       ]),
-      { delay: 0.05, loop: false },
+      { delay: 0.066, loop: false },
     );
   }
 

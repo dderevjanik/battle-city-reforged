@@ -19,6 +19,7 @@ import { DebugSettings } from '../debug/DebugSettings';
 
 import { AudioManager } from './AudioManager';
 import { GameState } from './GameState';
+import { ScreenShakeSettings } from './ScreenShakeSettings';
 import { Session } from './Session';
 
 /**
@@ -42,6 +43,7 @@ export interface GameContext {
   mapLoader: MapLoader;
   pointsHighscoreManager: PointsHighscoreManager;
   rectFontLoader: RectFontLoader;
+  screenShakeSettings: ScreenShakeSettings;
   session: Session;
   spriteFontLoader: SpriteFontLoader;
   spriteLoader: SpriteLoader;

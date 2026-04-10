@@ -1,5 +1,6 @@
 import { AudioManager } from '../../game/AudioManager';
 import { GameContext } from '../../game/GameUpdateArgs';
+import { ScreenShakeSettings } from '../../game/ScreenShakeSettings';
 import { SceneMenu } from '../../gameObjects/menu/SceneMenu';
 import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { SceneMenuTitle } from '../../gameObjects/text/SceneMenuTitle';
@@ -14,6 +15,7 @@ export class SettingsInterfaceScene extends GameScene {
   private title!: SceneMenuTitle;
   private levelControlsHintItem!: TextMenuItem;
   private touchInputItem!: TextMenuItem;
+  private screenShakeItem!: TextMenuItem;
   private devPanelItem!: TextMenuItem;
   private backItem!: TextMenuItem;
   private menu!: SceneMenu;
@@ -21,12 +23,14 @@ export class SettingsInterfaceScene extends GameScene {
   private debugSettings!: DebugSettings;
   private inputHintSettings!: InputHintSettings;
   private inputManager!: InputManager;
+  private screenShakeSettings!: ScreenShakeSettings;
 
-  protected setup({ audioManager, debugSettings, inputHintSettings, inputManager }: GameContext): void {
+  protected setup({ audioManager, debugSettings, inputHintSettings, inputManager, screenShakeSettings }: GameContext): void {
     this.audioManager = audioManager;
     this.debugSettings = debugSettings;
     this.inputHintSettings = inputHintSettings;
     this.inputManager = inputManager;
+    this.screenShakeSettings = screenShakeSettings;
 
     this.title = new SceneMenuTitle('SETTINGS → INTERFACE');
     this.root.add(this.title);
@@ -41,12 +45,16 @@ export class SettingsInterfaceScene extends GameScene {
     this.touchInputItem = new TextMenuItem(this.getTouchInputText());
     this.touchInputItem.selected.addListener(this.handleTouchInputSelected);
 
+    this.screenShakeItem = new TextMenuItem(this.getScreenShakeText());
+    this.screenShakeItem.selected.addListener(this.handleScreenShakeSelected);
+
     this.backItem = new TextMenuItem('BACK');
     this.backItem.selected.addListener(this.handleBackSelected);
 
     const menuItems: TextMenuItem[] = [
       this.levelControlsHintItem,
       this.touchInputItem,
+      this.screenShakeItem,
     ];
 
     if (config.IS_DEV) {
@@ -82,6 +90,11 @@ export class SettingsInterfaceScene extends GameScene {
     this.devPanelItem.setText(this.getDevPanelText());
   };
 
+  private handleScreenShakeSelected = (): void => {
+    this.screenShakeSettings.setEnabled(!this.screenShakeSettings.getEnabled());
+    this.screenShakeItem.setText(this.getScreenShakeText());
+  };
+
   private handleBackSelected = (): void => {
     this.navigator.back();
   };
@@ -100,6 +113,11 @@ export class SettingsInterfaceScene extends GameScene {
   private getTouchInputText(): string {
     const checkmark = this.inputManager.getTouchEnabled() ? '+' : ' ';
     return `TOUCH INPUT [${checkmark}]`;
+  }
+
+  private getScreenShakeText(): string {
+    const checkmark = this.screenShakeSettings.getEnabled() ? '+' : ' ';
+    return `SCREEN SHAKE [${checkmark}]`;
   }
 
   private getDevPanelText(): string {

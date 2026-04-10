@@ -1,13 +1,12 @@
 import { state } from './state';
-import type { SpawnPoint } from './types';
 
 export function pushHistory(): void {
   state.history = state.history.slice(0, state.histIdx + 1);
   state.history.push({
     grid:         new Uint8Array(state.grid),
-    playerSpawns: JSON.parse(JSON.stringify(state.playerSpawns)) as SpawnPoint[],
-    enemySpawns:  JSON.parse(JSON.stringify(state.enemySpawns))  as SpawnPoint[],
-    basePositions: JSON.parse(JSON.stringify(state.basePositions)) as SpawnPoint[],
+    playerSpawns: structuredClone(state.playerSpawns),
+    enemySpawns:  structuredClone(state.enemySpawns),
+    basePositions: structuredClone(state.basePositions),
   });
   state.histIdx = state.history.length - 1;
 
@@ -21,9 +20,9 @@ export function pushHistory(): void {
 export function restoreCurrentSnapshot(): void {
   const snap       = state.history[state.histIdx];
   state.grid       = new Uint8Array(snap.grid);
-  state.playerSpawns = JSON.parse(JSON.stringify(snap.playerSpawns)) as SpawnPoint[];
-  state.enemySpawns  = JSON.parse(JSON.stringify(snap.enemySpawns))  as SpawnPoint[];
-  state.basePositions = JSON.parse(JSON.stringify(snap.basePositions)) as SpawnPoint[];
+  state.playerSpawns = structuredClone(snap.playerSpawns);
+  state.enemySpawns  = structuredClone(snap.enemySpawns);
+  state.basePositions = structuredClone(snap.basePositions);
 }
 
 export function canUndo(): boolean { return state.histIdx > 0; }

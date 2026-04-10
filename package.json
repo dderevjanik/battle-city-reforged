@@ -6,7 +6,8 @@
   "scripts": {
     "start": "vite --open",
     "build": "vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test 'src/**/*.test.ts'"
   },
   "dependencies": {
     "ajv": "^8.18.0",

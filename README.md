@@ -4,7 +4,7 @@ Battle City (1985, Namco) remake written from scratch in TypeScript.
 
 ### [Play web version](https://dderevjanik.github.io/battle-city-reforged/) | [Map Editor](https://dderevjanik.github.io/battle-city-reforged/editor)
 
-[Screenshots](docs/screenshots.md)
+![screenshot](./docs/screenshot01.png)
 
 ## About
 

@@ -34,45 +34,54 @@ export class CollisionSystem {
   }
 
   public update(): void {
-    const bothColliders = this.dynamicColliders.concat(this.staticColliders);
-
     this.collisions = [];
 
     for (const selfCollider of this.dynamicColliders) {
-      let collision = null;
+      let collision: Collision | null = null;
 
-      for (const otherCollider of bothColliders) {
-        // Prevent colliding with itself
-        if (otherCollider === selfCollider) {
-          continue;
-        }
-
-        // Prevent children colliding with parents
-        if (otherCollider.object.hasParent(selfCollider.object)) {
-          continue;
-        }
-        if (selfCollider.object.hasParent(otherCollider.object)) {
-          continue;
-        }
-
-        const selfBox = selfCollider.getBox();
-        const otherBox = otherCollider.getBox();
-
-        if (selfBox.intersectsBox(otherBox)) {
-          // Lazy create collision if we have at least one intersestion
-          if (collision === null) {
-            collision = new Collision(selfCollider, selfBox);
-          }
-
-          const contact = new CollisionContact(otherCollider, otherBox);
-          collision.addContact(contact);
-        }
-      }
+      collision = this.checkAgainst(selfCollider, this.dynamicColliders, collision);
+      collision = this.checkAgainst(selfCollider, this.staticColliders, collision);
 
       if (collision !== null) {
         this.collisions.push(collision);
       }
     }
+  }
+
+  private checkAgainst(
+    selfCollider: Collider,
+    others: Collider[],
+    collision: Collision | null,
+  ): Collision | null {
+    for (const otherCollider of others) {
+      // Prevent colliding with itself
+      if (otherCollider === selfCollider) {
+        continue;
+      }
+
+      // Prevent children colliding with parents
+      if (otherCollider.object.hasParent(selfCollider.object)) {
+        continue;
+      }
+      if (selfCollider.object.hasParent(otherCollider.object)) {
+        continue;
+      }
+
+      const selfBox = selfCollider.getBox();
+      const otherBox = otherCollider.getBox();
+
+      if (selfBox.intersectsBox(otherBox)) {
+        // Lazy create collision if we have at least one intersestion
+        if (collision === null) {
+          collision = new Collision(selfCollider, selfBox);
+        }
+
+        const contact = new CollisionContact(otherCollider, otherBox);
+        collision.addContact(contact);
+      }
+    }
+
+    return collision;
   }
 
   public getCollisionByCollider(collider: Collider): Collision | null {

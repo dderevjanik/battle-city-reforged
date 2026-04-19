@@ -48,19 +48,20 @@ Project is not commercial and was created for learning purposes only.
 
 ## Getting Started
 
-Prerequisites: Node >= 22
+Prerequisites: Node >= 24
 
 ```bash
 npm install
-npm start        # dev server (opens browser)
-npm run build  # production build
-npm run typecheck   # type checking
+npm start          # dev server (opens browser)
+npm run build      # production build
+npm run typecheck  # type checking
+npm test           # run tests
 ```
 
 ## Tech Stack
 
-- TypeScript 5
-- Phaser 3
+- TypeScript 6
+- Phaser 4
 - Vite 8
 
 ## Acknowledgments

@@ -58,6 +58,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private terrainGPULayer: TerrainGPULayer | null = null;
   private terrainTiles: TerrainTile[] = [];
   private gpuLayerInitialized = false;
+  private hitPauseRemaining = 0;
 
   private audioScript!: LevelAudioScript;
   private baseScript!: LevelBaseScript;
@@ -204,7 +205,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     );
     this.eventBus.levelWinCompleted.addListener(this.handleLevelWinCompleted);
 
-    // Screen shake on deaths (respects settings toggle)
+    // Screen shake + hit-pause on deaths (respect settings toggle)
     const { screenShakeSettings } = context;
     this.eventBus.enemyDied.addListener(() => {
       if (!screenShakeSettings.getEnabled()) return;
@@ -212,6 +213,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
         config.SCREEN_SHAKE_DURATION,
         config.SCREEN_SHAKE_INTENSITY,
       );
+      this.triggerHitPause(config.HIT_PAUSE_DURATION);
     });
     this.eventBus.playerDied.addListener(() => {
       if (!screenShakeSettings.getEnabled()) return;
@@ -219,6 +221,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
         config.SCREEN_SHAKE_DURATION * 2,
         config.SCREEN_SHAKE_INTENSITY_LARGE,
       );
+      this.triggerHitPause(config.HIT_PAUSE_DURATION_LARGE);
     });
     this.eventBus.baseDied.addListener(() => {
       if (!screenShakeSettings.getEnabled()) return;
@@ -226,7 +229,22 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
         config.SCREEN_SHAKE_DURATION * 3,
         config.SCREEN_SHAKE_INTENSITY_LARGE,
       );
+      this.triggerHitPause(config.HIT_PAUSE_DURATION_LARGE);
     });
+
+    // Pause the game when the tab loses visibility. Skip demo mode since it's
+    // a no-input attract sequence.
+    if (!session.isDemo()) {
+      const onVisibilityChange = (): void => {
+        if (document.hidden) {
+          this.pauseScript.pauseIfPlaying();
+        }
+      };
+      document.addEventListener('visibilitychange', onVisibilityChange);
+      this.events.once('shutdown', () => {
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+      });
+    }
   }
 
   private exitDemo(): void {
@@ -236,11 +254,24 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.navigator.replace(GameSceneType.MainMenu);
   }
 
+  private triggerHitPause(duration: number): void {
+    // Take the longer of any overlapping hit-pauses so a bigger event
+    // (player/base death) isn't cut short by a smaller one.
+    if (duration > this.hitPauseRemaining) {
+      this.hitPauseRemaining = duration;
+    }
+  }
+
   protected onUpdate(deltaTime: number): void {
     const { collisionSystem, gameState } = this.context;
 
     if (this.session.isDemo() && this.inputManager.hasAnyInputThisFrame()) {
       this.exitDemo();
+      return;
+    }
+
+    if (this.hitPauseRemaining > 0) {
+      this.hitPauseRemaining -= deltaTime;
       return;
     }
 

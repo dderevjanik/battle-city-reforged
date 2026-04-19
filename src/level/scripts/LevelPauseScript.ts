@@ -62,6 +62,18 @@ export class LevelPauseScript extends LevelScript {
     }
   }
 
+  public pauseIfPlaying(): void {
+    // Safe to call before setup() has run — the script is only fully wired
+    // after the intro completes.
+    if (!this.gameState || !this.enabled) {
+      return;
+    }
+    if (this.gameState.is(GameState.Playing)) {
+      this.gameState.set(GameState.Paused);
+      this.activate();
+    }
+  }
+
   private activate(): void {
     this.notice.setVisible(true);
     this.notice.restart();

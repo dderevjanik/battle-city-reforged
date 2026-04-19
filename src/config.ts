@@ -118,6 +118,11 @@ export const SCREEN_SHAKE_DURATION = 60;
 export const SCREEN_SHAKE_INTENSITY = 0.003;
 export const SCREEN_SHAKE_INTENSITY_LARGE = 0.01;
 
+// Hit-pause: briefly freeze simulation on tank deaths for extra weight.
+// Gated behind the same setting as screen shake.
+export const HIT_PAUSE_DURATION = 0.05;        // seconds
+export const HIT_PAUSE_DURATION_LARGE = 0.08;  // player / base deaths
+
 export const ACHIEVEMENT_NOTIFICATION_DURATION = 3;
 export const ACHIEVEMENT_NOTIFICATION_Z_INDEX = 9;
 export const STORAGE_KEY_ACHIEVEMENT_UNLOCKED_AT_SUFFIX = '.unlockedAt';

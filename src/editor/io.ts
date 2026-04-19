@@ -100,14 +100,37 @@ export function newMap(): void {
   render();
 }
 
+function validateMap(dto: MapDto): string[] {
+  const issues: string[] = [];
+  if (dto.spawn.player.locations.length === 0) {
+    issues.push('Map has no player spawn points.');
+  }
+  if (dto.spawn.enemy.locations.length === 0) {
+    issues.push('Map has no enemy spawn points.');
+  }
+  return issues;
+}
+
 export function testMap(): void {
-  const json = JSON.stringify(buildMapDto());
-  localStorage.setItem(PLAYTEST_STORAGE_KEY, json);
+  const dto = buildMapDto();
+  const issues = validateMap(dto);
+  if (issues.length > 0) {
+    alert(`Cannot test map:\n\n${issues.join('\n')}`);
+    return;
+  }
+  localStorage.setItem(PLAYTEST_STORAGE_KEY, JSON.stringify(dto));
   window.open('index.html', '_blank');
 }
 
 export function saveMap(): void {
-  const json = JSON.stringify(buildMapDto(), null, 2);
+  const dto = buildMapDto();
+  const issues = validateMap(dto);
+  if (issues.length > 0) {
+    if (!confirm(`Map has issues:\n\n${issues.join('\n')}\n\nSave anyway?`)) {
+      return;
+    }
+  }
+  const json = JSON.stringify(dto, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
   const a    = document.createElement('a');
   a.href     = URL.createObjectURL(blob);

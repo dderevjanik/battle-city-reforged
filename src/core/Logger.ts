@@ -25,7 +25,9 @@ export class Logger {
   }
 
   public debug(...args: any[]): void {
-    // TODO: check for prod build
+    if (import.meta.env.PROD) {
+      return;
+    }
     if (this.level > LogLevel.Debug) {
       return;
     }

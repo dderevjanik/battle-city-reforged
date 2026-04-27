@@ -10,6 +10,7 @@ import { InputHintSettings } from '../input/InputHintSettings';
 import { InputManager } from '../input/InputManager';
 import { MapLoader } from '../map/MapLoader';
 import { PointsHighscoreManager } from '../points/PointsHighscoreManager';
+import { ContinueManager } from '../progress/ContinueManager';
 import { LevelProgressManager } from '../progress/LevelProgressManager';
 
 import { AchievementsManager } from '../achievements/AchievementsManager';
@@ -39,6 +40,7 @@ export interface GameContext {
   inputHintSettings: InputHintSettings;
   inputManager: InputManager;
   gameState: State<GameState>;
+  continueManager: ContinueManager;
   levelProgressManager: LevelProgressManager;
   mapLoader: MapLoader;
   pointsHighscoreManager: PointsHighscoreManager;

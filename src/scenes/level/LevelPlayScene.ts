@@ -4,6 +4,7 @@ import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { Border } from '../../gameObjects/Border';
 import { InputManager } from '../../input/InputManager';
+import { ContinueManager } from '../../progress/ContinueManager';
 import { LevelProgressManager } from '../../progress/LevelProgressManager';
 import { PowerupType } from '../../powerup/PowerupType';
 import { TankDeathReason } from '../../tank/TankTypes';
@@ -48,6 +49,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private session!: Session;
   private inputManager!: InputManager;
   private levelProgressManager!: LevelProgressManager;
+  private continueManager!: ContinueManager;
   private debugCollisionMenu!: DebugCollisionMenu;
   private debugPanelAttached = false;
 
@@ -78,7 +80,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private statsScript!: LevelStatsScript;
 
   protected setup(context: GameContext): void {
-    const { collisionSystem, inputManager, levelProgressManager, session } = context;
+    const { collisionSystem, continueManager, inputManager, levelProgressManager, session } = context;
 
     this.debugCollisionMenu = new DebugCollisionMenu(
       collisionSystem,
@@ -90,6 +92,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
 
     this.inputManager = inputManager;
     this.levelProgressManager = levelProgressManager;
+    this.continueManager = continueManager;
     this.session = session;
 
     const { mapConfig } = this.params;
@@ -347,6 +350,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     // If both players die - game is lost
 
     this.session.setGameOver();
+    this.continueManager.clearContinue();
 
     this.pauseScript.disable();
     this.playerScript.disable();
@@ -384,6 +388,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
 
   private handleBaseDied = (): void => {
     this.session.setGameOver();
+    this.continueManager.clearContinue();
 
     this.pauseScript.disable();
     this.playerScript.disable();

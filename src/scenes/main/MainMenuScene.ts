@@ -6,9 +6,11 @@ import { TextMenuItem } from '../../gameObjects/menu/TextMenuItem';
 import { MainHeading } from '../../gameObjects/text/MainHeading';
 import { SpriteText } from '../../gameObjects/text/SpriteText';
 import { MenuInputContext } from '../../input/InputContexts';
+import { MapLoader } from '../../map/MapLoader';
 import { PointsHighscoreManager } from '../../points/PointsHighscoreManager';
 import { ACHIEVEMENTS } from '../../achievements/AchievementsRegistry';
 import { AchievementsManager } from '../../achievements/AchievementsManager';
+import { ContinueManager } from '../../progress/ContinueManager';
 import { GameStatsManager } from '../../stats/GameStatsManager';
 import * as config from '../../config';
 
@@ -36,6 +38,7 @@ export class MainMenuScene extends GameScene {
   private group!: GameObject;
   private heading!: MainHeading;
   private menu!: Menu;
+  private continueItem: TextMenuItem | null = null;
   private singlePlayerItem!: TextMenuItem;
   private multiPlayerItem!: TextMenuItem;
   private settingsItem!: TextMenuItem;
@@ -46,8 +49,11 @@ export class MainMenuScene extends GameScene {
   private pointsHighscoreManager!: PointsHighscoreManager;
   private achievementsManager!: AchievementsManager;
   private gameStatsManager!: GameStatsManager;
+  private continueManager!: ContinueManager;
+  private mapLoader!: MapLoader;
 
   protected setup({
+    continueManager,
     mapLoader,
     pointsHighscoreManager,
     session,
@@ -58,6 +64,8 @@ export class MainMenuScene extends GameScene {
     this.pointsHighscoreManager = pointsHighscoreManager;
     this.achievementsManager = achievementsManager;
     this.gameStatsManager = gameStatsManager;
+    this.continueManager = continueManager;
+    this.mapLoader = mapLoader;
 
     // Restore source for maps to default
     mapLoader.restoreDefaultReader();
@@ -118,12 +126,20 @@ export class MainMenuScene extends GameScene {
     this.achievementsItem = new TextMenuItem('ACHIEVEMENTS');
     this.achievementsItem.selected.addListener(this.handleAchievementsSelected);
 
-    const menuItems = [
+    const menuItems: TextMenuItem[] = [];
+
+    if (this.continueManager.hasContinue()) {
+      this.continueItem = new TextMenuItem('CONTINUE');
+      this.continueItem.selected.addListener(this.handleContinueSelected);
+      menuItems.push(this.continueItem);
+    }
+
+    menuItems.push(
       this.singlePlayerItem,
       this.multiPlayerItem,
       this.settingsItem,
       this.achievementsItem,
-    ];
+    );
 
     this.menu = new Menu();
     this.menu.setItems(menuItems);
@@ -199,6 +215,24 @@ export class MainMenuScene extends GameScene {
     if (_rendererScene === null) return false;
     return _rendererScene.input.manager.pointers.some((p) => p.isDown);
   }
+
+  private handleContinueSelected = (): void => {
+    const point = this.continueManager.getContinue();
+    if (point === null) {
+      return;
+    }
+
+    const seenIntro = this.session.haveSeenIntro();
+    this.session.reset();
+    this.session.setSeenIntro(seenIntro);
+    this.session.setPlayerCount(1);
+    this.session.setDifficulty(point.difficulty);
+    this.session.setEnemyPowerupsEnabled(point.enemyPowerupsEnabled);
+    this.session.primaryPlayer.setGamePoints(point.gamePoints);
+    this.session.primaryPlayer.setLives(point.lives);
+    this.session.start(point.levelNumber, this.mapLoader.getItemsCount());
+    this.navigator.push(GameSceneType.LevelLoad);
+  };
 
   private handleSinglePlayerSelected = (): void => {
     this.navigator.push(GameSceneType.LevelSelection);

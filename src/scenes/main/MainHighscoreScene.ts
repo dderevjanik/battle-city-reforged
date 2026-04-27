@@ -13,6 +13,7 @@ export class MainHighscoreScene extends GameScene {
   protected setup({
     audioManager,
     audioLoader,
+    continueManager,
     pointsHighscoreManager,
     session,
   }: GameContext): void {
@@ -27,6 +28,10 @@ export class MainHighscoreScene extends GameScene {
     const maxHighscore = pointsHighscoreManager.getOverallMaxPoints();
 
     const wasMultiplayer = session.isMultiplayer();
+
+    // Clear the single-player continue snapshot — covers victory path
+    // (game-over path also clears inline in LevelPlayScene)
+    continueManager.clearContinue();
 
     // Reset all previous game session data
     session.reset();

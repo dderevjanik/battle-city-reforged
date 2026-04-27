@@ -30,6 +30,7 @@ export class LevelLoadScene extends GameScene {
   private log = new Logger(LevelLoadScene.name, Logger.Level.Warn);
 
   protected setup({
+    continueManager,
     inputHintSettings,
     mapLoader,
     session,
@@ -38,6 +39,20 @@ export class LevelLoadScene extends GameScene {
     this.session = session;
 
     const levelNumber = this.session.getLevelNumber();
+
+    const isSinglePlayerRun = !session.isMultiplayer()
+      && !session.isDemo()
+      && !session.isPlaytest();
+
+    if (isSinglePlayerRun) {
+      continueManager.saveContinue({
+        levelNumber,
+        difficulty: session.getDifficulty(),
+        enemyPowerupsEnabled: session.isEnemyPowerupsEnabled(),
+        gamePoints: session.primaryPlayer.getGamePoints(),
+        lives: session.primaryPlayer.getLivesCount(),
+      });
+    }
 
     this.curtain = new Curtain(
       this.root.size.width,

@@ -113,6 +113,7 @@ export const STORAGE_KEY_SETTINGS_SCREEN_SHAKE_ENABLED = 'settings.screen-shake-
 export const STORAGE_KEY_ACHIEVEMENT_PREFIX = 'achievement.';
 export const STORAGE_KEY_GAME_STATS = 'game.stats';
 export const STORAGE_KEY_LEVELS_COMPLETED = 'levels.completed';
+export const STORAGE_KEY_CONTINUE = 'progress.continue';
 
 export const SCREEN_SHAKE_DURATION = 60;
 export const SCREEN_SHAKE_INTENSITY = 0.003;

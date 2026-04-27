@@ -128,6 +128,16 @@ export class SessionPlayer {
     this.lives -= 1;
   }
 
+  public setGamePoints(value: number): void {
+    this.gamePoints = value;
+    const stride = config.PLAYER_EXTRA_LIVE_POINTS;
+    this.nextLifePointThreshold = (Math.floor(value / stride) + 1) * stride;
+  }
+
+  public setLives(value: number): void {
+    this.lives = value;
+  }
+
   public setInputVariant(inputVariant: InputVariant): void {
     this.inputVariant = inputVariant;
   }

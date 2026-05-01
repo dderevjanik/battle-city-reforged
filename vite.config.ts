@@ -4,6 +4,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? '/battle-city-reforged/' : '/',
   build: {
+    sourcemap: true,
     rollupOptions: {
       input: {
         main: 'index.html',

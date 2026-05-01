@@ -56,9 +56,16 @@ export const SRECTS: Record<string, SpriteRect> = {
   water2:     [1116, 192, 32, 32],
   ice:        [1180, 128, 32, 32],
   base:       [1244, 128, 64, 64],
-  playerTank: [4,      8, 52, 52],  // player primary basic up.1
   enemyTank:  [524,  264, 52, 60],  // enemy default basic up.1
 };
+
+// Player tank sprites by player index (P1..P4)
+export const PLAYER_TANK_RECTS: SpriteRect[] = [
+  [  4,   8, 52, 52],  // P1 primary
+  [  4, 532, 52, 52],  // P2 secondary
+  [524,   8, 52, 52],  // P3 default
+  [524, 532, 52, 52],  // P4 danger
+];
 
 export const DEF_PLAYER: SpawnPoint[] = [{ x: 256, y: 768 }, { x: 512, y: 768 }];
 export const DEF_ENEMY:  SpawnPoint[] = [{ x: 0, y: 0 }, { x: 384, y: 0 }, { x: 768, y: 0 }];

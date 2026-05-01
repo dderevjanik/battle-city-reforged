@@ -1,4 +1,4 @@
-import { FIELD, TS, TM, TL, GW, GH, COLORS, SNAP, BRUSHES, I2T, SRECTS, SPRITE_SRC } from './constants';
+import { FIELD, TS, TM, TL, GW, GH, COLORS, SNAP, BRUSHES, I2T, SRECTS, SPRITE_SRC, PLAYER_TANK_RECTS } from './constants';
 import { state } from './state';
 
 // ── Canvas refs (set via setup()) ──────────────────
@@ -118,13 +118,16 @@ export function render(): void {
 
   // ── Markers ──
   state.basePositions.forEach((s, i) => drawBase(s.x, s.y, state.basePositions.length > 1 ? `B${i + 1}` : 'BASE'));
-  state.playerSpawns.forEach((s, i) => drawMarker(s.x, s.y, `P${i + 1}`, '#1f6feb', '#74b0ff', SRECTS.playerTank));
+  state.playerSpawns.forEach((s, i) => drawMarker(s.x, s.y, `P${i + 1}`, '#1f6feb', '#74b0ff', PLAYER_TANK_RECTS[i % PLAYER_TANK_RECTS.length]));
   state.enemySpawns.forEach( (s, i) => drawMarker(s.x, s.y, `E${i + 1}`, '#da3633', '#ff8080', SRECTS.enemyTank));
 
   // ── Brush preview ──
   if (state.mode === 'terrain' && !state.isPanning) drawBrushPreview();
   if (state.mode === 'base-spawn' && !state.isPanning) drawBasePreview();
-  if (state.mode === 'player-spawn' && !state.isPanning) drawSpawnPreview('#1f6feb', SRECTS.playerTank);
+  if (state.mode === 'player-spawn' && !state.isPanning) {
+    const nextIdx = Math.min(state.playerSpawns.length, PLAYER_TANK_RECTS.length - 1);
+    drawSpawnPreview('#1f6feb', PLAYER_TANK_RECTS[nextIdx]);
+  }
   if (state.mode === 'enemy-spawn' && !state.isPanning) drawSpawnPreview('#da3633', SRECTS.enemyTank);
 }
 

@@ -1,5 +1,5 @@
-export const IS_DEV = process.env.NODE_ENV === 'development';
-export const IS_PROD = process.env.NODE_ENV === 'production';
+export const IS_DEV = import.meta.env.DEV;
+export const IS_PROD = import.meta.env.PROD;
 
 export const TILE_SIZE_SMALL = 16;
 export const TILE_SIZE_MEDIUM = 32;
@@ -179,4 +179,4 @@ export const MODAL_Z_INDEX = 11;
 export const DEBUG_COLLISION_RECT_Z_INDEX = 20;
 export const DEBUG_GRID_Z_INDEX = 21;
 
-export const GITHUB_URL = 'https://github.com/dogballs/cattle-bity';
+export const GITHUB_URL = 'https://github.com/dderevjanik/battle-city-reforged';

@@ -34,7 +34,8 @@
     "start": "vite --open",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test 'src/**/*.test.ts'"
+    "test": "tsx --test 'src/**/*.test.ts'",
+    "test:coverage": "tsx --test --experimental-test-coverage 'src/**/*.test.ts'"
   },
   "dependencies": {
     "ajv": "^8.18.0",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.0",
     "vite": "^8.0.7",
     "vite-plugin-static-copy": "^4.0.1"

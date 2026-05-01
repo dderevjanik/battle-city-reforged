@@ -28,11 +28,12 @@ Project is not commercial and was created for learning purposes only.
 - Customizable keybindings
 - Modern and Classic tilesets
 - Level progress tracking
+- Single-player Continue (resume an interrupted run from the Main Menu)
 - In-game score display and highscores
 
 ## Features
 
-- Single player campaign (35 original maps)
+- Single player campaign (35 original maps) with Continue support — auto-saves at the start of each level so you can resume from the Main Menu after closing the tab; cleared on death so you can't dodge a game-over
 - Multiplayer (up to 4 players, same PC)
 - 3 difficulty modes (Classic / Hard / Extreme)
 - 7 powerups with weighted spawn distribution

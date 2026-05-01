@@ -1,5 +1,32 @@
 {
+  "name": "battle-city-reforged",
+  "version": "0.1.0",
+  "description": "Battle City (1985, Namco) remake in TypeScript. Up to 4 players, 3 difficulties, 17 achievements, level editor, and more.",
   "private": true,
+  "license": "MIT",
+  "author": "Daniel Derevjanik",
+  "contributors": [
+    "Michael Radionov <mradionov.oss@gmail.com> (https://github.com/mradionov)"
+  ],
+  "homepage": "https://github.com/dderevjanik/battle-city-reforged/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dderevjanik/battle-city-reforged.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dderevjanik/battle-city-reforged/issues"
+  },
+  "keywords": [
+    "battle-city",
+    "game",
+    "typescript",
+    "phaser",
+    "vite",
+    "pwa",
+    "browser-game",
+    "retro",
+    "nes"
+  ],
   "engines": {
     "node": ">=24.0.0"
   },

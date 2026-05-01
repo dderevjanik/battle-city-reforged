@@ -230,6 +230,7 @@ export class MainMenuScene extends GameScene {
     this.session.setEnemyPowerupsEnabled(point.enemyPowerupsEnabled);
     this.session.primaryPlayer.setGamePoints(point.gamePoints);
     this.session.primaryPlayer.setLives(point.lives);
+    this.session.primaryPlayer.setTankKind(point.tankKind);
     this.session.start(point.levelNumber, this.mapLoader.getItemsCount());
     this.navigator.push(GameSceneType.LevelLoad);
   };

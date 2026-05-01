@@ -1,5 +1,6 @@
 import { GameStorage } from '../game/GameStorage';
 import { Difficulty } from '../game/Difficulty';
+import { TankKind } from '../tank/TankTypes';
 import * as config from '../config';
 
 export interface ContinuePoint {
@@ -8,6 +9,7 @@ export interface ContinuePoint {
   enemyPowerupsEnabled: boolean;
   gamePoints: number;
   lives: number;
+  tankKind: TankKind;
 }
 
 export class ContinueManager {
@@ -64,12 +66,22 @@ export class ContinueManager {
       && this.isDifficulty(candidate.difficulty)
       && typeof candidate.enemyPowerupsEnabled === 'boolean'
       && typeof candidate.gamePoints === 'number'
-      && typeof candidate.lives === 'number';
+      && typeof candidate.lives === 'number'
+      && this.isTankKind(candidate.tankKind);
   }
 
   private isDifficulty(value: unknown): value is Difficulty {
     return value === Difficulty.Classic
       || value === Difficulty.Hard
       || value === Difficulty.Extreme;
+  }
+
+  private isTankKind(value: unknown): value is TankKind {
+    return value === TankKind.Basic
+      || value === TankKind.Fast
+      || value === TankKind.FastArmored
+      || value === TankKind.FastBomber
+      || value === TankKind.Medium
+      || value === TankKind.Heavy;
   }
 }

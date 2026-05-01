@@ -51,6 +51,7 @@ export class LevelLoadScene extends GameScene {
         enemyPowerupsEnabled: session.isEnemyPowerupsEnabled(),
         gamePoints: session.primaryPlayer.getGamePoints(),
         lives: session.primaryPlayer.getLivesCount(),
+        tankKind: session.primaryPlayer.getTankKind(),
       });
     }
 

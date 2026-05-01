@@ -1,3 +1,5 @@
+import './main.css';
+
 import { Logger } from './core/Logger';
 import { State } from './core/State';
 import { CollisionSystem } from './core/collision/CollisionSystem';

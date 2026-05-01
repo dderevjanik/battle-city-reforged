@@ -46,6 +46,7 @@ Project is not commercial and was created for learning purposes only.
 - Keyboard, gamepad, and touch input
 - Customizable keybindings and audio settings
 - Score tracking and highscores
+- Installable as a Progressive Web App — fully offline-playable after first load
 
 ## Getting Started
 
@@ -64,6 +65,7 @@ npm test           # run tests
 - TypeScript 6
 - Phaser 4
 - Vite 8
+- Service Worker (custom) for offline play and PWA install
 
 ## Acknowledgments
 

@@ -173,3 +173,11 @@ main().catch((err) => {
   console.error('Failed to start game:', err);
   loadingElement!.textContent =`ERROR: ${err.message}`;
 });
+
+if (config.IS_PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((err) => {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}

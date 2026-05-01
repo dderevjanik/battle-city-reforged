@@ -1,6 +1,9 @@
 import './main.css';
 
+import { installErrorReporter, reportManual } from './core/ErrorReporter';
 import { Logger } from './core/Logger';
+
+installErrorReporter();
 import { State } from './core/State';
 import { CollisionSystem } from './core/collision/CollisionSystem';
 import { ColorSpriteFontGenerator } from './core/graphics/ColorSpriteFontGenerator';
@@ -38,7 +41,10 @@ import mapManifest from '../data/map.manifest.json';
 
 const loadingElement = document.querySelector('[data-loading]');
 
-const log = new Logger('main', Logger.Level.Debug);
+const log = new Logger(
+  'main',
+  import.meta.env.PROD ? Logger.Level.Warn : Logger.Level.Debug,
+);
 
 const gameStorage = new GameStorage(config.STORAGE_NAMESPACE);
 gameStorage.load();
@@ -170,7 +176,7 @@ async function main(): Promise<void> {
 }
 
 main().catch((err) => {
-  console.error('Failed to start game:', err);
+  reportManual(err);
   loadingElement!.textContent =`ERROR: ${err.message}`;
 });
 

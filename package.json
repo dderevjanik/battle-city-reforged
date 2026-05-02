@@ -32,6 +32,7 @@
   },
   "scripts": {
     "start": "vite --open",
+    "dev": "vite --open",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test 'src/**/*.test.ts'",

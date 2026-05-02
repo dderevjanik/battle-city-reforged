@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Battle City Reforged - Font Comparison</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #0d1117; color: #e0e0e0; font-family: 'Courier New', monospace; font-size: 13px; min-height: 100vh; }
+    body { padding: 24px; }
+
+    h1 { color: #f85149; font-size: 18px; letter-spacing: 1px; margin-bottom: 4px; }
+    .sub { color: #6e7681; font-size: 11px; margin-bottom: 24px; }
+
+    .controls { background: #161b22; border: 1px solid #30363d; padding: 12px; margin-bottom: 24px; }
+    .controls label { display: block; color: #8b949e; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .controls input[type="text"] {
+      width: 100%; background: #0d1117; border: 1px solid #30363d; color: #e0e0e0;
+      padding: 6px 8px; font: inherit; font-size: 13px;
+    }
+    .controls input[type="text"]:focus { outline: none; border-color: #388bfd; }
+
+    .controls .row { display: flex; gap: 16px; align-items: center; margin-top: 10px; }
+    .controls .row label { display: flex; align-items: center; gap: 6px; margin: 0; text-transform: none; letter-spacing: 0; }
+    .controls input[type="range"] { width: 160px; }
+
+    .preview { background: #161b22; border: 1px solid #30363d; padding: 16px; margin-bottom: 24px; }
+    .preview-row { display: grid; grid-template-columns: 80px 1fr; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid #21262d; min-height: 56px; }
+    .preview-row:last-child { border-bottom: none; }
+    .preview-label { color: #6e7681; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+    .preview-content { display: flex; flex-wrap: wrap; gap: 0; align-items: center; }
+
+    .preview-content.system-font { font-family: 'Press Start 2P', 'VT323', 'Courier New', monospace; color: var(--font-color, #ffffff); }
+
+    .grid-table { background: #161b22; border: 1px solid #30363d; padding: 16px; }
+    .grid-table h2 { color: #c9d1d9; font-size: 14px; margin-bottom: 12px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 6px;
+    }
+    .cell {
+      background: #0d1117; border: 1px solid #21262d; padding: 6px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; align-items: center;
+    }
+    .cell .meta {
+      grid-column: 1 / -1;
+      display: flex; justify-content: space-between;
+      color: #6e7681; font-size: 9px; padding-bottom: 2px; border-bottom: 1px solid #21262d; margin-bottom: 2px;
+    }
+    .cell .meta .ch { color: #c9d1d9; font-size: 14px; }
+    .cell .col { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .cell .col-label { color: #6e7681; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .glyph-sprite {
+      -webkit-mask-image: url('./data/fonts/sprite-font.png');
+              mask-image: url('./data/fonts/sprite-font.png');
+      -webkit-mask-repeat: no-repeat;
+              mask-repeat: no-repeat;
+      background-color: var(--font-color, #ffffff);
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    .glyph-canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+    .glyph-system { color: var(--font-color, #ffffff); font-family: 'Press Start 2P', 'VT323', 'Courier New', monospace; line-height: 1; }
+    .glyph-missing { color: #484f58; font-size: 9px; font-style: italic; }
+
+    .legend { color: #6e7681; font-size: 10px; margin-bottom: 12px; }
+    .legend code { background: #0d1117; padding: 1px 4px; border: 1px solid #21262d; }
+  </style>
+</head>
+<body>
+  <h1>FONT COMPARISON</h1>
+  <div class="sub">Sprite font vs. rect font vs. system font · Battle City Reforged</div>
+
+  <div class="controls">
+    <label for="text-input">Sample text</label>
+    <input type="text" id="text-input" value="BATTLE CITY REFORGED 1985" autocomplete="off" />
+    <div class="row">
+      <label>Scale: <input type="range" id="scale" min="1" max="4" step="1" value="2" /> <span id="scale-val">2x</span></label>
+      <label>Color: <input type="color" id="color" value="#ffffff" /></label>
+    </div>
+  </div>
+
+  <div class="preview">
+    <div class="preview-row">
+      <div class="preview-label">System</div>
+      <div class="preview-content system-font" id="preview-system"></div>
+    </div>
+    <div class="preview-row">
+      <div class="preview-label">Sprite</div>
+      <div class="preview-content" id="preview-sprite"></div>
+    </div>
+    <div class="preview-row">
+      <div class="preview-label">Rect</div>
+      <div class="preview-content" id="preview-rect"></div>
+    </div>
+  </div>
+
+  <div class="grid-table">
+    <h2>Per-character comparison</h2>
+    <div class="legend">
+      Columns: <code>system</code> · <code>sprite</code> (PNG) · <code>rect</code> (procedural).
+      A <code>—</code> means the font does not define that glyph.
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <script type="module">
+    const [spriteCfg, rectCfg] = await Promise.all([
+      fetch('./data/fonts/sprite-font.json').then(r => r.json()),
+      fetch('./data/fonts/rect-font.json').then(r => r.json()),
+    ]);
+
+    const scaleInput = document.getElementById('scale');
+    const scaleVal = document.getElementById('scale-val');
+    const textInput = document.getElementById('text-input');
+    const colorInput = document.getElementById('color');
+
+    function currentColor() { return colorInput.value; }
+    function applyColor() { document.documentElement.style.setProperty('--font-color', currentColor()); }
+
+    function spriteGlyph(ch, scale) {
+      const idx = spriteCfg.characterSet.indexOf(ch);
+      if (idx < 0) return null;
+      const col = idx % spriteCfg.columnCount;
+      const row = Math.floor(idx / spriteCfg.columnCount);
+      const cw = spriteCfg.characterWidth;
+      const chh = spriteCfg.characterHeight;
+      const sx = spriteCfg.offsetX + col * (cw + spriteCfg.horizontalSpacing);
+      const sy = spriteCfg.offsetY + row * (chh + spriteCfg.verticalSpacing);
+
+      const el = document.createElement('div');
+      el.className = 'glyph-sprite';
+      el.style.width = `${cw * scale}px`;
+      el.style.height = `${chh * scale}px`;
+      const posX = `-${sx * scale}px`;
+      const posY = `-${sy * scale}px`;
+      const sizeX = `${(cw + spriteCfg.horizontalSpacing) * spriteCfg.columnCount * scale}px`;
+      const sizeY = `${(chh + spriteCfg.verticalSpacing) * spriteCfg.rowCount * scale}px`;
+      el.style.webkitMaskPosition = `${posX} ${posY}`;
+      el.style.maskPosition = `${posX} ${posY}`;
+      el.style.webkitMaskSize = `${sizeX} ${sizeY}`;
+      el.style.maskSize = `${sizeX} ${sizeY}`;
+      return el;
+    }
+
+    function rectGlyph(ch, scale) {
+      const idx = rectCfg.characterSet.indexOf(ch);
+      if (idx < 0) return null;
+      const grid = rectCfg.characters[idx];
+      const w = rectCfg.characterWidth;
+      const h = rectCfg.characterHeight;
+      const canvas = document.createElement('canvas');
+      canvas.className = 'glyph-canvas';
+      canvas.width = w;
+      canvas.height = h;
+      canvas.style.width = `${w * scale}px`;
+      canvas.style.height = `${h * scale}px`;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = currentColor();
+      for (let y = 0; y < h; y++) {
+        const line = grid[y] ?? '';
+        for (let x = 0; x < w; x++) {
+          if (line[x] === rectCfg.fillSymbol) {
+            ctx.fillRect(x, y, 1, 1);
+          }
+        }
+      }
+      return canvas;
+    }
+
+    function systemGlyph(ch, scale) {
+      const el = document.createElement('span');
+      el.className = 'glyph-system';
+      el.style.fontSize = `${spriteCfg.characterHeight * scale * 0.85}px`;
+      el.textContent = ch;
+      return el;
+    }
+
+    function missingPlaceholder(scale, ref = spriteCfg) {
+      const el = document.createElement('div');
+      el.className = 'glyph-missing';
+      el.style.width = `${ref.characterWidth * scale}px`;
+      el.style.height = `${ref.characterHeight * scale}px`;
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.textContent = '—';
+      return el;
+    }
+
+    function renderPreview() {
+      const text = textInput.value;
+      const scale = parseInt(scaleInput.value, 10);
+      const sys = document.getElementById('preview-system');
+      const spr = document.getElementById('preview-sprite');
+      const rct = document.getElementById('preview-rect');
+      sys.innerHTML = '';
+      spr.innerHTML = '';
+      rct.innerHTML = '';
+      sys.style.fontSize = `${spriteCfg.characterHeight * scale * 0.85}px`;
+      sys.textContent = text;
+
+      for (const ch of text) {
+        spr.appendChild(spriteGlyph(ch, scale) ?? missingPlaceholder(scale, spriteCfg));
+        rct.appendChild(rectGlyph(ch, scale) ?? missingPlaceholder(scale, rectCfg));
+      }
+    }
+
+    function renderGrid() {
+      const scale = Math.max(1, parseInt(scaleInput.value, 10) - 1);
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+
+      // Union of both character sets, preserving sprite order first.
+      const seen = new Set();
+      const order = [];
+      for (const ch of spriteCfg.characterSet) {
+        if (!seen.has(ch)) { seen.add(ch); order.push(ch); }
+      }
+      for (const ch of rectCfg.characterSet) {
+        if (!seen.has(ch)) { seen.add(ch); order.push(ch); }
+      }
+
+      for (const ch of order) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        const chLabel = document.createElement('span');
+        chLabel.className = 'ch';
+        chLabel.textContent = ch === ' ' ? '␣' : ch;
+        const code = document.createElement('span');
+        code.textContent = 'U+' + ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+        meta.appendChild(chLabel);
+        meta.appendChild(code);
+        cell.appendChild(meta);
+
+        for (const [label, glyph] of [
+          ['sys', systemGlyph(ch, scale)],
+          ['spr', spriteGlyph(ch, scale) ?? missingPlaceholder(scale, spriteCfg)],
+          ['rct', rectGlyph(ch, scale) ?? missingPlaceholder(scale, rectCfg)],
+        ]) {
+          const col = document.createElement('div');
+          col.className = 'col';
+          col.appendChild(glyph);
+          const lbl = document.createElement('div');
+          lbl.className = 'col-label';
+          lbl.textContent = label;
+          col.appendChild(lbl);
+          cell.appendChild(col);
+        }
+
+        grid.appendChild(cell);
+      }
+    }
+
+    scaleInput.addEventListener('input', () => {
+      scaleVal.textContent = `${scaleInput.value}x`;
+      renderPreview();
+      renderGrid();
+    });
+    textInput.addEventListener('input', renderPreview);
+    colorInput.addEventListener('input', () => {
+      applyColor();
+      // Rect glyphs are pre-rendered to canvas with the previous color, so re-render.
+      renderPreview();
+      renderGrid();
+    });
+
+    applyColor();
+    renderPreview();
+    renderGrid();
+  </script>
+</body>
+</html>

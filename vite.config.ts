@@ -9,6 +9,7 @@ export default defineConfig(({ command }) => ({
       input: {
         main: 'index.html',
         editor: 'editor.html',
+        fonts: 'fonts.html',
       },
       output: {
         entryFileNames: 'assets/[name]-[hash].js',

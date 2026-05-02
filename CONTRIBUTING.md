@@ -17,7 +17,10 @@ npm install
 npm start          # dev server, opens browser
 ```
 
-The map editor is available at `/editor.html` once the dev server is running.
+Once the dev server is running, the following pages are served alongside the game:
+
+- `/editor.html` — map editor
+- `/fonts.html` — sprite-font / rect-font / system-font comparison tool (useful when auditing the bitmap font sheet)
 
 ## Workflow
 

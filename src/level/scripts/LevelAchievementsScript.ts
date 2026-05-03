@@ -1,3 +1,4 @@
+import { Analytics } from '../../analytics/Analytics';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { AchievementNotification } from '../../gameObjects/AchievementNotification';
 import { PowerupType } from '../../powerup/PowerupType';
@@ -25,6 +26,7 @@ const NOTIFICATION_Y = 730;
 export class LevelAchievementsScript extends LevelScript {
   private manager!: AchievementsManager;
   private tracker!: AchievementsTracker;
+  private analytics!: Analytics;
   private notificationQueue: Achievement[] = [];
   private isShowingNotification = false;
   private prevWipeoutUsedWithoutKill = false;
@@ -32,6 +34,7 @@ export class LevelAchievementsScript extends LevelScript {
   protected setup(context: GameContext): void {
     this.manager = context.achievementsManager;
     this.tracker = context.achievementsTracker;
+    this.analytics = context.analytics;
 
     if (this.session.getLevelNumber() === this.session.getStartLevelNumber()) {
       this.tracker.reset();
@@ -102,6 +105,7 @@ export class LevelAchievementsScript extends LevelScript {
     const newIds = this.tracker.getNewlyUnlocked(ACHIEVEMENTS, this.manager, this.session);
     for (const id of newIds) {
       this.manager.unlock(id);
+      this.analytics.track('achievement_unlocked', { id });
       const achievement = ACHIEVEMENTS.find((a) => a.id === id);
       if (achievement !== undefined) {
         this.notificationQueue.push(achievement);

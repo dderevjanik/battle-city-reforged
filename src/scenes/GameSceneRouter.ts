@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 
+import { Analytics } from '../analytics/Analytics';
 import { SceneNavigator, SceneParams } from '../core/scene/Scene';
 
 import { GameSceneType } from './GameSceneType';
@@ -7,6 +8,11 @@ import { GameSceneType } from './GameSceneType';
 export class GameSceneRouter implements SceneNavigator {
   private scenePlugin: Phaser.Scenes.ScenePlugin | null = null;
   private readonly stack: { type: GameSceneType; params: SceneParams }[] = [];
+  private readonly analytics: Analytics;
+
+  constructor(analytics: Analytics) {
+    this.analytics = analytics;
+  }
 
   /**
    * Called by each GameScene.create() so the router always holds the active
@@ -25,14 +31,18 @@ export class GameSceneRouter implements SceneNavigator {
   public push(type: GameSceneType, params?: SceneParams): void {
     const safe = params ?? {};
     this.stack.push({ type, params: safe });
-    this.scenePlugin!.start(GameSceneType[type], safe);
+    const name = GameSceneType[type];
+    this.scenePlugin!.start(name, safe);
+    this.analytics.pageview(name);
   }
 
   public replace(type: GameSceneType, params?: SceneParams): void {
     const safe = params ?? {};
     this.stack.pop();
     this.stack.push({ type, params: safe });
-    this.scenePlugin!.start(GameSceneType[type], safe);
+    const name = GameSceneType[type];
+    this.scenePlugin!.start(name, safe);
+    this.analytics.pageview(name);
   }
 
   public back(): void {
@@ -41,7 +51,9 @@ export class GameSceneRouter implements SceneNavigator {
     }
     this.stack.pop();
     const prev = this.stack[this.stack.length - 1];
-    this.scenePlugin!.start(GameSceneType[prev.type], prev.params);
+    const name = GameSceneType[prev.type];
+    this.scenePlugin!.start(name, prev.params);
+    this.analytics.pageview(name);
   }
 
   public clearAndPush(type: GameSceneType, params?: SceneParams): void {

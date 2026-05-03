@@ -1,3 +1,4 @@
+import { Analytics } from '../../analytics/Analytics';
 import { DebugCollisionMenu } from '../../debug/DebugCollisionMenu';
 import { GameState } from '../../game/GameState';
 import { GameContext } from '../../game/GameUpdateArgs';
@@ -50,8 +51,13 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private inputManager!: InputManager;
   private levelProgressManager!: LevelProgressManager;
   private continueManager!: ContinueManager;
+  private analytics!: Analytics;
   private debugCollisionMenu!: DebugCollisionMenu;
   private debugPanelAttached = false;
+
+  private levelStartMs = 0;
+  private levelKills = 0;
+  private levelDeaths = 0;
 
   private allScripts: LevelScript[] = [];
   private alwaysUpdateScripts: LevelScript[] = [];
@@ -80,7 +86,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private statsScript!: LevelStatsScript;
 
   protected setup(context: GameContext): void {
-    const { collisionSystem, continueManager, inputManager, levelProgressManager, session } = context;
+    const { analytics, collisionSystem, continueManager, inputManager, levelProgressManager, session } = context;
 
     this.debugCollisionMenu = new DebugCollisionMenu(
       collisionSystem,
@@ -94,6 +100,19 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.levelProgressManager = levelProgressManager;
     this.continueManager = continueManager;
     this.session = session;
+    this.analytics = analytics;
+
+    this.levelStartMs = Date.now();
+    this.levelKills = 0;
+    this.levelDeaths = 0;
+
+    if (!session.isDemo() && !session.isPlaytest()) {
+      this.analytics.track('level_start', {
+        level: session.getLevelNumber(),
+        difficulty: session.getDifficulty(),
+        party_size: session.getPlayerCount(),
+      });
+    }
 
     const { mapConfig } = this.params;
 
@@ -333,6 +352,8 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   }
 
   private handlePlayerDied = (event: LevelPlayerDiedEvent): void => {
+    this.levelDeaths += 1;
+
     const playerSession = this.session.getPlayer(event.partyIndex);
     playerSession.removeLife();
 
@@ -366,6 +387,8 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   };
 
   private handleEnemyDied = (event: LevelEnemyDiedEvent): void => {
+    this.levelKills += 1;
+
     // Only kills are awarded
     if (event.reason === TankDeathReason.WipeoutPowerup) {
       return;
@@ -377,6 +400,14 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   };
 
   private handlePowerupPicked = (event: LevelPowerupPickedEvent): void => {
+    if (!this.session.isDemo() && !this.session.isPlaytest()) {
+      this.analytics.track('powerup_picked', {
+        type: event.type,
+        level: this.session.getLevelNumber(),
+        party_index: event.partyIndex,
+      });
+    }
+
     const playerSession = this.session.getPlayer(event.partyIndex);
 
     playerSession.addPowerupPoints(event.type);
@@ -417,6 +448,14 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       return;
     }
 
+    this.analytics.track('game_over', {
+      level: this.session.getLevelNumber(),
+      score: this.session.getMaxGamePoints(),
+      kills: this.levelKills,
+      deaths: this.levelDeaths,
+      difficulty: this.session.getDifficulty(),
+    });
+
     this.navigator.replace(GameSceneType.LevelScore);
   };
 
@@ -430,6 +469,15 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       this.navigator.replace(GameSceneType.MainMenu);
       return;
     }
+
+    this.analytics.track('level_complete', {
+      level: this.session.getLevelNumber(),
+      difficulty: this.session.getDifficulty(),
+      party_size: this.session.getPlayerCount(),
+      kills: this.levelKills,
+      deaths: this.levelDeaths,
+      time_sec: Math.round((Date.now() - this.levelStartMs) / 1000),
+    });
 
     this.levelProgressManager.markLevelCompleted(this.session.getLevelNumber());
     this.navigator.replace(GameSceneType.LevelScore);

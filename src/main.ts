@@ -2,8 +2,12 @@ import './main.css';
 
 import { installErrorReporter, reportManual } from './core/ErrorReporter';
 import { Logger } from './core/Logger';
+import { Analytics } from './analytics/Analytics';
 
 installErrorReporter();
+
+const analytics = new Analytics();
+analytics.init();
 import { State } from './core/State';
 import { CollisionSystem } from './core/collision/CollisionSystem';
 import { ColorSpriteFontGenerator } from './core/graphics/ColorSpriteFontGenerator';
@@ -98,6 +102,7 @@ const gameContext: GameContext = {
   debugSettings,
   achievementsManager,
   achievementsTracker,
+  analytics,
   gameStatsManager,
   audioManager,
   audioLoader,

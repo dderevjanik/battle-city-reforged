@@ -109,8 +109,18 @@ export class LevelSelectionScene extends GameScene {
 
   private handleStartSelected = (): void => {
     const stageNumber = this.stageItem.getValue()!;
-    this.session.setDifficulty(this.difficultyItem.getValue()!);
+    const difficulty = this.difficultyItem.getValue()!;
+    this.session.setDifficulty(difficulty);
     this.session.start(stageNumber, this.mapLoader.getItemsCount());
+    this.context.analytics.track('difficulty_selected', { difficulty });
+    this.context.analytics.track('game_start', {
+      difficulty,
+      party_size: this.session.getPlayerCount(),
+      start_level: stageNumber,
+      enemy_powerups: this.session.isEnemyPowerupsEnabled(),
+      friendly_fire: this.session.isFriendlyFireEnabled(),
+      via: 'new',
+    });
     this.navigator.replace(GameSceneType.LevelLoad);
   };
 

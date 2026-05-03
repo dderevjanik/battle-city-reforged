@@ -232,6 +232,13 @@ export class MainMenuScene extends GameScene {
     this.session.primaryPlayer.setLives(point.lives);
     this.session.primaryPlayer.setTankKind(point.tankKind);
     this.session.start(point.levelNumber, this.mapLoader.getItemsCount());
+    this.context.analytics.track('game_start', {
+      difficulty: point.difficulty,
+      party_size: this.session.getPlayerCount(),
+      start_level: point.levelNumber,
+      enemy_powerups: point.enemyPowerupsEnabled,
+      via: 'continue',
+    });
     this.navigator.push(GameSceneType.LevelLoad);
   };
 

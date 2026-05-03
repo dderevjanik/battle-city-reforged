@@ -15,6 +15,7 @@ import { LevelProgressManager } from '../progress/LevelProgressManager';
 
 import { AchievementsManager } from '../achievements/AchievementsManager';
 import { AchievementsTracker } from '../achievements/AchievementsTracker';
+import { Analytics } from '../analytics/Analytics';
 import { GameStatsManager } from '../stats/GameStatsManager';
 import { DebugSettings } from '../debug/DebugSettings';
 
@@ -31,6 +32,7 @@ export interface GameContext {
   debugSettings: DebugSettings;
   achievementsManager: AchievementsManager;
   achievementsTracker: AchievementsTracker;
+  analytics: Analytics;
   gameStatsManager: GameStatsManager;
   audioManager: AudioManager;
   audioLoader: AudioLoader;

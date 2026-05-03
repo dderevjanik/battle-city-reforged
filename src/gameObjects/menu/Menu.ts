@@ -2,7 +2,7 @@ import { GameObject } from '../../core/GameObject';
 import { Subject } from '../../core/Subject';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { MenuInputContext } from '../../input/InputContexts';
-import { _rendererScene } from '../../core/GameObjectRenderer';
+import { tryGetActiveScene } from '../../core/scene/ActiveScene';
 
 import { MenuCursor } from './MenuCursor';
 import { MenuItem } from './MenuItem';
@@ -110,9 +110,10 @@ export class Menu extends GameObject {
   }
 
   private updatePointerInput(): void {
-    if (_rendererScene === null) return;
+    const scene = tryGetActiveScene();
+    if (scene === null) return;
 
-    const pointers: Phaser.Input.Pointer[] = _rendererScene.input.manager.pointers;
+    const pointers: Phaser.Input.Pointer[] = scene.input.manager.pointers;
 
     const menuBox = this.getWorldBoundingBox();
     const itemHeight = this.options.itemHeight!;
@@ -162,7 +163,7 @@ export class Menu extends GameObject {
     }
 
     if (anyMoved) {
-      _rendererScene.game.canvas.style.cursor = hoveredIndex !== -1 ? 'pointer' : '';
+      scene.game.canvas.style.cursor = hoveredIndex !== -1 ? 'pointer' : '';
     }
 
     if (anyMoved && hoveredIndex !== -1 && hoveredIndex !== this.focusedIndex) {

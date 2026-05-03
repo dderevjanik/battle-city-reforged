@@ -1,7 +1,7 @@
 import { GameObject } from '../../core/GameObject';
 import { Size } from '../../core/Size';
-import { ColorSpriteFontGenerator } from '../../core/graphics/ColorSpriteFontGenerator';
 import { Sprite } from '../../core/graphics/Sprite';
+import { SpriteFontLoader } from '../../core/loaders/SpriteFontLoader';
 import { SpriteTextPainter } from '../../core/painters/SpriteTextPainter';
 import { Text, TextOptions } from '../../core/text/Text';
 import { GameContext } from '../../game/GameUpdateArgs';
@@ -24,7 +24,7 @@ export class SpriteText extends GameObject {
   public painter = new SpriteTextPainter();
   private readonly text: Text<Sprite>;
   private options: SpriteTextOptions;
-  private colorSpriteFontGenerator: ColorSpriteFontGenerator | null = null;
+  private spriteFontLoader: SpriteFontLoader | null = null;
 
   constructor(text = '', options: SpriteTextOptions = {}) {
     super();
@@ -37,13 +37,10 @@ export class SpriteText extends GameObject {
     this.text = new Text(text, this.options);
   }
 
-  protected setup({ colorSpriteFontGenerator }: GameContext): void {
-    this.colorSpriteFontGenerator = colorSpriteFontGenerator;
+  protected setup({ spriteFontLoader }: GameContext): void {
+    this.spriteFontLoader = spriteFontLoader;
 
-    const font = this.colorSpriteFontGenerator.get(
-      config.PRIMARY_SPRITE_FONT_ID,
-      this.painter.color,
-    );
+    const font = this.spriteFontLoader.load(config.PRIMARY_SPRITE_FONT_ID);
     this.text.setFont(font);
 
     this.size.copyFrom(this.text.getSize());
@@ -52,20 +49,9 @@ export class SpriteText extends GameObject {
   }
 
   public setColor(color: string): void {
-    // If null - called before setup. Simply set the color, it will be loaded
-    // during setup.
-    if (this.colorSpriteFontGenerator === null) {
-      this.painter.color = color;
-      return;
-    }
-
-    const font = this.colorSpriteFontGenerator.get(
-      config.PRIMARY_SPRITE_FONT_ID,
-      color,
-    );
-
-    this.text.setFont(font);
-
+    // The font is shared across colors — tinting is applied at render time —
+    // so we only need to record the color. If setup hasn't run yet, the color
+    // will be picked up by _syncSpriteTextPainter() once it does.
     this.painter.color = color;
   }
 

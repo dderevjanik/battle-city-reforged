@@ -1,7 +1,6 @@
 import { Animation } from '../core/Animation';
 import { BoundingBox } from '../core/BoundingBox';
 import { GameObject } from '../core/GameObject';
-import { SpriteAlignment } from '../core/SpriteAlignment';
 import { State } from '../core/State';
 import { Subject } from '../core/Subject';
 import { Timer } from '../core/Timer';
@@ -130,8 +129,6 @@ export class Tank extends GameObject {
       layer.size.copyFrom(this.size);
 
       const painter = new SpritePainter();
-      painter.alignment = SpriteAlignment.MiddleCenter;
-
       layer.painter = painter;
 
       this.skinLayers.push(layer);

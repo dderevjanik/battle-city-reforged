@@ -2,6 +2,7 @@ import { Sprite } from '../graphics/Sprite';
 import { Text } from '../text/Text';
 
 export class SpriteTextPainter {
+  public readonly kind = 'spriteText' as const;
   public text: Text<Sprite> | null = null;
   public color: string | null = null;
   public opacity = 1;

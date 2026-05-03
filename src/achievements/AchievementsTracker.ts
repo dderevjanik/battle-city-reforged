@@ -1,10 +1,14 @@
-import { Session } from '../game/Session';
 import { PowerupType } from '../powerup/PowerupType';
 import { TankKind } from '../tank/TankTypes';
 
 import { Achievement } from './Achievement';
 import { AchievementId } from './AchievementId';
 import { AchievementsManager } from './AchievementsManager';
+
+/** The slice of session state the tracker needs to evaluate score-based achievements. */
+export interface AchievementsSessionView {
+  getMaxGamePoints(): number;
+}
 
 interface RunState {
   levelsClearedInRun: Set<number>;
@@ -127,7 +131,7 @@ export class AchievementsTracker {
   public getNewlyUnlocked(
     definitions: Achievement[],
     manager: AchievementsManager,
-    session: Session,
+    session: AchievementsSessionView,
   ): AchievementId[] {
     const result: AchievementId[] = [];
     const s = this.state;
@@ -144,7 +148,7 @@ export class AchievementsTracker {
     return result;
   }
 
-  private checkCondition(id: AchievementId, s: RunState, session: Session): boolean {
+  private checkCondition(id: AchievementId, s: RunState, session: AchievementsSessionView): boolean {
     switch (id) {
       case AchievementId.StartingTrenches:
         return s.levelsClearedInRun.has(1);

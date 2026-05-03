@@ -10,7 +10,6 @@ const analytics = new Analytics();
 analytics.init();
 import { State } from './core/State';
 import { CollisionSystem } from './core/collision/CollisionSystem';
-import { ColorSpriteFontGenerator } from './core/graphics/ColorSpriteFontGenerator';
 import { AudioLoader } from './core/loaders/AudioLoader';
 import { ImageLoader } from './core/loaders/ImageLoader';
 import { RectFontLoader } from './core/loaders/RectFontLoader';
@@ -34,6 +33,7 @@ import { ContinueManager } from './progress/ContinueManager';
 import { LevelProgressManager } from './progress/LevelProgressManager';
 import { PointsHighscoreManager } from './points/PointsHighscoreManager';
 import { GameStatsManager } from './stats/GameStatsManager';
+import { GameSceneRouter } from './scenes/GameSceneRouter';
 
 import * as config from './config';
 
@@ -60,12 +60,6 @@ const imageLoader = new ImageLoader();
 
 const spriteFontLoader = new SpriteFontLoader(imageLoader);
 spriteFontLoader.register(config.PRIMARY_SPRITE_FONT_ID, spriteFontConfig);
-
-const colorSpriteFontGenerator = new ColorSpriteFontGenerator(spriteFontLoader);
-colorSpriteFontGenerator.register(
-  config.PRIMARY_SPRITE_FONT_ID,
-  config.COLOR_BLACK,
-);
 
 const spriteLoader = new SpriteLoader(imageLoader, spriteManifest);
 
@@ -98,6 +92,8 @@ const collisionSystem = new CollisionSystem();
 
 const gameState = new State<GameState>(GameState.Playing);
 
+const sceneNavigator = new GameSceneRouter(analytics);
+
 const gameContext: GameContext = {
   debugSettings,
   achievementsManager,
@@ -107,7 +103,6 @@ const gameContext: GameContext = {
   audioManager,
   audioLoader,
   collisionSystem,
-  colorSpriteFontGenerator,
   imageLoader,
   inputHintSettings,
   inputManager,
@@ -117,6 +112,7 @@ const gameContext: GameContext = {
   mapLoader,
   pointsHighscoreManager,
   rectFontLoader,
+  sceneNavigator,
   screenShakeSettings,
   session,
   spriteFontLoader,
@@ -134,26 +130,6 @@ async function main(): Promise<void> {
   loadingElement!.textContent ='Loading sprite fonts...';
   await spriteFontLoader.preloadAllAsync();
   log.timeEnd('Sprite font preload');
-
-  log.time('Color sprite font generation');
-  loadingElement!.textContent ='Generating sprite font colors...';
-  colorSpriteFontGenerator.generate(
-    config.PRIMARY_SPRITE_FONT_ID,
-    config.COLOR_WHITE,
-  );
-  colorSpriteFontGenerator.generate(
-    config.PRIMARY_SPRITE_FONT_ID,
-    config.COLOR_GRAY,
-  );
-  colorSpriteFontGenerator.generate(
-    config.PRIMARY_SPRITE_FONT_ID,
-    config.COLOR_RED,
-  );
-  colorSpriteFontGenerator.generate(
-    config.PRIMARY_SPRITE_FONT_ID,
-    config.COLOR_YELLOW,
-  );
-  log.timeEnd('Color sprite font generation');
 
   log.time('Sprites preload');
   loadingElement!.textContent ='Loading sprites...';

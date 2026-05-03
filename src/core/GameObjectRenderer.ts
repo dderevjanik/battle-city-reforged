@@ -1,17 +1,19 @@
 import * as Phaser from 'phaser';
 
+import { getActiveScene } from './scene/ActiveScene';
 import { Rect } from './Rect';
 
 // ---------------------------------------------------------------------------
-// Module-level renderer state (shared across all GameObjects in the active
-// scene — re-initialised each time a new GameScene starts via initRenderer()).
+// Renderer-internal lookup tables. Scoped to the active scene's lifecycle:
+// rebuilt by initRenderer() whenever a new GameScene starts. The active
+// Phaser.Scene is held by ActiveScene (single source of truth) — this module
+// no longer keeps its own scene reference.
 // ---------------------------------------------------------------------------
 
 export interface SpriteManifest {
   [id: string]: { file: string; rect: number[] };
 }
 
-export let _rendererScene: Phaser.Scene | null = null;
 let _srcToTextureKey = new Map<string, string>();
 let _rectToFrameKey = new Map<string, string>();
 let _canvasIdMap = new WeakMap<HTMLCanvasElement, number>();
@@ -19,16 +21,15 @@ let _canvasIdCounter = 0;
 let _canvasTextureCache = new Map<string, string>();
 let _canvasDimensionCache = new Map<number, { w: number; h: number }>();
 let _canvasTextureUpdated = new Set<string>();
-// Use a module-level counter that persists across scene transitions to avoid
-// colliding with texture keys already registered in Phaser's global TextureManager.
+// Counter that persists across scene transitions to avoid colliding with
+// texture keys already registered in Phaser's global TextureManager.
 let _fallbackTextureCounter = 0;
 
 /**
- * Called once per GameScene.create() to bind the renderer to the new scene
- * and rebuild manifest-based texture/frame lookup maps.
+ * Called once per GameScene.create() (after setActiveScene) to rebuild
+ * manifest-based texture/frame lookup maps for the new scene.
  */
-export function initRenderer(scene: Phaser.Scene, manifest: SpriteManifest): void {
-  _rendererScene = scene;
+export function initRenderer(_scene: Phaser.Scene, manifest: SpriteManifest): void {
   _srcToTextureKey = new Map();
   _rectToFrameKey = new Map();
   _canvasIdMap = new WeakMap();
@@ -53,7 +54,7 @@ export function getOrCreateTextureKey(element: HTMLImageElement): string {
   let key = _srcToTextureKey.get(element.src);
   if (key !== undefined) return key;
   key = `img_fallback:${_fallbackTextureCounter++}`;
-  _rendererScene!.textures.addImage(key, element);
+  getActiveScene().textures.addImage(key, element);
   _srcToTextureKey.set(element.src, key);
   return key;
 }
@@ -63,7 +64,7 @@ export function getOrCreateFrameKey(textureKey: string, sourceRect: Rect): strin
   let frameKey = _rectToFrameKey.get(rectKey);
   if (frameKey !== undefined) return frameKey;
   frameKey = `frame:${sourceRect.x}:${sourceRect.y}:${sourceRect.width}:${sourceRect.height}`;
-  const texture = _rendererScene!.textures.get(textureKey);
+  const texture = getActiveScene().textures.get(textureKey);
   if (texture && !texture.has(frameKey)) {
     texture.add(frameKey, 0, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
   }
@@ -81,6 +82,7 @@ export function ensureCanvasTexture(
     _canvasIdMap.set(canvas, canvasId);
   }
 
+  const scene = getActiveScene();
   const currentDims = { w: canvas.width, h: canvas.height };
   const cachedDims = _canvasDimensionCache.get(canvasId);
 
@@ -91,7 +93,7 @@ export function ensureCanvasTexture(
     }
     const baseKey = `canvas_base:${canvasId}`;
     _canvasTextureUpdated.delete(baseKey);
-    if (_rendererScene!.textures.exists(baseKey)) _rendererScene!.textures.remove(baseKey);
+    if (scene.textures.exists(baseKey)) scene.textures.remove(baseKey);
     _canvasDimensionCache.set(canvasId, { ...currentDims });
   }
 
@@ -102,7 +104,7 @@ export function ensureCanvasTexture(
   if (cachedTextureKey !== undefined) {
     // Only update the GPU texture once per canvas lifetime (font canvases are static after creation)
     if (!_canvasTextureUpdated.has(cachedTextureKey)) {
-      const texture = _rendererScene!.textures.get(cachedTextureKey);
+      const texture = scene.textures.get(cachedTextureKey);
       if (texture && texture.source.length > 0) (texture.source[0] as any).update();
       _canvasTextureUpdated.add(cachedTextureKey);
     }
@@ -110,10 +112,10 @@ export function ensureCanvasTexture(
   }
 
   const baseKey = `canvas_base:${canvasId}`;
-  if (!_rendererScene!.textures.exists(baseKey)) {
-    _rendererScene!.textures.addCanvas(baseKey, canvas);
+  if (!scene.textures.exists(baseKey)) {
+    scene.textures.addCanvas(baseKey, canvas);
   }
-  const texture = _rendererScene!.textures.get(baseKey);
+  const texture = scene.textures.get(baseKey);
   if (texture && !texture.has(frameKey)) {
     texture.add(frameKey, 0, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
   }

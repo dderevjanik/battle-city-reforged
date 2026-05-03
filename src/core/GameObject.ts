@@ -9,13 +9,12 @@ import { SpritePainter } from './painters/SpritePainter';
 import { RectPainter } from './painters/RectPainter';
 import { LinePainter } from './painters/LinePainter';
 import { SpriteTextPainter } from './painters/SpriteTextPainter';
-import { SpriteAlignment } from './SpriteAlignment';
 import { Rect } from './Rect';
 import { Size } from './Size';
 import { MathUtils } from './utils';
 import { Vector } from './Vector';
+import { tryGetActiveScene } from './scene/ActiveScene';
 import {
-  _rendererScene,
   clearVisualChild,
   cssColorToHex,
   ensureCanvasTexture,
@@ -576,7 +575,8 @@ export class GameObject {
   public gpuRendered = false;
 
   public _syncPainter(): void {
-    if (_rendererScene === null) return;
+    const scene = tryGetActiveScene();
+    if (scene === null) return;
     if (this.gpuRendered) {
       // Clean up the per-object Phaser node if it was created before GPU takeover
       if (this._phaserNode !== null) {
@@ -588,7 +588,7 @@ export class GameObject {
 
     // Lazily create, or recreate if the container was destroyed by a scene transition
     if (this._phaserNode === null || !this._phaserNode.active) {
-      this._phaserNode = _rendererScene.add.container(0, 0);
+      this._phaserNode = scene.add.container(0, 0);
     }
 
     // Sync transform from world bounding box (already updated by caller)
@@ -604,14 +604,23 @@ export class GameObject {
       return;
     }
 
-    if (painter instanceof SpritePainter) {
-      this._syncSpritePainter(this._phaserNode, painter);
-    } else if (painter instanceof RectPainter) {
-      this._syncRectPainter(this._phaserNode, painter);
-    } else if (painter instanceof LinePainter) {
-      this._syncLinePainter(this._phaserNode, painter);
-    } else if (painter instanceof SpriteTextPainter) {
-      this._syncSpriteTextPainter(this._phaserNode, painter);
+    switch (painter.kind) {
+      case 'sprite':
+        this._syncSpritePainter(this._phaserNode, painter);
+        break;
+      case 'rect':
+        this._syncRectPainter(this._phaserNode, painter);
+        break;
+      case 'line':
+        this._syncLinePainter(this._phaserNode, painter);
+        break;
+      case 'spriteText':
+        this._syncSpriteTextPainter(this._phaserNode, painter);
+        break;
+      default: {
+        const _exhaustive: never = painter;
+        return _exhaustive;
+      }
     }
   }
 
@@ -645,9 +654,8 @@ export class GameObject {
 
     let image = getVisualChild(phaserNode, 'sprite') as Phaser.GameObjects.Image | null;
     if (image === null) {
-      image = _rendererScene!.add.image(0, 0, textureKey, frameKey);
+      image = tryGetActiveScene()!.add.image(0, 0, textureKey, frameKey);
       image.name = '__visual_sprite__';
-      image.setOrigin(0, 0);
       setVisualChild(phaserNode, image);
     } else {
       if (image.texture.key !== textureKey || String(image.frame.name) !== String(frameKey)) {
@@ -658,22 +666,15 @@ export class GameObject {
     const worldBox = this.worldBoundingBox;
     const boxW = worldBox.max.x - worldBox.min.x;
     const boxH = worldBox.max.y - worldBox.min.y;
-    const destRect = sprite.destinationRect;
 
-    if (painter.alignment === SpriteAlignment.Stretch) {
+    if (painter.stretch) {
+      image.setOrigin(0, 0);
       image.setPosition(0, 0);
       image.setDisplaySize(boxW, boxH);
-    } else if (painter.alignment === SpriteAlignment.TopLeft) {
-      image.setPosition(0, 0);
-      image.setDisplaySize(destRect.width, destRect.height);
-    } else if (painter.alignment === SpriteAlignment.MiddleCenter) {
-      image.setPosition(
-        boxW / 2 - destRect.width / 2,
-        boxH / 2 - destRect.height / 2,
-      );
-      image.setDisplaySize(destRect.width, destRect.height);
-    } else if (painter.alignment === SpriteAlignment.MiddleLeft) {
-      image.setPosition(0, boxH / 2 - destRect.height / 2);
+    } else {
+      const destRect = sprite.destinationRect;
+      image.setOrigin(painter.originX, painter.originY);
+      image.setPosition(painter.originX * boxW, painter.originY * boxH);
       image.setDisplaySize(destRect.width, destRect.height);
     }
 
@@ -686,7 +687,7 @@ export class GameObject {
   ): void {
     let graphics = getVisualChild(phaserNode, 'rect') as Phaser.GameObjects.Graphics | null;
     if (graphics === null) {
-      graphics = _rendererScene!.add.graphics();
+      graphics = tryGetActiveScene()!.add.graphics();
       graphics.name = '__visual_rect__';
       setVisualChild(phaserNode, graphics);
     }
@@ -720,7 +721,7 @@ export class GameObject {
 
     let graphics = getVisualChild(phaserNode, 'line') as Phaser.GameObjects.Graphics | null;
     if (graphics === null) {
-      graphics = _rendererScene!.add.graphics();
+      graphics = tryGetActiveScene()!.add.graphics();
       graphics.name = '__visual_line__';
       setVisualChild(phaserNode, graphics);
     }
@@ -765,13 +766,13 @@ export class GameObject {
     }
 
     if (textContainer === null) {
-      textContainer = _rendererScene!.add.container(0, 0);
+      textContainer = tryGetActiveScene()!.add.container(0, 0);
       textContainer.name = '__visual_spritetext__';
       setVisualChild(phaserNode, textContainer);
     }
 
     while (textContainer.list.length < glyphs.length) {
-      const placeholder = _rendererScene!.add.image(0, 0, '__DEFAULT');
+      const placeholder = tryGetActiveScene()!.add.image(0, 0, '__DEFAULT');
       placeholder.setOrigin(0, 0);
       textContainer.add(placeholder);
     }

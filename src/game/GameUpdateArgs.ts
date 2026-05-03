@@ -1,54 +1,16 @@
-import { State } from '../core/State';
-import { CollisionSystem } from '../core/collision/CollisionSystem';
-import { ColorSpriteFontGenerator } from '../core/graphics/ColorSpriteFontGenerator';
-import { AudioLoader } from '../core/loaders/AudioLoader';
-import { ImageLoader } from '../core/loaders/ImageLoader';
-import { RectFontLoader } from '../core/loaders/RectFontLoader';
-import { SpriteFontLoader } from '../core/loaders/SpriteFontLoader';
-import { SpriteLoader } from '../core/loaders/SpriteLoader';
-import { InputHintSettings } from '../input/InputHintSettings';
-import { InputManager } from '../input/InputManager';
-import { MapLoader } from '../map/MapLoader';
-import { PointsHighscoreManager } from '../points/PointsHighscoreManager';
-import { ContinueManager } from '../progress/ContinueManager';
-import { LevelProgressManager } from '../progress/LevelProgressManager';
+import { ProgressContext } from './ProgressContext';
+import { RenderContext } from './RenderContext';
+import { RuntimeContext } from './RuntimeContext';
 
-import { AchievementsManager } from '../achievements/AchievementsManager';
-import { AchievementsTracker } from '../achievements/AchievementsTracker';
-import { Analytics } from '../analytics/Analytics';
-import { GameStatsManager } from '../stats/GameStatsManager';
-import { DebugSettings } from '../debug/DebugSettings';
-
-import { AudioManager } from './AudioManager';
-import { GameState } from './GameState';
-import { ScreenShakeSettings } from './ScreenShakeSettings';
-import { Session } from './Session';
+export type { ProgressContext } from './ProgressContext';
+export type { RenderContext } from './RenderContext';
+export type { RuntimeContext } from './RuntimeContext';
 
 /**
- * Long-lived game services, created once and passed to setup().
+ * Composite of all long-lived game services, created once and passed to setup().
+ * Prefer depending on one of the three slices (RenderContext, RuntimeContext,
+ * ProgressContext) when a scene or behavior only needs a subset.
+ *
  * For per-frame data (deltaTime), use the update(deltaTime) parameter directly.
  */
-export interface GameContext {
-  debugSettings: DebugSettings;
-  achievementsManager: AchievementsManager;
-  achievementsTracker: AchievementsTracker;
-  analytics: Analytics;
-  gameStatsManager: GameStatsManager;
-  audioManager: AudioManager;
-  audioLoader: AudioLoader;
-  collisionSystem: CollisionSystem;
-  colorSpriteFontGenerator: ColorSpriteFontGenerator;
-  imageLoader: ImageLoader;
-  inputHintSettings: InputHintSettings;
-  inputManager: InputManager;
-  gameState: State<GameState>;
-  continueManager: ContinueManager;
-  levelProgressManager: LevelProgressManager;
-  mapLoader: MapLoader;
-  pointsHighscoreManager: PointsHighscoreManager;
-  rectFontLoader: RectFontLoader;
-  screenShakeSettings: ScreenShakeSettings;
-  session: Session;
-  spriteFontLoader: SpriteFontLoader;
-  spriteLoader: SpriteLoader;
-}
+export interface GameContext extends RenderContext, RuntimeContext, ProgressContext {}

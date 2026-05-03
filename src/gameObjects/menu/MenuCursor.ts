@@ -1,6 +1,5 @@
 import { Animation } from '../../core/Animation';
 import { GameObject } from '../../core/GameObject';
-import { SpriteAlignment } from '../../core/SpriteAlignment';
 import { SpritePainter } from '../../core/painters/SpritePainter';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Rotation } from '../../game/Rotation';
@@ -13,8 +12,6 @@ export class MenuCursor extends GameObject {
 
   constructor() {
     super(60, 60);
-
-    this.painter.alignment = SpriteAlignment.MiddleCenter;
   }
 
   protected setup({ spriteLoader }: GameContext): void {

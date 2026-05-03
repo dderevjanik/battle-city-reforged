@@ -1,4 +1,5 @@
 export class RectPainter {
+  public readonly kind = 'rect' as const;
   public fillColor: string | null = null;
   public strokeColor: string | null = null;
   public lineWidth = 1;

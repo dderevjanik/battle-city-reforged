@@ -1,27 +1,20 @@
 import { Difficulty } from './Difficulty';
+import { GameSettings } from './GameSettings';
+import { RunState } from './RunState';
 import { SessionPlayer } from './SessionPlayer';
 
-enum State {
-  Idle,
-  Playing,
-  GameOver,
-}
-
+/**
+ * Coordinates the player roster, the current run (`run`), and persistent
+ * mode settings (`settings`). New code should reach for `session.run` or
+ * `session.settings` directly when it only needs one slice; the legacy
+ * delegating methods on Session are kept so existing call sites still work.
+ */
 export class Session {
   public primaryPlayer = new SessionPlayer();
   public secondaryPlayer = new SessionPlayer();
   public players: SessionPlayer[] = [];
-  private startLevelNumber!: number;
-  private endLevelNumber!: number;
-  private currentLevelNumber!: number;
-  private playtest!: boolean;
-  private playerCount!: number;
-  private seenIntro!: boolean;
-  private state!: State;
-  private enemyPowerupsEnabled!: boolean;
-  private friendlyFireEnabled!: boolean;
-  private difficulty!: Difficulty;
-  private demo!: boolean;
+  public readonly settings: GameSettings;
+  public readonly run: RunState;
 
   constructor() {
     this.players.push(
@@ -31,36 +24,29 @@ export class Session {
       new SessionPlayer(),
     );
 
+    this.settings = new GameSettings(this.players.length);
+    this.run = new RunState();
+
     this.reset();
   }
 
   public start(startLevelNumber: number, endLevelNumber: number): void {
-    if (this.state !== State.Idle) {
-      return;
-    }
-
-    this.startLevelNumber = startLevelNumber;
-    this.endLevelNumber = endLevelNumber;
-    this.currentLevelNumber = startLevelNumber;
-    this.state = State.Playing;
+    this.run.start(startLevelNumber, endLevelNumber);
   }
 
   public reset(): void {
-    this.seenIntro = false;
-    this.startLevelNumber = 1;
-    this.currentLevelNumber = 1;
-    this.endLevelNumber = 1;
-    this.state = State.Idle;
-    this.playtest = false;
-    this.demo = false;
-    this.playerCount = 1;
-    this.enemyPowerupsEnabled = false;
-    this.friendlyFireEnabled = true;
-    this.difficulty = Difficulty.Classic;
+    this.settings.reset();
+    this.run.reset();
 
     for (const player of this.players) {
       player.reset();
     }
+  }
+
+  public resetExceptIntro(): void {
+    const seenIntro = this.settings.haveSeenIntro();
+    this.reset();
+    this.settings.setSeenIntro(seenIntro);
   }
 
   public getPlayer(playerIndex: number): SessionPlayer {
@@ -72,59 +58,34 @@ export class Session {
   }
 
   public isAnyPlayerAlive(): boolean {
-    return this.players.slice(0, this.playerCount).some((player) => {
+    return this.players.slice(0, this.settings.getPlayerCount()).some((player) => {
       return player.isAlive();
     });
   }
 
-  public resetExceptIntro(): void {
-    this.startLevelNumber = 1;
-    this.currentLevelNumber = 1;
-    this.endLevelNumber = 1;
-    this.state = State.Idle;
-    this.playtest = false;
-    this.demo = false;
-    this.playerCount = 1;
-    this.enemyPowerupsEnabled = false;
-    this.friendlyFireEnabled = true;
-    this.difficulty = Difficulty.Classic;
-
-    for (const player of this.players) {
-      player.reset();
-    }
-  }
-
   public activateNextLevel(): void {
-    this.currentLevelNumber += 1;
-
-    for (const player of this.players) {
-      player.completeLevel();
-    }
+    this.run.activateNextLevel(this.players);
   }
 
   public getMaxLevelPoints(): number {
     let maxPoints = 0;
-
     for (const player of this.players) {
       const points = player.getLevelPoints();
       if (points > maxPoints) {
         maxPoints = points;
       }
     }
-
     return maxPoints;
   }
 
   public getMaxGamePoints(): number {
     let maxPoints = 0;
-
     for (const player of this.players) {
       const points = player.getGamePoints();
       if (points > maxPoints) {
         maxPoints = points;
       }
     }
-
     return maxPoints;
   }
 
@@ -134,91 +95,76 @@ export class Session {
     });
   }
 
+  // ---------------------------------------------------------------------------
+  // Delegating shims — preserve the legacy flat API so existing call sites
+  // don't need to change. New code should use `session.run.*` and
+  // `session.settings.*` directly.
+  // ---------------------------------------------------------------------------
+
   public getLevelNumber(): number {
-    return this.currentLevelNumber;
+    return this.run.getLevelNumber();
   }
-
   public getStartLevelNumber(): number {
-    return this.startLevelNumber;
+    return this.run.getStartLevelNumber();
   }
-
   public isLastLevel(): boolean {
-    return this.currentLevelNumber === this.endLevelNumber;
+    return this.run.isLastLevel();
   }
-
   public setGameOver(): void {
-    this.state = State.GameOver;
+    this.run.setGameOver();
   }
-
   public isGameOver(): boolean {
-    return this.state === State.GameOver;
+    return this.run.isGameOver();
   }
-
   public setSeenIntro(seenIntro: boolean): void {
-    this.seenIntro = seenIntro;
+    this.settings.setSeenIntro(seenIntro);
   }
-
   public haveSeenIntro(): boolean {
-    return this.seenIntro;
+    return this.settings.haveSeenIntro();
   }
-
   public setPlaytest(): void {
-    this.playtest = true;
+    this.settings.setPlaytest();
   }
-
   public resetPlaytest(): void {
-    this.playtest = false;
+    this.settings.resetPlaytest();
   }
-
   public isPlaytest(): boolean {
-    return this.playtest;
+    return this.settings.isPlaytest();
   }
-
   public setDemo(enabled: boolean): void {
-    this.demo = enabled;
+    this.settings.setDemo(enabled);
   }
-
   public isDemo(): boolean {
-    return this.demo;
+    return this.settings.isDemo();
   }
-
   public setPlayerCount(count: number): void {
-    this.playerCount = Math.min(Math.max(count, 1), this.players.length);
+    this.settings.setPlayerCount(count);
   }
-
   public getPlayerCount(): number {
-    return this.playerCount;
+    return this.settings.getPlayerCount();
   }
-
   public setMultiplayer(): void {
-    this.setPlayerCount(2);
+    this.settings.setPlayerCount(2);
   }
-
   public isMultiplayer(): boolean {
-    return this.playerCount > 1;
+    return this.settings.isMultiplayer();
   }
-
   public setDifficulty(difficulty: Difficulty): void {
-    this.difficulty = difficulty;
+    this.settings.setDifficulty(difficulty);
   }
-
   public getDifficulty(): Difficulty {
-    return this.difficulty;
+    return this.settings.getDifficulty();
   }
-
   public setEnemyPowerupsEnabled(enabled: boolean): void {
-    this.enemyPowerupsEnabled = enabled;
+    this.settings.setEnemyPowerupsEnabled(enabled);
   }
-
   public isEnemyPowerupsEnabled(): boolean {
-    return this.enemyPowerupsEnabled;
+    return this.settings.isEnemyPowerupsEnabled();
   }
-
   public setFriendlyFireEnabled(enabled: boolean): void {
-    this.friendlyFireEnabled = enabled;
+    this.settings.setFriendlyFireEnabled(enabled);
   }
-
   public isFriendlyFireEnabled(): boolean {
-    return this.friendlyFireEnabled;
+    return this.settings.isFriendlyFireEnabled();
   }
 }

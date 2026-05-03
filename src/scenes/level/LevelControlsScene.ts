@@ -1,6 +1,6 @@
 import { GameObject } from '../../core/GameObject';
 import { RectPainter } from '../../core/painters/RectPainter';
-import { _rendererScene } from '../../core/GameObjectRenderer';
+import { tryGetActiveScene } from '../../core/scene/ActiveScene';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { LevelInputHint } from '../../gameObjects/LevelInputHint';
@@ -199,9 +199,10 @@ export class LevelControlsScene extends GameScene<LevelControlsLocationParams> {
   }
 
   private updatePointerContinue(): void {
-    if (_rendererScene === null) return;
+    const scene = tryGetActiveScene();
+    if (scene === null) return;
 
-    const pointers: Phaser.Input.Pointer[] = _rendererScene.input.manager.pointers;
+    const pointers: Phaser.Input.Pointer[] = scene.input.manager.pointers;
 
     for (const pointer of pointers) {
       if (pointer.x === 0 && pointer.y === 0 && !pointer.isDown) continue;

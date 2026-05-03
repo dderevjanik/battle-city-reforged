@@ -16,3 +16,10 @@ export function getActiveScene(): Phaser.Scene {
   }
   return _scene;
 }
+
+/** Returns the active scene if one is bound, otherwise null. Use this for
+ *  optional consumers (e.g. cursor/pointer access) that should silently
+ *  no-op while the renderer is not yet attached. */
+export function tryGetActiveScene(): Phaser.Scene | null {
+  return _scene;
+}

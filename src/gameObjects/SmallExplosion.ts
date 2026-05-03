@@ -1,6 +1,5 @@
 import { Animation } from '../core/Animation';
 import { GameObject } from '../core/GameObject';
-import { SpriteAlignment } from '../core/SpriteAlignment';
 import { Subject } from '../core/Subject';
 import { Sprite } from '../core/graphics/Sprite';
 import { SpritePainter } from '../core/painters/SpritePainter';
@@ -15,8 +14,6 @@ export class SmallExplosion extends GameObject {
 
   constructor() {
     super(64, 64);
-
-    this.painter.alignment = SpriteAlignment.MiddleCenter;
   }
 
   protected setup({ spriteLoader }: GameContext): void {

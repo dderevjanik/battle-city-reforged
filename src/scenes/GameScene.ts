@@ -46,7 +46,7 @@ export abstract class GameScene<
       this.game.canvas.style.cursor = '';
     });
 
-    const router = this.game.registry.get('sceneRouter') as GameSceneRouter;
+    const router = this.context.sceneNavigator as GameSceneRouter;
     router.setScenePlugin(this.scene);
     this.navigator = router;
 

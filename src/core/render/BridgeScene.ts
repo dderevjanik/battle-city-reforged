@@ -104,11 +104,9 @@ export class BridgeScene extends Phaser.Scene {
       this.scene.add(GameSceneType[type], SceneClass);
     }
 
-    // Create the shared router and publish it for all GameScenes to use
-    const router = new GameSceneRouter(this.gameContext.analytics);
-    this.game.registry.set('sceneRouter', router);
-
-    // Hand off to the first scene (this also stops BridgeScene)
+    // Router is constructed in main.ts and exposed via gameContext.sceneNavigator;
+    // bind it to this scene's plugin so it can launch the first GameScene.
+    const router = this.gameContext.sceneNavigator as GameSceneRouter;
     router.setScenePlugin(this.scene);
 
     const playtestJson = localStorage.getItem(PLAYTEST_STORAGE_KEY);

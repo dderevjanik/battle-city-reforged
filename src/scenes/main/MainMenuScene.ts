@@ -14,7 +14,7 @@ import { ContinueManager } from '../../progress/ContinueManager';
 import { GameStatsManager } from '../../stats/GameStatsManager';
 import * as config from '../../config';
 
-import { _rendererScene } from '../../core/GameObjectRenderer';
+import { tryGetActiveScene } from '../../core/scene/ActiveScene';
 
 import { GameScene } from '../GameScene';
 import { GameSceneType } from '../GameSceneType';
@@ -213,8 +213,9 @@ export class MainMenuScene extends GameScene {
   }
 
   private isPointerDown(): boolean {
-    if (_rendererScene === null) return false;
-    return _rendererScene.input.manager.pointers.some((p) => p.isDown);
+    const scene = tryGetActiveScene();
+    if (scene === null) return false;
+    return scene.input.manager.pointers.some((p) => p.isDown);
   }
 
   private handleContinueSelected = (): void => {

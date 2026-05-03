@@ -66,6 +66,7 @@ export class MainMenuScene extends GameScene {
     this.gameStatsManager = gameStatsManager;
     this.continueManager = continueManager;
     this.mapLoader = mapLoader;
+    this.idleTimer = 0;
 
     // Restore source for maps to default
     mapLoader.restoreDefaultReader();

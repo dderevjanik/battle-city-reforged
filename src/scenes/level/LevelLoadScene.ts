@@ -83,6 +83,14 @@ export class LevelLoadScene extends GameScene {
   }
 
   protected onUpdate(deltaTime: number): void {
+    if (this.session.isDemo() && this.context.inputManager.hasAnyInputThisFrame()) {
+      const seenIntro = this.session.haveSeenIntro();
+      this.session.reset();
+      this.session.setSeenIntro(seenIntro);
+      this.navigator.replace(GameSceneType.MainMenu);
+      return;
+    }
+
     if (this.state === State.Alert) {
       this.alertModal.traverse((node) => {
         node.invokeUpdate(this.context, deltaTime);

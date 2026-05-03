@@ -46,7 +46,7 @@ Project is not commercial and was created for learning purposes only.
 - Keyboard, gamepad, and touch input
 - Customizable keybindings and audio settings
 - Score tracking and highscores
-- Installable as a Progressive Web App — fully offline-playable after first load
+- Offline support via PWA — installable and fully playable offline after first load
 
 ## Getting Started
 

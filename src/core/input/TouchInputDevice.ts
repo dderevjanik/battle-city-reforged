@@ -113,6 +113,10 @@ export class TouchInputDevice implements InputDevice {
     overlay.appendChild(dpad);
     overlay.appendChild(actions);
 
+    overlay.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
     return overlay;
   }
 
@@ -138,6 +142,10 @@ export class TouchInputDevice implements InputDevice {
     btn.addEventListener('pointercancel', (e) => {
       e.preventDefault();
       this.pressedCodes.delete(code);
+    });
+
+    btn.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
     });
 
     return btn;

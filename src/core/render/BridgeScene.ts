@@ -24,6 +24,7 @@ import { MapConfig } from '../../map/MapConfig';
 import { MemoryMapListReader } from '../../map/MapListReaders';
 import { GameSceneRouter } from '../../scenes/GameSceneRouter';
 import { GameSceneType } from '../../scenes/GameSceneType';
+import { decodeMapFromHash } from '../../share/shareUrl';
 
 export const PLAYTEST_STORAGE_KEY = 'cattle-bity-playtest';
 
@@ -81,7 +82,7 @@ export class BridgeScene extends Phaser.Scene {
     }
   }
 
-  create(): void {
+  async create(): Promise<void> {
     this.gameContext = this.game.registry.get('gameContext') as GameContext;
 
     // Register named frames on each loaded texture
@@ -122,6 +123,22 @@ export class BridgeScene extends Phaser.Scene {
         return;
       } catch (err) {
         console.warn('Playtest map failed to load, falling back to menu:', err);
+      }
+    }
+
+    const sharedDto = await decodeMapFromHash(window.location.hash);
+    if (sharedDto) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      try {
+        const mapConfig = new MapConfig();
+        mapConfig.fromJSON(JSON.stringify(sharedDto));
+        this.gameContext.mapLoader.setListReader(new MemoryMapListReader([mapConfig]));
+        this.gameContext.session.setShared();
+        this.gameContext.session.start(1, 1);
+        router.start(GameSceneType.LevelLoad);
+        return;
+      } catch (err) {
+        console.warn('Shared map failed to load, falling back to menu:', err);
       }
     }
 

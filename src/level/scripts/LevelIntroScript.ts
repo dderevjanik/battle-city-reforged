@@ -31,9 +31,11 @@ export class LevelIntroScript extends LevelScript {
     this.title = new LevelTitle(
       this.session.getLevelNumber(),
       this.session.isPlaytest(),
+      {},
+      this.session.isShared(),
     );
 
-    if (!this.session.isPlaytest() && !this.session.isDemo()) {
+    if (!this.session.isPlaytest() && !this.session.isDemo() && !this.session.isShared()) {
       const stageLabel = `STAGE ${this.session.getLevelNumber().toString().padStart(2, ' ')}`;
       const lines: string[] = [
         stageLabel,

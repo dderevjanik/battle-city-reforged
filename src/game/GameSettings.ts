@@ -8,6 +8,7 @@ export class GameSettings {
   private seenIntro!: boolean;
   private playerCount!: number;
   private playtest!: boolean;
+  private shared!: boolean;
   private demo!: boolean;
   private difficulty!: Difficulty;
   private enemyPowerupsEnabled!: boolean;
@@ -23,6 +24,7 @@ export class GameSettings {
     this.seenIntro = false;
     this.playerCount = 1;
     this.playtest = false;
+    this.shared = false;
     this.demo = false;
     this.difficulty = Difficulty.Classic;
     this.enemyPowerupsEnabled = false;
@@ -47,6 +49,14 @@ export class GameSettings {
 
   public isPlaytest(): boolean {
     return this.playtest;
+  }
+
+  public setShared(): void {
+    this.shared = true;
+  }
+
+  public isShared(): boolean {
+    return this.shared;
   }
 
   public setDemo(enabled: boolean): void {

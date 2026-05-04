@@ -4,7 +4,7 @@ import { stepUndo, stepRedo, pushHistory } from './history';
 import { render, resizeCanvas, centerView, c2w, w2c } from './renderer';
 import { state } from './state';
 import { selectBrush, setMode, selectTool, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus, addEnemy } from './ui';
-import { newMap, saveMap, openFile, onFileSelected, testMap, openMapBrowser } from './io';
+import { newMap, saveMap, openFile, onFileSelected, testMap, openMapBrowser, shareMap } from './io';
 import type { PaintTool, SpawnPoint } from './types';
 
 function clamp(v: number, lo: number, hi: number): number {
@@ -270,6 +270,7 @@ export function bindToolbar(): void {
   document.getElementById('btn-new')?.addEventListener('click', newMap);
   document.getElementById('btn-save')?.addEventListener('click', saveMap);
   document.getElementById('btn-test')?.addEventListener('click', testMap);
+  document.getElementById('btn-share')?.addEventListener('click', () => { void shareMap(); });
   document.getElementById('btn-undo')?.addEventListener('click', () => { stepUndo(); refreshSpawnLists(); render(); });
   document.getElementById('btn-redo')?.addEventListener('click', () => { stepRedo(); refreshSpawnLists(); render(); });
   document.getElementById('btn-grid')?.addEventListener('click', toggleGrid);

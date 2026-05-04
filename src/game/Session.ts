@@ -131,6 +131,12 @@ export class Session {
   public isPlaytest(): boolean {
     return this.settings.isPlaytest();
   }
+  public setShared(): void {
+    this.settings.setShared();
+  }
+  public isShared(): boolean {
+    return this.settings.isShared();
+  }
   public setDemo(enabled: boolean): void {
     this.settings.setDemo(enabled);
   }

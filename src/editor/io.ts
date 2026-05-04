@@ -1,4 +1,5 @@
 import { PLAYTEST_STORAGE_KEY } from '../core/render/BridgeScene';
+import { encodeMapToHash } from '../share/shareUrl';
 import { DEF_PLAYER, DEF_ENEMY, DEF_BASES, GW, GH, T2I, TS } from './constants';
 import { gridToRegions, regionsToGrid } from './grid';
 import { pushHistory } from './history';
@@ -120,6 +121,27 @@ export function testMap(): void {
   }
   localStorage.setItem(PLAYTEST_STORAGE_KEY, JSON.stringify(dto));
   window.open('index.html', '_blank');
+}
+
+export async function shareMap(): Promise<void> {
+  const dto = buildMapDto();
+  const issues = validateMap(dto);
+  if (issues.length > 0) {
+    if (!confirm(`Map has issues:\n\n${issues.join('\n')}\n\nShare anyway?`)) {
+      return;
+    }
+  }
+  const fragment = await encodeMapToHash(dto);
+  const url = new URL('index.html', window.location.href).href + '#m=' + fragment;
+  let copied = false;
+  try {
+    await navigator.clipboard.writeText(url);
+    copied = true;
+  } catch {
+    copied = false;
+  }
+  const header = copied ? 'Link copied to clipboard:' : 'Copy this link:';
+  window.prompt(header, url);
 }
 
 export function saveMap(): void {

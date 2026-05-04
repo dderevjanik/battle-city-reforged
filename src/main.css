@@ -32,14 +32,26 @@ canvas {
   font-size: 32px;
 }
 
-/* Touch virtual gamepad overlay */
+/* Touch virtual gamepad overlay
+ * Sizing: clamp(min, vmin-based, max) — scales with the shorter viewport
+ * dimension but caps on tablets, since thumb reach doesn't grow with screen.
+ * Safe-area insets prevent overlap with iOS home bar / Android gesture bar. */
 .touch-gamepad {
+  --touch-dpad-size: clamp(48px, 12vmin, 72px);
+  --touch-action-size: clamp(56px, 14vmin, 84px);
+  --touch-gap: clamp(2px, 0.6vmin, 6px);
+  --touch-pad: clamp(12px, 3vmin, 32px);
+
   align-items: flex-end;
   bottom: 0;
   display: none;
   justify-content: space-between;
   left: 0;
-  padding: 16px;
+  padding:
+    calc(var(--touch-pad) + env(safe-area-inset-top))
+    calc(var(--touch-pad) + env(safe-area-inset-right))
+    calc(var(--touch-pad) + env(safe-area-inset-bottom))
+    calc(var(--touch-pad) + env(safe-area-inset-left));
   pointer-events: none;
   position: fixed;
   right: 0;
@@ -49,7 +61,7 @@ canvas {
 .touch-dpad,
 .touch-actions {
   display: grid;
-  gap: 4px;
+  gap: var(--touch-gap);
   pointer-events: auto;
 }
 
@@ -58,16 +70,16 @@ canvas {
     '.    up    .'
     'left .     right'
     '.    down  .';
-  grid-template-columns: 64px 64px 64px;
-  grid-template-rows: 64px 64px 64px;
+  grid-template-columns: repeat(3, var(--touch-dpad-size));
+  grid-template-rows: repeat(3, var(--touch-dpad-size));
 }
 
 .touch-actions {
   grid-template-areas:
     'fire sec'
     'sel  back';
-  grid-template-columns: 72px 72px;
-  grid-template-rows: 72px 72px;
+  grid-template-columns: repeat(2, var(--touch-action-size));
+  grid-template-rows: repeat(2, var(--touch-action-size));
 }
 
 .touch-btn {
@@ -79,7 +91,7 @@ canvas {
   cursor: pointer;
   display: flex;
   font-family: Lucida Console, Courier, monospace;
-  font-size: 13px;
+  font-size: clamp(11px, 2.2vmin, 15px);
   font-weight: bold;
   justify-content: center;
   pointer-events: all;

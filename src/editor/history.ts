@@ -7,6 +7,7 @@ export function pushHistory(): void {
     playerSpawns: structuredClone(state.playerSpawns),
     enemySpawns:  structuredClone(state.enemySpawns),
     basePositions: structuredClone(state.basePositions),
+    enemyList:    structuredClone(state.enemyList),
   });
   state.histIdx = state.history.length - 1;
 
@@ -23,6 +24,7 @@ export function restoreCurrentSnapshot(): void {
   state.playerSpawns = structuredClone(snap.playerSpawns);
   state.enemySpawns  = structuredClone(snap.enemySpawns);
   state.basePositions = structuredClone(snap.basePositions);
+  state.enemyList     = structuredClone(snap.enemyList);
 }
 
 export function canUndo(): boolean { return state.histIdx > 0; }

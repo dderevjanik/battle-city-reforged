@@ -152,12 +152,14 @@ export function buildEnemyRows(): void {
       state.enemyList[idx].type = v;
       preview.dataset.kind = v;
       paintEnemyPreview(preview, v, !!state.enemyList[idx].drop);
+      pushHistory();
     });
 
     const dropSel = mkSel(dropOpts, state.enemyList[idx].drop, v => {
       state.enemyList[idx].drop = v;
       preview.dataset.drop = v ? '1' : '';
       paintEnemyPreview(preview, state.enemyList[idx].type, !!v);
+      pushHistory();
     });
 
     const del = document.createElement('button');
@@ -169,7 +171,7 @@ export function buildEnemyRows(): void {
     row.appendChild(num);
     row.appendChild(preview);
     row.appendChild(typeSel);
-    row.appendChild(mkSel(aiOpts,   state.enemyList[idx].ai,   v => { state.enemyList[idx].ai   = v; }));
+    row.appendChild(mkSel(aiOpts,   state.enemyList[idx].ai,   v => { state.enemyList[idx].ai   = v; pushHistory(); }));
     row.appendChild(dropSel);
     row.appendChild(del);
     el.appendChild(row);
@@ -179,6 +181,7 @@ export function buildEnemyRows(): void {
 export function addEnemy(): void {
   state.enemyList.push({ type: 'basic', ai: 'classic', drop: '' });
   buildEnemyRows();
+  pushHistory();
 }
 
 export function removeEnemy(index?: number): void {
@@ -186,6 +189,7 @@ export function removeEnemy(index?: number): void {
   if (index !== undefined) state.enemyList.splice(index, 1);
   else state.enemyList.pop();
   buildEnemyRows();
+  pushHistory();
 }
 
 export function syncEnemyRows(): void {

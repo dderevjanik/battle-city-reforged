@@ -55,4 +55,5 @@ export interface HistorySnapshot {
   playerSpawns: SpawnPoint[];
   enemySpawns: SpawnPoint[];
   basePositions: SpawnPoint[];
+  enemyList: EnemyEntry[];
 }

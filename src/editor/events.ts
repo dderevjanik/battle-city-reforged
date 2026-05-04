@@ -3,7 +3,7 @@ import { paint, paintRect, paintLine, floodFill, cellAt } from './grid';
 import { stepUndo, stepRedo, pushHistory } from './history';
 import { render, resizeCanvas, centerView, c2w, w2c } from './renderer';
 import { state } from './state';
-import { selectBrush, setMode, selectTool, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus, addEnemy } from './ui';
+import { selectBrush, setMode, selectTool, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus, addEnemy, syncEnemyRows } from './ui';
 import { newMap, saveMap, openFile, onFileSelected, testMap, openMapBrowser, shareMap } from './io';
 import type { PaintTool, SpawnPoint } from './types';
 
@@ -51,11 +51,11 @@ export function bindViewport(viewport: HTMLElement): void {
         const { col, row } = cellAt(world.x, world.y);
         const b = BRUSHES[state.brushIdx];
         const fillIdx = b.type ? (T2I[b.type] ?? 0) : 0;
-        pushHistory();
         const result = floodFill(col, row, fillIdx);
         for (const [c, r] of result.matched) {
           state.grid[r * GW + c] = fillIdx;
         }
+        pushHistory();
         render();
         return;
       }
@@ -70,12 +70,10 @@ export function bindViewport(viewport: HTMLElement): void {
         const { col, row } = cellAt(world.x, world.y);
         state.dragStartCol = col;
         state.dragStartRow = row;
-        pushHistory();
         render();
         return;
       }
 
-      pushHistory();
       paint(world.x, world.y, state.isErasing);
       render();
 
@@ -172,12 +170,14 @@ export function bindViewport(viewport: HTMLElement): void {
   };
 
   const stopDrag = (e?: MouseEvent) => {
+    const wasDrawingTerrain = state.isDrawing && state.mode === 'terrain';
     commitShapeIfNeeded(e ?? null);
     state.isPanning = false;
     state.isDrawing = false;
     state.isErasing = false;
     state.lastPaintCol = -1;
     state.lastPaintRow = -1;
+    if (wasDrawingTerrain) pushHistory();
     render();
   };
   viewport.addEventListener('mouseup',    (e) => stopDrag(e));
@@ -208,8 +208,8 @@ export function bindKeyboard(): void {
     if (tag === 'INPUT' || tag === 'SELECT') return;
 
     if (e.key === ' ')             { state.spaceDown = true; e.preventDefault(); return; }
-    if (e.ctrlKey && e.key === 'z') { stepUndo(); refreshSpawnLists(); render(); return; }
-    if (e.ctrlKey && (e.key === 'y' || e.key === 'Z')) { stepRedo(); refreshSpawnLists(); render(); return; }
+    if (e.ctrlKey && e.key === 'z') { stepUndo(); refreshSpawnLists(); syncEnemyRows(); render(); return; }
+    if (e.ctrlKey && (e.key === 'y' || e.key === 'Z')) { stepRedo(); refreshSpawnLists(); syncEnemyRows(); render(); return; }
     if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveMap(); return; }
     if (e.ctrlKey && e.key === 'o') { e.preventDefault(); openFile(); return; }
 
@@ -271,8 +271,8 @@ export function bindToolbar(): void {
   document.getElementById('btn-save')?.addEventListener('click', saveMap);
   document.getElementById('btn-test')?.addEventListener('click', testMap);
   document.getElementById('btn-share')?.addEventListener('click', () => { void shareMap(); });
-  document.getElementById('btn-undo')?.addEventListener('click', () => { stepUndo(); refreshSpawnLists(); render(); });
-  document.getElementById('btn-redo')?.addEventListener('click', () => { stepRedo(); refreshSpawnLists(); render(); });
+  document.getElementById('btn-undo')?.addEventListener('click', () => { stepUndo(); refreshSpawnLists(); syncEnemyRows(); render(); });
+  document.getElementById('btn-redo')?.addEventListener('click', () => { stepRedo(); refreshSpawnLists(); syncEnemyRows(); render(); });
   document.getElementById('btn-grid')?.addEventListener('click', toggleGrid);
   document.getElementById('btn-center')?.addEventListener('click', () => { centerView(); render(); });
 

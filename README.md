@@ -40,7 +40,7 @@ Project is not commercial and was created for learning purposes only.
 - 6 tank types (Basic, Fast, Fast Armored, Fast Bomber, Medium, Heavy)
 - Multiple enemy AI behaviors
 - 17 achievements (based on [RetroAchievements](https://retroachievements.org/game/2420))
-- [Level editor](https://dderevjanik.github.io/battle-city-reforged/editor) with save/load
+- [Level editor](https://dderevjanik.github.io/battle-city-reforged/editor) with save/load and shareable play links — a single URL that boots the game straight into your custom level, no file upload needed
 - Custom maps mode
 - Demo mode
 - Keyboard, gamepad, and touch input

@@ -21,8 +21,10 @@ export class LevelInfoScript extends LevelScript {
     );
 
     this.info = new LevelInfo();
+    // HUD lives in the right-border area, which is always anchored to the
+    // 832-wide playfield viewport regardless of the map's logical width.
     this.info.position.set(
-      config.BORDER_LEFT_WIDTH + this.mapConfig.getFieldWidth() + 32,
+      config.BORDER_LEFT_WIDTH + config.VIEWPORT_SIZE + 32,
       config.BORDER_TOP_BOTTOM_HEIGHT + 32,
     );
     this.world.sceneRoot.add(this.info);

@@ -4,6 +4,7 @@ import { GameState } from '../../game/GameState';
 import { GameContext } from '../../game/GameUpdateArgs';
 import { Session } from '../../game/Session';
 import { Border } from '../../gameObjects/Border';
+import { BorderWall } from '../../gameObjects/BorderWall';
 import { InputManager } from '../../input/InputManager';
 import { ContinueManager } from '../../progress/ContinueManager';
 import { LevelProgressManager } from '../../progress/LevelProgressManager';
@@ -125,6 +126,10 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     // viewMode="fit": scale the field down so the entire map fits inside the
     // 832×832 playfield viewport, and center it. Set BEFORE tiles are added so
     // the GPU terrain layer captures scaled positions/sizes on first init.
+    let fitGapLeft = 0;
+    let fitGapTop = 0;
+    let fitGapRight = 0;
+    let fitGapBottom = 0;
     if (mapConfig.getViewMode() === 'fit') {
       const mw = mapConfig.getFieldWidth();
       const mh = mapConfig.getFieldHeight();
@@ -136,9 +141,13 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       this.world.field.scale = fitScale;
       const scaledW = mw * fitScale;
       const scaledH = mh * fitScale;
+      fitGapLeft = (config.VIEWPORT_SIZE - scaledW) / 2;
+      fitGapRight = config.VIEWPORT_SIZE - scaledW - fitGapLeft;
+      fitGapTop = (config.VIEWPORT_SIZE - scaledH) / 2;
+      fitGapBottom = config.VIEWPORT_SIZE - scaledH - fitGapTop;
       this.world.field.position.set(
-        config.BORDER_LEFT_WIDTH + (config.VIEWPORT_SIZE - scaledW) / 2,
-        config.BORDER_TOP_BOTTOM_HEIGHT + (config.VIEWPORT_SIZE - scaledH) / 2,
+        config.BORDER_LEFT_WIDTH + fitGapLeft,
+        config.BORDER_TOP_BOTTOM_HEIGHT + fitGapTop,
       );
     } else {
       this.world.field.position.set(
@@ -148,6 +157,44 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     }
     this.world.field.updateMatrix(true);
     this.root.add(this.world.field);
+
+    // Letterbox: when the map's aspect ratio differs from the viewport, fill
+    // the leftover gap with grey BorderWalls so (a) it visually matches the
+    // surrounding border instead of showing the dark playfield background,
+    // and (b) tanks bumping into the scaled field edge collide here instead
+    // of being able to drift past the map's logical bounds toward the outer
+    // viewport border. Drawn above bullets so a despawning bullet is hidden.
+    const addGap = (x: number, y: number, w: number, h: number): void => {
+      if (w <= 0 || h <= 0) return;
+      const bar = new BorderWall(w, h);
+      bar.position.set(x, y);
+      bar.setZIndex(config.BULLET_Z_INDEX + 1);
+      this.root.add(bar);
+    };
+    addGap(
+      config.BORDER_LEFT_WIDTH,
+      config.BORDER_TOP_BOTTOM_HEIGHT,
+      config.VIEWPORT_SIZE,
+      fitGapTop,
+    );
+    addGap(
+      config.BORDER_LEFT_WIDTH,
+      config.BORDER_TOP_BOTTOM_HEIGHT + config.VIEWPORT_SIZE - fitGapBottom,
+      config.VIEWPORT_SIZE,
+      fitGapBottom,
+    );
+    addGap(
+      config.BORDER_LEFT_WIDTH,
+      config.BORDER_TOP_BOTTOM_HEIGHT + fitGapTop,
+      fitGapLeft,
+      config.VIEWPORT_SIZE - fitGapTop - fitGapBottom,
+    );
+    addGap(
+      config.BORDER_LEFT_WIDTH + config.VIEWPORT_SIZE - fitGapRight,
+      config.BORDER_TOP_BOTTOM_HEIGHT + fitGapTop,
+      fitGapRight,
+      config.VIEWPORT_SIZE - fitGapTop - fitGapBottom,
+    );
 
     const terrainRegions = mapConfig.getTerrainRegions();
     const tiles = TerrainFactory.createMapFromRegionConfigs(terrainRegions, mapConfig.getTileset(), mapConfig.getFieldWidth());

@@ -1,7 +1,19 @@
-import { GW, GH, DEF_PLAYER, DEF_ENEMY, DEF_BASES } from './constants';
-import type { EditorMode, EnemyEntry, HistorySnapshot, PaintTool, SpawnPoint } from './types';
+import {
+  DEFAULT_FIELD_SIZE,
+  TS,
+  defaultPlayerSpawns,
+  defaultEnemySpawns,
+  defaultBases,
+} from './constants';
+import type { EditorMode, EnemyEntry, HistorySnapshot, PaintTool, SpawnPoint, ViewMode } from './types';
 
 interface EditorState {
+  fieldWidth: number;
+  fieldHeight: number;
+  gw: number;
+  gh: number;
+  viewMode: ViewMode;
+
   grid: Uint8Array;
   mode: EditorMode;
   paintTool: PaintTool;
@@ -35,8 +47,17 @@ interface EditorState {
   histIdx: number;
 }
 
+const initFieldWidth = DEFAULT_FIELD_SIZE;
+const initFieldHeight = DEFAULT_FIELD_SIZE;
+
 export const state: EditorState = {
-  grid:         new Uint8Array(GW * GH),
+  fieldWidth:   initFieldWidth,
+  fieldHeight:  initFieldHeight,
+  gw:           initFieldWidth / TS,
+  gh:           initFieldHeight / TS,
+  viewMode:     'fit',
+
+  grid:         new Uint8Array((initFieldWidth / TS) * (initFieldHeight / TS)),
   mode:         'terrain',
   paintTool:    'free',
   brushIdx:     0,
@@ -67,11 +88,40 @@ export const state: EditorState = {
   dragStartCol: 0,
   dragStartRow: 0,
 
-  playerSpawns: DEF_PLAYER.map((s) => ({ ...s })),
-  enemySpawns:  DEF_ENEMY.map((s) => ({ ...s })),
-  basePositions: DEF_BASES.map((s) => ({ ...s })),
+  playerSpawns: defaultPlayerSpawns(initFieldWidth, initFieldHeight),
+  enemySpawns:  defaultEnemySpawns(initFieldWidth, initFieldHeight),
+  basePositions: defaultBases(initFieldWidth, initFieldHeight),
   enemyList:    Array.from({ length: 20 }, () => ({ type: 'basic', ai: 'classic', drop: '' })),
 
   history:  [],
   histIdx:  -1,
 };
+
+/**
+ * Resize the field. Existing grid content is preserved top-left aligned;
+ * cells outside the new bounds are dropped, as are spawn/base positions
+ * that would land outside.
+ */
+export function resizeField(newWidth: number, newHeight: number): void {
+  const newGw = Math.max(1, Math.round(newWidth / TS));
+  const newGh = Math.max(1, Math.round(newHeight / TS));
+  const newGrid = new Uint8Array(newGw * newGh);
+  const copyGw = Math.min(state.gw, newGw);
+  const copyGh = Math.min(state.gh, newGh);
+  for (let r = 0; r < copyGh; r++) {
+    for (let c = 0; c < copyGw; c++) {
+      newGrid[r * newGw + c] = state.grid[r * state.gw + c];
+    }
+  }
+  state.grid = newGrid;
+  state.fieldWidth = newGw * TS;
+  state.fieldHeight = newGh * TS;
+  state.gw = newGw;
+  state.gh = newGh;
+
+  const inBounds = (s: SpawnPoint): boolean =>
+    s.x >= 0 && s.x < state.fieldWidth && s.y >= 0 && s.y < state.fieldHeight;
+  state.playerSpawns = state.playerSpawns.filter(inBounds);
+  state.enemySpawns = state.enemySpawns.filter(inBounds);
+  state.basePositions = state.basePositions.filter(inBounds);
+}

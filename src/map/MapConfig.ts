@@ -6,7 +6,7 @@ import { TerrainFactory } from '../terrain/TerrainFactory';
 import { TerrainRegionConfig } from '../terrain/TerrainRegionConfig';
 import * as config from '../config';
 
-import { MapDto, validateMapDto, MapDtoSpawnEnemyListItem } from './MapDto';
+import { MapDto, MapViewMode, validateMapDto, MapDtoSpawnEnemyListItem } from './MapDto';
 import { TilesetId } from '../terrain/TilesetId';
 
 export interface MapConfigToJsonOptions {
@@ -58,7 +58,7 @@ export class MapConfig {
       if (dto.spawn.base) {
         dto.spawn.bases = [dto.spawn.base];
       } else {
-        dto.spawn.bases = [{ x: 384, y: 768 }];
+        dto.spawn.bases = [config.getDefaultBaseDtoPosition(dto.width, dto.height)];
       }
     }
 
@@ -106,6 +106,10 @@ export class MapConfig {
 
   public getTileset(): TilesetId {
     return this.dto.tileset ?? TilesetId.Classic;
+  }
+
+  public getViewMode(): MapViewMode {
+    return this.dto.viewMode ?? 'fit';
   }
 
   public getTitle(levelNumber: number): string {

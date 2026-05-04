@@ -26,6 +26,11 @@
       "type": "integer",
       "minimum": 1
     },
+    "viewMode": {
+      "type": "string",
+      "enum": ["fit", "scroll"],
+      "default": "fit"
+    },
     "spawn": {
       "type": "object",
       "required": ["enemy", "player"],

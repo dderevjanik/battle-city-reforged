@@ -94,14 +94,19 @@ export class TerrainGPULayer {
         const worldBox = tile.worldBoundingBox;
         const memberIndex = layer.memberCount;
 
+        // Pick up any ancestor render scale (viewMode=fit) baked into the
+        // tile's worldMatrix so GPU-batched tiles match per-object sprites.
+        const e = tile.worldMatrix.elements;
+        const renderScale = Math.sqrt(e[0] * e[0] + e[1] * e[1]) || 1;
+
         layer.addMember({
           x: worldBox.min.x,
           y: worldBox.min.y,
           frame: frameInfo.frameKey,
           originX: 0,
           originY: 0,
-          scaleX: 1,
-          scaleY: 1,
+          scaleX: renderScale,
+          scaleY: renderScale,
         });
 
         group.tileToIndex.set(tile, memberIndex);

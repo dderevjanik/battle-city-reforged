@@ -1,21 +1,21 @@
-import { FIELD, GW, GH, TS, BRUSHES, T2I, I2T } from './constants';
+import { TS, BRUSHES, T2I, I2T } from './constants';
 import { state } from './state';
 import type { TerrainRegion } from './types';
 
 export function getCell(col: number, row: number): number {
-  if (col < 0 || col >= GW || row < 0 || row >= GH) return 0;
-  return state.grid[row * GW + col];
+  if (col < 0 || col >= state.gw || row < 0 || row >= state.gh) return 0;
+  return state.grid[row * state.gw + col];
 }
 
 export function setCell(col: number, row: number, v: number): void {
-  if (col < 0 || col >= GW || row < 0 || row >= GH) return;
-  state.grid[row * GW + col] = v;
+  if (col < 0 || col >= state.gw || row < 0 || row >= state.gh) return;
+  state.grid[row * state.gw + col] = v;
 }
 
 function snapBrush(wx: number, wy: number, size: number): { sx: number; sy: number } {
   const half = size / 2;
-  const sx = Math.max(0, Math.min(FIELD - size, Math.round((wx - half) / size) * size));
-  const sy = Math.max(0, Math.min(FIELD - size, Math.round((wy - half) / size) * size));
+  const sx = Math.max(0, Math.min(state.fieldWidth  - size, Math.round((wx - half) / size) * size));
+  const sy = Math.max(0, Math.min(state.fieldHeight - size, Math.round((wy - half) / size) * size));
   return { sx, sy };
 }
 
@@ -40,8 +40,8 @@ export function pickBrushAtCell(col: number, row: number): number {
 
 export function cellAt(wx: number, wy: number): { col: number; row: number } {
   return {
-    col: Math.max(0, Math.min(GW - 1, Math.floor(wx / TS))),
-    row: Math.max(0, Math.min(GH - 1, Math.floor(wy / TS))),
+    col: Math.max(0, Math.min(state.gw - 1, Math.floor(wx / TS))),
+    row: Math.max(0, Math.min(state.gh - 1, Math.floor(wy / TS))),
   };
 }
 
@@ -100,21 +100,22 @@ export function floodFill(
   replacementIdx: number,
   cellLimit?: number,
 ): { matched: Array<[number, number]>; capped: boolean } {
+  const { gw, gh } = state;
   const matched: Array<[number, number]> = [];
-  if (seedCol < 0 || seedCol >= GW || seedRow < 0 || seedRow >= GH) {
+  if (seedCol < 0 || seedCol >= gw || seedRow < 0 || seedRow >= gh) {
     return { matched, capped: false };
   }
-  const target = state.grid[seedRow * GW + seedCol];
+  const target = state.grid[seedRow * gw + seedCol];
   if (target === replacementIdx) return { matched, capped: false };
 
-  const visited = new Uint8Array(GW * GH);
+  const visited = new Uint8Array(gw * gh);
   const stack: Array<[number, number]> = [[seedCol, seedRow]];
-  const limit = cellLimit ?? GW * GH;
+  const limit = cellLimit ?? gw * gh;
 
   while (stack.length) {
     const [c, r] = stack.pop()!;
-    if (c < 0 || c >= GW || r < 0 || r >= GH) continue;
-    const k = r * GW + c;
+    if (c < 0 || c >= gw || r < 0 || r >= gh) continue;
+    const k = r * gw + c;
     if (visited[k]) continue;
     if (state.grid[k] !== target) continue;
     visited[k] = 1;
@@ -149,28 +150,29 @@ export function paint(wx: number, wy: number, erase: boolean): void {
 
 /** Greedy rectangle merge: grid cells → compact region list */
 export function gridToRegions(): TerrainRegion[] {
-  const visited = new Uint8Array(GW * GH);
+  const { gw, gh } = state;
+  const visited = new Uint8Array(gw * gh);
   const regions: TerrainRegion[] = [];
 
   for (let ti = 1; ti <= 5; ti++) {
-    for (let row = 0; row < GH; row++) {
-      for (let col = 0; col < GW; col++) {
-        if (state.grid[row * GW + col] !== ti || visited[row * GW + col]) continue;
+    for (let row = 0; row < gh; row++) {
+      for (let col = 0; col < gw; col++) {
+        if (state.grid[row * gw + col] !== ti || visited[row * gw + col]) continue;
 
         let w = 1;
-        while (col + w < GW && state.grid[row * GW + col + w] === ti && !visited[row * GW + col + w]) w++;
+        while (col + w < gw && state.grid[row * gw + col + w] === ti && !visited[row * gw + col + w]) w++;
 
         let h = 1;
-        outer: while (row + h < GH) {
+        outer: while (row + h < gh) {
           for (let c = 0; c < w; c++) {
-            if (state.grid[(row + h) * GW + col + c] !== ti || visited[(row + h) * GW + col + c]) break outer;
+            if (state.grid[(row + h) * gw + col + c] !== ti || visited[(row + h) * gw + col + c]) break outer;
           }
           h++;
         }
 
         for (let r = 0; r < h; r++) {
           for (let c = 0; c < w; c++) {
-            visited[(row + r) * GW + col + c] = 1;
+            visited[(row + r) * gw + col + c] = 1;
           }
         }
 

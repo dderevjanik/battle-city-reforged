@@ -1,11 +1,15 @@
 import type { Brush, SpawnPoint, SpriteRect } from './types';
 
-export const FIELD = 832;
 export const TS    = 16;          // smallest tile (brick)
 export const TM    = 32;          // medium tile (steel, water, …)
 export const TL    = 64;          // large tile = tank size
-export const GW    = FIELD / TS;  // grid columns = 52
-export const GH    = FIELD / TS;  // grid rows    = 52
+
+// Default map size = 13×13 tank-tiles (832×832), matching the play viewport.
+// Maps may be larger (or smaller) — see state.fieldWidth/fieldHeight.
+export const DEFAULT_FIELD_TILES = 13;
+export const DEFAULT_FIELD_SIZE  = DEFAULT_FIELD_TILES * TL;
+export const MIN_FIELD_TILES = 8;
+export const MAX_FIELD_TILES = 32;
 
 export const COLORS: Record<string, string> = {
   brick:  '#7c3d1a',
@@ -83,6 +87,25 @@ export const ENEMY_TANK_DROP_RECTS: Record<string, SpriteRect> = {
   heavy:  [524, 984, 52, 60],
 };
 
-export const DEF_PLAYER: SpawnPoint[] = [{ x: 256, y: 768 }, { x: 512, y: 768 }];
-export const DEF_ENEMY:  SpawnPoint[] = [{ x: 0, y: 0 }, { x: 384, y: 0 }, { x: 768, y: 0 }];
-export const DEF_BASES:  SpawnPoint[] = [{ x: 384, y: 768 }];
+export function defaultPlayerSpawns(width: number, height: number): SpawnPoint[] {
+  const y = height - TL;
+  const snap = (v: number): number => Math.round(v / TL) * TL;
+  return [
+    { x: snap(width * 0.25), y },
+    { x: snap(width * 0.5),  y },
+  ];
+}
+
+export function defaultEnemySpawns(width: number, _height: number): SpawnPoint[] {
+  const snap = (v: number): number => Math.round(v / TL) * TL;
+  return [
+    { x: 0, y: 0 },
+    { x: snap(width * 0.5), y: 0 },
+    { x: width - TL, y: 0 },
+  ];
+}
+
+export function defaultBases(width: number, height: number): SpawnPoint[] {
+  const snap = (v: number): number => Math.round(v / TL) * TL;
+  return [{ x: snap(width * 0.5), y: height - TL }];
+}

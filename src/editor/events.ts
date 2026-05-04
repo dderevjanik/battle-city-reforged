@@ -1,26 +1,26 @@
-import { TS, TL, FIELD, GW, BRUSHES, T2I } from './constants';
+import { TS, TL, MIN_FIELD_TILES, MAX_FIELD_TILES, BRUSHES, T2I } from './constants';
 import { paint, paintRect, paintLine, floodFill, cellAt, pickBrushAtCell } from './grid';
 import { stepUndo, stepRedo, pushHistory } from './history';
 import { render, resizeCanvas, centerView, c2w, w2c } from './renderer';
-import { state } from './state';
+import { state, resizeField } from './state';
 import { selectBrush, setMode, selectTool, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus, addEnemy, syncEnemyRows } from './ui';
 import { newMap, saveMap, openFile, onFileSelected, testMap, openMapBrowser, shareMap } from './io';
-import type { PaintTool, SpawnPoint } from './types';
+import type { PaintTool, SpawnPoint, ViewMode } from './types';
 
 function clamp(v: number, lo: number, hi: number): number {
   return v < lo ? lo : v > hi ? hi : v;
 }
 
 function inField(wx: number, wy: number): boolean {
-  return wx >= 0 && wx < FIELD && wy >= 0 && wy < FIELD;
+  return wx >= 0 && wx < state.fieldWidth && wy >= 0 && wy < state.fieldHeight;
 }
 
 const DRAG_THRESHOLD_PX = 8;
 
 function snapToTL(wx: number, wy: number): SpawnPoint {
   return {
-    x: clamp(Math.floor(wx / TL) * TL, 0, FIELD - TL),
-    y: clamp(Math.floor(wy / TL) * TL, 0, FIELD - TL),
+    x: clamp(Math.floor(wx / TL) * TL, 0, state.fieldWidth  - TL),
+    y: clamp(Math.floor(wy / TL) * TL, 0, state.fieldHeight - TL),
   };
 }
 
@@ -62,7 +62,7 @@ export function bindViewport(viewport: HTMLElement): void {
         const fillIdx = b.type ? (T2I[b.type] ?? 0) : 0;
         const result = floodFill(col, row, fillIdx);
         for (const [c, r] of result.matched) {
-          state.grid[r * GW + c] = fillIdx;
+          state.grid[r * state.gw + c] = fillIdx;
         }
         pushHistory();
         render();
@@ -151,8 +151,8 @@ export function bindViewport(viewport: HTMLElement): void {
       }
     }
 
-    const fx  = clamp(Math.round(world.x), 0, FIELD - 1);
-    const fy  = clamp(Math.round(world.y), 0, FIELD - 1);
+    const fx  = clamp(Math.round(world.x), 0, state.fieldWidth  - 1);
+    const fy  = clamp(Math.round(world.y), 0, state.fieldHeight - 1);
     updateStatusCoords(fx, fy, Math.floor(fx / TS), Math.floor(fy / TS));
     render();
   });
@@ -318,6 +318,32 @@ export function bindToolbar(): void {
   document.getElementById('btn-enemy-add')?.addEventListener('click', addEnemy);
 
   document.getElementById('file-input')?.addEventListener('change', onFileSelected);
+
+  document.getElementById('btn-apply-size')?.addEventListener('click', () => {
+    const wEl = document.getElementById('inp-tiles-w') as HTMLInputElement | null;
+    const hEl = document.getElementById('inp-tiles-h') as HTMLInputElement | null;
+    const tilesW = clamp(parseInt(wEl?.value ?? '') || state.fieldWidth  / TL, MIN_FIELD_TILES, MAX_FIELD_TILES);
+    const tilesH = clamp(parseInt(hEl?.value ?? '') || state.fieldHeight / TL, MIN_FIELD_TILES, MAX_FIELD_TILES);
+    if (wEl) wEl.value = String(tilesW);
+    if (hEl) hEl.value = String(tilesH);
+    const newW = tilesW * TL;
+    const newH = tilesH * TL;
+    if (newW === state.fieldWidth && newH === state.fieldHeight) return;
+    resizeField(newW, newH);
+    refreshSpawnLists();
+    pushHistory();
+    centerView();
+    render();
+  });
+
+  const vmSel = document.getElementById('inp-viewmode') as HTMLSelectElement | null;
+  vmSel?.addEventListener('change', () => {
+    const v = vmSel.value as ViewMode;
+    if (v === 'fit' || v === 'scroll') {
+      state.viewMode = v;
+      pushHistory();
+    }
+  });
 }
 
 // ── Window resize ─────────────────────────────────

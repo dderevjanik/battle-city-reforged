@@ -6,7 +6,11 @@ export const TILE_SIZE_MEDIUM = 32;
 export const TILE_SIZE_LARGE = 64;
 
 export const FIELD_TILE_COUNT = 13;
-export const FIELD_SIZE = FIELD_TILE_COUNT * TILE_SIZE_LARGE;
+// Visible playfield viewport (always 13×13 tank-tiles = 832×832).
+// Maps can be larger than this — see `viewMode` in MapDto.
+export const VIEWPORT_SIZE = FIELD_TILE_COUNT * TILE_SIZE_LARGE;
+// Legacy alias: the default map size matches the viewport.
+export const FIELD_SIZE = VIEWPORT_SIZE;
 
 export const BORDER_LEFT_WIDTH = 64;
 export const BORDER_RIGHT_WIDTH = 128;
@@ -141,6 +145,42 @@ export const ENEMY_DEFAULT_SPAWN_POSITIONS = [
 ];
 export const BASE_DEFAULT_POSITION = { x: 352, y: 736 };
 export const BASE_DEFAULT_SIZE = { width: 128, height: 96 };
+
+// Defaults derived from arbitrary map dimensions. Used by the editor when
+// creating a new map at a non-default size, and by MapConfig fallback paths.
+export function getDefaultPlayerSpawns(
+  width: number,
+  height: number,
+): Array<{ x: number; y: number }> {
+  const y = height - TILE_SIZE_LARGE;
+  return [
+    { x: Math.round(width * 0.25 / TILE_SIZE_LARGE) * TILE_SIZE_LARGE, y },
+    { x: Math.round(width * 0.5 / TILE_SIZE_LARGE) * TILE_SIZE_LARGE, y },
+  ];
+}
+
+export function getDefaultEnemySpawns(
+  width: number,
+  _height: number,
+): Array<{ x: number; y: number }> {
+  return [
+    { x: 0, y: 0 },
+    { x: Math.round(width * 0.5 / TILE_SIZE_LARGE) * TILE_SIZE_LARGE, y: 0 },
+    { x: width - TILE_SIZE_LARGE, y: 0 },
+  ];
+}
+
+// In DTO coordinates the base anchor is its top-left * (1,1) plus offset 32;
+// see MapConfig.getBasePositions which subtracts 32.
+export function getDefaultBaseDtoPosition(
+  width: number,
+  height: number,
+): { x: number; y: number } {
+  return {
+    x: Math.round(width * 0.5 / TILE_SIZE_LARGE) * TILE_SIZE_LARGE,
+    y: height - TILE_SIZE_LARGE,
+  };
+}
 
 export const MENU_TITLE_DEFAULT_POSITION = {
   x: 112,

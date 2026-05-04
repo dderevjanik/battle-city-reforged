@@ -36,6 +36,7 @@ import { LevelPointsScript } from '../../level/scripts/LevelPointsScript';
 import { LevelPowerupScript } from '../../level/scripts/LevelPowerupScript';
 import { LevelSpawnScript } from '../../level/scripts/LevelSpawnScript';
 import { LevelAchievementsScript } from '../../level/scripts/LevelAchievementsScript';
+import { LevelCameraScript } from '../../level/scripts/LevelCameraScript';
 import { LevelStatsScript } from '../../level/scripts/LevelStatsScript';
 import { LevelWinScript } from '../../level/scripts/LevelWinScript';
 
@@ -84,6 +85,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private winScript!: LevelWinScript;
   private achievementsScript!: LevelAchievementsScript;
   private statsScript!: LevelStatsScript;
+  private cameraScript: LevelCameraScript | null = null;
 
   protected setup(context: GameContext): void {
     const { analytics, collisionSystem, continueManager, inputManager, levelProgressManager, session } = context;
@@ -120,10 +122,31 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
 
     this.root.add(new Border());
 
-    this.world.field.position.set(
-      config.BORDER_LEFT_WIDTH,
-      config.BORDER_TOP_BOTTOM_HEIGHT,
-    );
+    // viewMode="fit": scale the field down so the entire map fits inside the
+    // 832×832 playfield viewport, and center it. Set BEFORE tiles are added so
+    // the GPU terrain layer captures scaled positions/sizes on first init.
+    if (mapConfig.getViewMode() === 'fit') {
+      const mw = mapConfig.getFieldWidth();
+      const mh = mapConfig.getFieldHeight();
+      const fitScale = Math.min(
+        config.VIEWPORT_SIZE / mw,
+        config.VIEWPORT_SIZE / mh,
+        1,
+      );
+      this.world.field.scale = fitScale;
+      const scaledW = mw * fitScale;
+      const scaledH = mh * fitScale;
+      this.world.field.position.set(
+        config.BORDER_LEFT_WIDTH + (config.VIEWPORT_SIZE - scaledW) / 2,
+        config.BORDER_TOP_BOTTOM_HEIGHT + (config.VIEWPORT_SIZE - scaledH) / 2,
+      );
+    } else {
+      this.world.field.position.set(
+        config.BORDER_LEFT_WIDTH,
+        config.BORDER_TOP_BOTTOM_HEIGHT,
+      );
+    }
+    this.world.field.updateMatrix(true);
     this.root.add(this.world.field);
 
     const terrainRegions = mapConfig.getTerrainRegions();
@@ -160,6 +183,10 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.achievementsScript = new LevelAchievementsScript();
     this.statsScript = new LevelStatsScript();
 
+    if (mapConfig.getViewMode() === 'scroll') {
+      this.cameraScript = new LevelCameraScript();
+    }
+
     this.allScripts = [
       this.audioScript,
       this.baseScript,
@@ -177,6 +204,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       this.winScript,
       this.achievementsScript,
       this.statsScript,
+      ...(this.cameraScript ? [this.cameraScript] : []),
     ];
 
     this.allScripts.forEach((script) => {
@@ -212,6 +240,9 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
         this.achievementsScript,
         this.statsScript,
       );
+      if (this.cameraScript) {
+        this.playingUpdateScripts.push(this.cameraScript);
+      }
     });
 
     this.eventBus.baseDied.addListener(this.handleBaseDied);

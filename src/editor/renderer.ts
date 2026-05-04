@@ -1,4 +1,4 @@
-import { FIELD, TS, TM, TL, GW, GH, COLORS, BRUSHES, I2T, SRECTS, SPRITE_SRC, PLAYER_TANK_RECTS, ENEMY_TANK_RECTS, ENEMY_TANK_DROP_RECTS } from './constants';
+import { TS, TM, TL, COLORS, BRUSHES, I2T, SRECTS, SPRITE_SRC, PLAYER_TANK_RECTS, ENEMY_TANK_RECTS, ENEMY_TANK_DROP_RECTS } from './constants';
 import { state } from './state';
 import { snapBrush, cellAt, lineCells, floodFill } from './grid';
 
@@ -34,12 +34,13 @@ export function resizeCanvas(): void {
 
 export function centerView(): void {
   const padding = 40;
-  const scaleX  = (canvas.width  - padding * 2) / FIELD;
-  const scaleY  = (canvas.height - padding * 2) / FIELD;
+  const scaleX  = (canvas.width  - padding * 2) / state.fieldWidth;
+  const scaleY  = (canvas.height - padding * 2) / state.fieldHeight;
   state.zoom    = Math.min(scaleX, scaleY, 1);
-  const fs      = FIELD * state.zoom;
-  state.panX    = (canvas.width  - fs) / 2;
-  state.panY    = (canvas.height - fs) / 2;
+  const fw      = state.fieldWidth  * state.zoom;
+  const fh      = state.fieldHeight * state.zoom;
+  state.panX    = (canvas.width  - fw) / 2;
+  state.panY    = (canvas.height - fh) / 2;
   const el = document.getElementById('st-zoom');
   if (el) el.textContent = `Zoom: ${Math.round(state.zoom * 100)}%`;
 }
@@ -101,16 +102,17 @@ export function render(): void {
   ctx.fillRect(0, 0, W, H);
 
   const fp = w2c(0, 0);
-  const fs = FIELD * state.zoom;
+  const fw = state.fieldWidth  * state.zoom;
+  const fh = state.fieldHeight * state.zoom;
 
   // Field background
   ctx.fillStyle = '#131f11';
-  ctx.fillRect(fp.x, fp.y, fs, fs);
+  ctx.fillRect(fp.x, fp.y, fw, fh);
 
   // ── Terrain ──
-  for (let row = 0; row < GH; row++) {
-    for (let col = 0; col < GW; col++) {
-      const v = state.grid[row * GW + col];
+  for (let row = 0; row < state.gh; row++) {
+    for (let col = 0; col < state.gw; col++) {
+      const v = state.grid[row * state.gw + col];
       if (!v) continue;
       const type = I2T[v];
       const p    = w2c(col * TS, row * TS);
@@ -143,7 +145,7 @@ export function render(): void {
   // Field border
   ctx.strokeStyle = '#3d4450';
   ctx.lineWidth   = 1;
-  ctx.strokeRect(fp.x - 0.5, fp.y - 0.5, fs + 1, fs + 1);
+  ctx.strokeRect(fp.x - 0.5, fp.y - 0.5, fw + 1, fh + 1);
 
   // ── Markers ──
   state.basePositions.forEach((s, i) => drawBase(s.x, s.y, state.basePositions.length > 1 ? `B${i + 1}` : 'BASE'));
@@ -170,20 +172,22 @@ export function render(): void {
 }
 
 function drawGridLines(tileSize: number, color: string, lw: number): void {
-  const fp   = w2c(0, 0);
-  const fs   = FIELD * state.zoom;
-  const count = GW * TS / tileSize;
+  const fp = w2c(0, 0);
+  const fw = state.fieldWidth  * state.zoom;
+  const fh = state.fieldHeight * state.zoom;
+  const colCount = Math.ceil(state.fieldWidth  / tileSize);
+  const rowCount = Math.ceil(state.fieldHeight / tileSize);
 
   ctx.strokeStyle = color;
   ctx.lineWidth   = lw;
 
-  for (let i = 0; i <= count; i++) {
+  for (let i = 0; i <= colCount; i++) {
     const p = w2c(i * tileSize, 0);
-    ctx.beginPath(); ctx.moveTo(p.x, fp.y); ctx.lineTo(p.x, fp.y + fs); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(p.x, fp.y); ctx.lineTo(p.x, fp.y + fh); ctx.stroke();
   }
-  for (let j = 0; j <= count; j++) {
+  for (let j = 0; j <= rowCount; j++) {
     const p = w2c(0, j * tileSize);
-    ctx.beginPath(); ctx.moveTo(fp.x, p.y); ctx.lineTo(fp.x + fs, p.y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(fp.x, p.y); ctx.lineTo(fp.x + fw, p.y); ctx.stroke();
   }
 }
 
@@ -345,7 +349,7 @@ function drawShapePreview(tool: 'rect' | 'line'): void {
 
 function drawFillHoverPreview(): void {
   const cur = cellAt(state.mouseWX, state.mouseWY);
-  if (state.mouseWX < 0 || state.mouseWX >= FIELD || state.mouseWY < 0 || state.mouseWY >= FIELD) return;
+  if (state.mouseWX < 0 || state.mouseWX >= state.fieldWidth || state.mouseWY < 0 || state.mouseWY >= state.fieldHeight) return;
   const result = floodFill(cur.col, cur.row, -1, 512);
   if (result.matched.length === 0 || result.capped) return;
 

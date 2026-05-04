@@ -22,11 +22,14 @@ export interface TerrainRegion {
   height: number;
 }
 
+export type ViewMode = 'fit' | 'scroll';
+
 export interface MapDto {
   tileset: string;
   title?: string;
   width: number;
   height: number;
+  viewMode?: ViewMode;
   spawn: {
     enemy: {
       spawnDelay: number;
@@ -52,6 +55,8 @@ export type PaintTool = 'free' | 'rect' | 'line' | 'fill';
 export type SpriteRect = [number, number, number, number];
 
 export interface HistorySnapshot {
+  fieldWidth: number;
+  fieldHeight: number;
   grid: Uint8Array;
   playerSpawns: SpawnPoint[];
   enemySpawns: SpawnPoint[];

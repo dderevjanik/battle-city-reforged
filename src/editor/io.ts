@@ -1,12 +1,12 @@
 import { PLAYTEST_STORAGE_KEY } from '../core/render/BridgeScene';
 import { encodeMapToHash } from '../share/shareUrl';
-import { DEF_PLAYER, DEF_ENEMY, DEF_BASES, GW, GH, T2I, TS } from './constants';
+import { T2I, TS, defaultPlayerSpawns, defaultEnemySpawns, defaultBases } from './constants';
 import { gridToRegions, regionsToGrid } from './grid';
 import { pushHistory } from './history';
 import { render } from './renderer';
-import { state } from './state';
+import { state, resizeField } from './state';
 import { buildEnemyRows, refreshSpawnLists, syncEnemyRows } from './ui';
-import type { MapDto, SpawnPoint } from './types';
+import type { MapDto, SpawnPoint, ViewMode } from './types';
 
 function getInputValue(id: string): string {
   return (document.getElementById(id) as HTMLInputElement | null)?.value ?? '';
@@ -19,11 +19,13 @@ function setInputValue(id: string, v: string | number): void {
 
 export function buildMapDto(): MapDto {
   const title = getInputValue('inp-title').trim();
+  const viewMode = (getInputValue('inp-viewmode') || state.viewMode) as ViewMode;
   return {
     tileset: 'classic',
     ...(title ? { title } : {}),
-    width:   832,
-    height:  832,
+    width:    state.fieldWidth,
+    height:   state.fieldHeight,
+    ...(viewMode && viewMode !== 'fit' ? { viewMode } : {}),
     spawn: {
       enemy: {
         spawnDelay:    parseFloat(getInputValue('inp-delay')) || 3,
@@ -47,14 +49,23 @@ export function buildMapDto(): MapDto {
 }
 
 export function loadDto(dto: MapDto): void {
+  if (dto.width && dto.height) {
+    resizeField(dto.width, dto.height);
+  }
+  state.viewMode = dto.viewMode ?? 'fit';
+
   regionsToGrid(dto.terrain?.regions ?? []);
 
-  state.playerSpawns = ((dto.spawn?.player?.locations ?? DEF_PLAYER) as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
-  state.enemySpawns  = ((dto.spawn?.enemy?.locations  ?? DEF_ENEMY)  as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
+  const w = state.fieldWidth, h = state.fieldHeight;
+  state.playerSpawns = ((dto.spawn?.player?.locations ?? defaultPlayerSpawns(w, h)) as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
+  state.enemySpawns  = ((dto.spawn?.enemy?.locations  ?? defaultEnemySpawns(w, h))  as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
   state.basePositions = dto.spawn?.bases?.map(s => ({ x: s.x, y: s.y }))
-    ?? (dto.spawn?.base ? [{ x: dto.spawn.base.x, y: dto.spawn.base.y }] : DEF_BASES.map(s => ({ ...s })));
+    ?? (dto.spawn?.base ? [{ x: dto.spawn.base.x, y: dto.spawn.base.y }] : defaultBases(w, h));
 
   setInputValue('inp-title', dto.title ?? '');
+  setInputValue('inp-tiles-w', state.fieldWidth  / 64);
+  setInputValue('inp-tiles-h', state.fieldHeight / 64);
+  setInputValue('inp-viewmode', state.viewMode);
 
   if (dto.spawn?.enemy?.spawnDelay    !== undefined) setInputValue('inp-delay', dto.spawn.enemy.spawnDelay);
   if (dto.spawn?.enemy?.maxAliveCount !== undefined) setInputValue('inp-alive', dto.spawn.enemy.maxAliveCount);
@@ -74,9 +85,10 @@ export function loadDto(dto: MapDto): void {
 export function paintBaseDefense(): void {
   const BRICK = T2I['brick'];
   const fill = (col: number, row: number, cols: number, rows: number): void => {
+    const { gw, gh } = state;
     for (let r = row; r < row + rows; r++) {
       for (let c = col; c < col + cols; c++) {
-        if (c >= 0 && c < GW && r >= 0 && r < GH) state.grid[r * GW + c] = BRICK;
+        if (c >= 0 && c < gw && r >= 0 && r < gh) state.grid[r * gw + c] = BRICK;
       }
     }
   };
@@ -91,11 +103,23 @@ export function paintBaseDefense(): void {
 
 export function newMap(): void {
   if (!confirm('Clear current map and start fresh?')) return;
+
+  // Honor the size/viewMode inputs if the user changed them.
+  const tilesW = parseInt(getInputValue('inp-tiles-w')) || (state.fieldWidth  / 64);
+  const tilesH = parseInt(getInputValue('inp-tiles-h')) || (state.fieldHeight / 64);
+  const newW = Math.max(1, tilesW) * 64;
+  const newH = Math.max(1, tilesH) * 64;
+  if (newW !== state.fieldWidth || newH !== state.fieldHeight) {
+    resizeField(newW, newH);
+  }
+  const vm = getInputValue('inp-viewmode') as ViewMode;
+  if (vm === 'fit' || vm === 'scroll') state.viewMode = vm;
+
   state.grid.fill(0);
+  state.playerSpawns = defaultPlayerSpawns(state.fieldWidth, state.fieldHeight);
+  state.enemySpawns  = defaultEnemySpawns(state.fieldWidth, state.fieldHeight);
+  state.basePositions = defaultBases(state.fieldWidth, state.fieldHeight);
   paintBaseDefense();
-  state.playerSpawns = DEF_PLAYER.map(s => ({ ...s }));
-  state.enemySpawns  = DEF_ENEMY.map(s  => ({ ...s }));
-  state.basePositions = DEF_BASES.map(s => ({ ...s }));
   state.enemyList    = Array.from({ length: 20 }, () => ({ type: 'basic', ai: 'classic', drop: '' }));
   setInputValue('inp-title', 'CUSTOM STAGE');
   setInputValue('inp-delay', 3);

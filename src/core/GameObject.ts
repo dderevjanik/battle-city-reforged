@@ -176,6 +176,11 @@ export class GameObject {
   public origin = new Vector(0, 0);
   public rotation = 0;
   public pivot = new Vector(0, 0);
+  // Uniform render scale baked into this object's transform matrix and
+  // therefore propagated to all descendants via worldMatrix. Used by
+  // viewMode="fit" to shrink the entire field into the playfield viewport.
+  // Game logic still operates in unscaled local coordinates.
+  public scale = 1;
 
   public matrix = new Matrix3();
   public worldMatrix = new Matrix3();
@@ -414,9 +419,10 @@ export class GameObject {
     const orgY = originOffset.y;
     const posX = position.x;
     const posY = position.y;
+    const s = this.scale;
 
-    const cos = MathUtils.cosDegrees(rotation);
-    const sin = MathUtils.sinDegrees(rotation);
+    const cos = MathUtils.cosDegrees(rotation) * s;
+    const sin = MathUtils.sinDegrees(rotation) * s;
 
     const tx = pivX * cos - pivY * sin - pivX + orgX + posX;
     const ty = pivX * sin + pivY * cos - pivY + orgY + posY;
@@ -438,11 +444,13 @@ export class GameObject {
     const orgX = originOffset.x;
     const orgY = originOffset.y;
 
+    // Scale is baked into the rotation block; cos/sin here include scale.
     const cos = transformMatrix.elements[0];
     const sin = transformMatrix.elements[1];
     const tx = transformMatrix.elements[6];
     const ty = transformMatrix.elements[7];
 
+    // atan2 is scale-invariant, so rotation extraction stays correct.
     let rotation = MathUtils.atan2Degrees(sin, cos);
     if (rotation < 0) {
       rotation += 360;
@@ -672,10 +680,14 @@ export class GameObject {
       image.setPosition(0, 0);
       image.setDisplaySize(boxW, boxH);
     } else {
+      // Non-stretched sprites draw at a fixed source size, so they need an
+      // explicit scale to follow an ancestor's render scale (viewMode=fit).
+      const e = this.worldMatrix.elements;
+      const renderScale = Math.sqrt(e[0] * e[0] + e[1] * e[1]) || 1;
       const destRect = sprite.destinationRect;
       image.setOrigin(painter.originX, painter.originY);
       image.setPosition(painter.originX * boxW, painter.originY * boxH);
-      image.setDisplaySize(destRect.width, destRect.height);
+      image.setDisplaySize(destRect.width * renderScale, destRect.height * renderScale);
     }
 
     image.setAlpha(painter.opacity);

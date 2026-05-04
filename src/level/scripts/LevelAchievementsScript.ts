@@ -17,10 +17,12 @@ import {
   LevelPowerupPickedEvent,
 } from '../LevelEvents';
 
-// Centered horizontally in the play field, near the bottom.
-// Field: x=64→896, y=32→864 in sceneRoot canvas coords.
+// Centered horizontally in the play viewport, near the bottom.
+// Viewport: x=64→896, y=32→864 in sceneRoot canvas coords.
 const BOX_WIDTH = 860;
-const NOTIFICATION_X = Math.round(64 + (832 - BOX_WIDTH) / 2);
+const NOTIFICATION_X = Math.round(
+  config.BORDER_LEFT_WIDTH + (config.VIEWPORT_SIZE - BOX_WIDTH) / 2,
+);
 const NOTIFICATION_Y = 730;
 
 export class LevelAchievementsScript extends LevelScript {

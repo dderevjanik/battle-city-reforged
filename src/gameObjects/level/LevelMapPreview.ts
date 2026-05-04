@@ -12,12 +12,12 @@ const TERRAIN_COLORS: Partial<Record<TerrainType, string>> = {
 };
 
 export class LevelMapPreview extends GameObject {
-  private readonly scale: number;
+  private readonly previewScale: number;
   private readonly border: GameObject;
 
   constructor(previewSize: number, fieldSize: number) {
     super(previewSize, previewSize);
-    this.scale = previewSize / fieldSize;
+    this.previewScale = previewSize / fieldSize;
     this.painter = new RectPainter('#000000');
 
     this.border = new GameObject(previewSize, previewSize);
@@ -35,12 +35,12 @@ export class LevelMapPreview extends GameObject {
       if (color === undefined) continue;
 
       const tile = new GameObject(
-        Math.ceil(region.width * this.scale),
-        Math.ceil(region.height * this.scale),
+        Math.ceil(region.width * this.previewScale),
+        Math.ceil(region.height * this.previewScale),
       );
       tile.position.set(
-        Math.floor(region.x * this.scale),
-        Math.floor(region.y * this.scale),
+        Math.floor(region.x * this.previewScale),
+        Math.floor(region.y * this.previewScale),
       );
       tile.painter = new RectPainter(color);
       this.add(tile);

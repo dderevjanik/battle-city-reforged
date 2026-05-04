@@ -171,6 +171,22 @@
       <h3>Map</h3>
       <label class="field-lbl">Title</label>
       <input  class="field-inp" type="text" id="inp-title" maxlength="32" value="CUSTOM STAGE" placeholder="e.g. STAGE 1">
+      <div style="display:flex; gap:6px;">
+        <div style="flex:1;">
+          <label class="field-lbl">Width (tiles)</label>
+          <input  class="field-inp" type="number" id="inp-tiles-w" value="13" min="8" max="32" step="1">
+        </div>
+        <div style="flex:1;">
+          <label class="field-lbl">Height (tiles)</label>
+          <input  class="field-inp" type="number" id="inp-tiles-h" value="13" min="8" max="32" step="1">
+        </div>
+      </div>
+      <button class="t-btn" id="btn-apply-size" style="width:100%; padding:4px;">Apply Size</button>
+      <label class="field-lbl" style="margin-top:6px;">View Mode</label>
+      <select class="field-sel" id="inp-viewmode">
+        <option value="fit">Fit (scale to viewport)</option>
+        <option value="scroll">Scroll (camera follows player)</option>
+      </select>
     </div>
 
     <div class="panel-sec">

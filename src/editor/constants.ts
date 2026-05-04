@@ -67,6 +67,14 @@ export const PLAYER_TANK_RECTS: SpriteRect[] = [
   [524, 532, 52, 52],  // P4 danger
 ];
 
+// Enemy tank sprites by kind (default palette, up.1 frame)
+export const ENEMY_TANK_RECTS: Record<string, SpriteRect> = {
+  basic:  [524, 264, 52, 60],
+  fast:   [524, 328, 52, 60],
+  medium: [524, 396, 52, 60],
+  heavy:  [524, 460, 52, 60],
+};
+
 export const DEF_PLAYER: SpawnPoint[] = [{ x: 256, y: 768 }, { x: 512, y: 768 }];
 export const DEF_ENEMY:  SpawnPoint[] = [{ x: 0, y: 0 }, { x: 384, y: 0 }, { x: 768, y: 0 }];
 export const DEF_BASES:  SpawnPoint[] = [{ x: 384, y: 768 }];

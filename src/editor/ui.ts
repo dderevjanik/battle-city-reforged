@@ -1,6 +1,6 @@
 import { BRUSHES, COLORS, SRECTS } from './constants';
 import { pushHistory } from './history';
-import { render, paintBrushSwatches, spriteReady } from './renderer';
+import { render, paintBrushSwatches, paintEnemyPreview, spriteReady } from './renderer';
 import { state } from './state';
 import type { EditorMode, PaintTool } from './types';
 
@@ -139,6 +139,20 @@ export function buildEnemyRows(): void {
       return s;
     };
 
+    const preview = document.createElement('canvas');
+    preview.className   = 'enemy-preview';
+    preview.width       = 18;
+    preview.height      = 18;
+    preview.dataset.kind = state.enemyList[idx].type;
+    preview.style.imageRendering = 'pixelated';
+    paintEnemyPreview(preview, state.enemyList[idx].type);
+
+    const typeSel = mkSel(typeOpts, state.enemyList[idx].type, v => {
+      state.enemyList[idx].type = v;
+      preview.dataset.kind = v;
+      paintEnemyPreview(preview, v);
+    });
+
     const del = document.createElement('button');
     del.className   = 'enemy-del';
     del.textContent = '×';
@@ -146,7 +160,8 @@ export function buildEnemyRows(): void {
     del.addEventListener('click', () => removeEnemy(idx));
 
     row.appendChild(num);
-    row.appendChild(mkSel(typeOpts, state.enemyList[idx].type, v => { state.enemyList[idx].type = v; }));
+    row.appendChild(preview);
+    row.appendChild(typeSel);
     row.appendChild(mkSel(aiOpts,   state.enemyList[idx].ai,   v => { state.enemyList[idx].ai   = v; }));
     row.appendChild(mkSel(dropOpts, state.enemyList[idx].drop, v => { state.enemyList[idx].drop = v; }));
     row.appendChild(del);

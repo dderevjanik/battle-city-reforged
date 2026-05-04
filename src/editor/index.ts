@@ -1,4 +1,4 @@
-import { setup, resizeCanvas, centerView, loadSprite, paintBrushSwatches, render } from './renderer';
+import { setup, resizeCanvas, centerView, loadSprite, paintBrushSwatches, paintEnemyPreviews, render } from './renderer';
 import { buildBrushList, buildEnemyRows, buildToolList, refreshSpawnLists } from './ui';
 import { pushHistory } from './history';
 import { bindViewport, bindKeyboard, bindToolbar, bindResize } from './events';
@@ -26,6 +26,7 @@ function init(): void {
 
   loadSprite(() => {
     paintBrushSwatches();
+    paintEnemyPreviews();
     render();
   });
 

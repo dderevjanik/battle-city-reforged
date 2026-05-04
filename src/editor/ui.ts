@@ -144,13 +144,20 @@ export function buildEnemyRows(): void {
     preview.width       = 18;
     preview.height      = 18;
     preview.dataset.kind = state.enemyList[idx].type;
+    preview.dataset.drop = state.enemyList[idx].drop ? '1' : '';
     preview.style.imageRendering = 'pixelated';
-    paintEnemyPreview(preview, state.enemyList[idx].type);
+    paintEnemyPreview(preview, state.enemyList[idx].type, !!state.enemyList[idx].drop);
 
     const typeSel = mkSel(typeOpts, state.enemyList[idx].type, v => {
       state.enemyList[idx].type = v;
       preview.dataset.kind = v;
-      paintEnemyPreview(preview, v);
+      paintEnemyPreview(preview, v, !!state.enemyList[idx].drop);
+    });
+
+    const dropSel = mkSel(dropOpts, state.enemyList[idx].drop, v => {
+      state.enemyList[idx].drop = v;
+      preview.dataset.drop = v ? '1' : '';
+      paintEnemyPreview(preview, state.enemyList[idx].type, !!v);
     });
 
     const del = document.createElement('button');
@@ -163,7 +170,7 @@ export function buildEnemyRows(): void {
     row.appendChild(preview);
     row.appendChild(typeSel);
     row.appendChild(mkSel(aiOpts,   state.enemyList[idx].ai,   v => { state.enemyList[idx].ai   = v; }));
-    row.appendChild(mkSel(dropOpts, state.enemyList[idx].drop, v => { state.enemyList[idx].drop = v; }));
+    row.appendChild(dropSel);
     row.appendChild(del);
     el.appendChild(row);
   }

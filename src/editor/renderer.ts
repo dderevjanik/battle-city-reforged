@@ -1,4 +1,4 @@
-import { FIELD, TS, TM, TL, GW, GH, COLORS, BRUSHES, I2T, SRECTS, SPRITE_SRC, PLAYER_TANK_RECTS, ENEMY_TANK_RECTS } from './constants';
+import { FIELD, TS, TM, TL, GW, GH, COLORS, BRUSHES, I2T, SRECTS, SPRITE_SRC, PLAYER_TANK_RECTS, ENEMY_TANK_RECTS, ENEMY_TANK_DROP_RECTS } from './constants';
 import { state } from './state';
 import { snapBrush, cellAt, lineCells, floodFill } from './grid';
 
@@ -63,20 +63,21 @@ export function paintBrushSwatches(): void {
   });
 }
 
-export function paintEnemyPreview(canvas: HTMLCanvasElement, kind: string): void {
+export function paintEnemyPreview(canvas: HTMLCanvasElement, kind: string, hasDrop: boolean): void {
   const ctx2 = canvas.getContext('2d')!;
   const w = canvas.width, h = canvas.height;
   ctx2.clearRect(0, 0, w, h);
+  const set = hasDrop ? ENEMY_TANK_DROP_RECTS : ENEMY_TANK_RECTS;
   if (spriteReady && spriteImg) {
-    const r = ENEMY_TANK_RECTS[kind] ?? ENEMY_TANK_RECTS.basic;
+    const r = set[kind] ?? set.basic;
     ctx2.imageSmoothingEnabled = false;
     const scale = Math.min(w / r[2], h / r[3]);
     const dw = r[2] * scale, dh = r[3] * scale;
     ctx2.drawImage(spriteImg, r[0], r[1], r[2], r[3], (w - dw) / 2, (h - dh) / 2, dw, dh);
   } else {
-    ctx2.fillStyle = '#21262d';
+    ctx2.fillStyle = hasDrop ? '#3a1a4a' : '#21262d';
     ctx2.fillRect(0, 0, w, h);
-    ctx2.fillStyle = '#8b949e';
+    ctx2.fillStyle = hasDrop ? '#d2a8ff' : '#8b949e';
     ctx2.font = `bold 9px 'Courier New', monospace`;
     ctx2.textAlign = 'center';
     ctx2.textBaseline = 'middle';
@@ -86,7 +87,7 @@ export function paintEnemyPreview(canvas: HTMLCanvasElement, kind: string): void
 
 export function paintEnemyPreviews(): void {
   document.querySelectorAll<HTMLCanvasElement>('.enemy-preview').forEach(cv => {
-    paintEnemyPreview(cv, cv.dataset.kind ?? 'basic');
+    paintEnemyPreview(cv, cv.dataset.kind ?? 'basic', cv.dataset.drop === '1');
   });
 }
 

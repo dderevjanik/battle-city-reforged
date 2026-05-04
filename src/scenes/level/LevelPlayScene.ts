@@ -456,7 +456,9 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       difficulty: this.session.getDifficulty(),
     });
 
-    this.navigator.replace(GameSceneType.LevelScore);
+    this.navigator.replace(GameSceneType.LevelScore, {
+      title: this.params.mapConfig.getTitle(this.session.getLevelNumber()),
+    });
   };
 
   private handleLevelWinCompleted = (): void => {
@@ -480,6 +482,8 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     });
 
     this.levelProgressManager.markLevelCompleted(this.session.getLevelNumber());
-    this.navigator.replace(GameSceneType.LevelScore);
+    this.navigator.replace(GameSceneType.LevelScore, {
+      title: this.params.mapConfig.getTitle(this.session.getLevelNumber()),
+    });
   };
 }

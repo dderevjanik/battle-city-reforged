@@ -8,12 +8,11 @@ export class LevelTitle extends SpriteText {
     isPlaytest = false,
     options: SpriteTextOptions = {},
     isShared = false,
+    customTitle: string | null = null,
   ) {
-    const text = isShared
-      ? 'SHARED'
-      : isPlaytest
-        ? 'PLAYTEST'
-        : LevelTitle.getLevelText(levelNumber);
+    const text = isPlaytest
+      ? 'PLAYTEST'
+      : (customTitle ?? (isShared ? 'SHARED' : LevelTitle.getLevelText(levelNumber)));
     super(text, options);
 
     this.zIndex = config.LEVEL_TITLE_Z_INDEX;
@@ -22,6 +21,10 @@ export class LevelTitle extends SpriteText {
   public setLevelNumber(levelNumber: number): void {
     const text = LevelTitle.getLevelText(levelNumber);
     this.setText(text);
+  }
+
+  public setTitle(title: string): void {
+    this.setText(title);
   }
 
   private static getLevelText(levelNumber: number): string {

@@ -24,6 +24,7 @@ export interface TerrainRegion {
 
 export interface MapDto {
   tileset: string;
+  title?: string;
   width: number;
   height: number;
   spawn: {

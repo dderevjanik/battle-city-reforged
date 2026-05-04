@@ -56,6 +56,7 @@ export interface MapDtoTerrain {
 export interface MapDto {
   version?: number;
   tileset?: TilesetId;
+  title?: string;
   width: number;
   height: number;
   spawn: MapDtoSpawn;

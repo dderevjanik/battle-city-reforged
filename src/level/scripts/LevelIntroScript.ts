@@ -28,17 +28,19 @@ export class LevelIntroScript extends LevelScript {
     );
     this.world.sceneRoot.add(this.curtain);
 
+    const mapTitle = this.mapConfig.getTitle(this.session.getLevelNumber());
+
     this.title = new LevelTitle(
       this.session.getLevelNumber(),
       this.session.isPlaytest(),
       {},
       this.session.isShared(),
+      mapTitle,
     );
 
     if (!this.session.isPlaytest() && !this.session.isDemo() && !this.session.isShared()) {
-      const stageLabel = `STAGE ${this.session.getLevelNumber().toString().padStart(2, ' ')}`;
       const lines: string[] = [
-        stageLabel,
+        mapTitle,
         '',
         `DIFFICULTY ${this.getDifficultyText(this.session.getDifficulty())}`,
       ];

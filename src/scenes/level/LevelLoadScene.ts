@@ -110,6 +110,10 @@ export class LevelLoadScene extends GameScene {
   private handleMapLoaded = (mapConfig: MapConfig): void => {
     this.mapLoader.error.removeListener(this.handleMapLoadError);
 
+    if (!this.session.isPlaytest()) {
+      this.title.setTitle(mapConfig.getTitle(this.session.getLevelNumber()));
+    }
+
     DifficultyModifier.apply(mapConfig, this.session.getDifficulty());
 
     if (this.session.isDemo()) {

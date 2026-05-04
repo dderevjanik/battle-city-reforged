@@ -108,6 +108,13 @@ export class MapConfig {
     return this.dto.tileset ?? TilesetId.Classic;
   }
 
+  public getTitle(levelNumber: number): string {
+    if (this.dto.title !== undefined && this.dto.title !== '') {
+      return this.dto.title;
+    }
+    return `STAGE ${levelNumber.toString().padStart(2, ' ')}`;
+  }
+
   public getTerrainRegions(): TerrainRegionConfig[] {
     return this.dto.terrain!.regions!;
   }

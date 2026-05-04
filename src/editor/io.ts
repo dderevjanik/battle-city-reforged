@@ -18,8 +18,10 @@ function setInputValue(id: string, v: string | number): void {
 }
 
 export function buildMapDto(): MapDto {
+  const title = getInputValue('inp-title').trim();
   return {
     tileset: 'classic',
+    ...(title ? { title } : {}),
     width:   832,
     height:  832,
     spawn: {
@@ -51,6 +53,8 @@ export function loadDto(dto: MapDto): void {
   state.enemySpawns  = ((dto.spawn?.enemy?.locations  ?? DEF_ENEMY)  as SpawnPoint[]).map(s => ({ x: s.x, y: s.y }));
   state.basePositions = dto.spawn?.bases?.map(s => ({ x: s.x, y: s.y }))
     ?? (dto.spawn?.base ? [{ x: dto.spawn.base.x, y: dto.spawn.base.y }] : DEF_BASES.map(s => ({ ...s })));
+
+  setInputValue('inp-title', dto.title ?? '');
 
   if (dto.spawn?.enemy?.spawnDelay    !== undefined) setInputValue('inp-delay', dto.spawn.enemy.spawnDelay);
   if (dto.spawn?.enemy?.maxAliveCount !== undefined) setInputValue('inp-alive', dto.spawn.enemy.maxAliveCount);
@@ -93,6 +97,7 @@ export function newMap(): void {
   state.enemySpawns  = DEF_ENEMY.map(s  => ({ ...s }));
   state.basePositions = DEF_BASES.map(s => ({ ...s }));
   state.enemyList    = Array.from({ length: 20 }, () => ({ type: 'basic', ai: 'classic', drop: '' }));
+  setInputValue('inp-title', 'CUSTOM STAGE');
   setInputValue('inp-delay', 3);
   setInputValue('inp-alive', 4);
   refreshSpawnLists();

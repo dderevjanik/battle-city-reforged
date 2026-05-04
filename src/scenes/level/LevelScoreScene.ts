@@ -24,7 +24,11 @@ enum State {
   Post,
 }
 
-export class LevelScoreScene extends GameScene {
+export interface LevelScoreSceneParams {
+  title?: string;
+}
+
+export class LevelScoreScene extends GameScene<LevelScoreSceneParams> {
   private session!: Session;
   private audioManager!: AudioManager;
   private highscoreTitle!: SpriteText;
@@ -82,6 +86,8 @@ export class LevelScoreScene extends GameScene {
       {
         color: config.COLOR_WHITE,
       },
+      false,
+      this.params.title ?? null,
     );
     this.levelTitle.origin.set(0.5, 0);
     this.levelTitle.setCenter(this.root.getSelfCenter());

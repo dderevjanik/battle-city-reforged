@@ -36,9 +36,10 @@ Project is not commercial and was created for learning purposes only.
 - Single player campaign (35 original maps) with Continue support — auto-saves at the start of each level so you can resume from the Main Menu after closing the tab; cleared on death so you can't dodge a game-over
 - Multiplayer (up to 4 players, same PC)
 - 3 difficulty modes (Classic / Hard / Extreme)
-- 7 powerups with weighted spawn distribution
+- 7 powerups with weighted spawn distribution — enemy tanks can also pick up powerups
 - 6 tank types (Basic, Fast, Fast Armored, Fast Bomber, Medium, Heavy)
 - Multiple enemy AI behaviors
+- Level previews on the stage select screen
 - 17 achievements (based on [RetroAchievements](https://retroachievements.org/game/2420))
 - [Level editor](https://dderevjanik.github.io/battle-city-reforged/editor) with save/load and shareable play links — a single URL that boots the game straight into your custom level, no file upload needed
 - Custom maps mode

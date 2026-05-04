@@ -1,5 +1,9 @@
 import { state } from './state';
 
+let changeListener: (() => void) | null = null;
+export function setHistoryListener(fn: (() => void) | null): void { changeListener = fn; }
+function notify(): void { changeListener?.(); }
+
 export function pushHistory(): void {
   state.history = state.history.slice(0, state.histIdx + 1);
   state.history.push({
@@ -15,6 +19,7 @@ export function pushHistory(): void {
     state.history.shift();
     state.histIdx--;
   }
+  notify();
 }
 
 /** Restore state from the snapshot at histIdx. Caller must re-render and refresh UI. */
@@ -30,5 +35,5 @@ export function restoreCurrentSnapshot(): void {
 export function canUndo(): boolean { return state.histIdx > 0; }
 export function canRedo(): boolean { return state.histIdx < state.history.length - 1; }
 
-export function stepUndo(): void { if (canUndo()) { state.histIdx--; restoreCurrentSnapshot(); } }
-export function stepRedo(): void { if (canRedo()) { state.histIdx++; restoreCurrentSnapshot(); } }
+export function stepUndo(): void { if (canUndo()) { state.histIdx--; restoreCurrentSnapshot(); notify(); } }
+export function stepRedo(): void { if (canRedo()) { state.histIdx++; restoreCurrentSnapshot(); notify(); } }

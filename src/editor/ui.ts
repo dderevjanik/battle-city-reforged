@@ -2,7 +2,38 @@ import { BRUSHES, COLORS, SRECTS } from './constants';
 import { pushHistory } from './history';
 import { render, paintBrushSwatches, spriteReady } from './renderer';
 import { state } from './state';
-import type { EditorMode } from './types';
+import type { EditorMode, PaintTool } from './types';
+
+const TOOL_DEFS: Array<{ id: PaintTool; label: string; key: string }> = [
+  { id: 'free', label: '✎ Free',   key: '1' },
+  { id: 'rect', label: '▭ Rect',   key: '2' },
+  { id: 'line', label: '╱ Line',   key: '3' },
+  { id: 'fill', label: '🪣 Fill',  key: '4' },
+];
+
+// ── Tool list ─────────────────────────────────────
+export function buildToolList(): void {
+  const el = document.getElementById('tool-list');
+  if (!el) return;
+  el.innerHTML = '';
+  TOOL_DEFS.forEach((t) => {
+    const btn = document.createElement('button');
+    btn.className = `mode-btn${state.paintTool === t.id ? ' active' : ''}`;
+    btn.id = `tool-${t.id}`;
+    btn.title = `Hotkey: ${t.key}`;
+    btn.textContent = t.label;
+    btn.addEventListener('click', () => selectTool(t.id));
+    el.appendChild(btn);
+  });
+}
+
+export function selectTool(t: PaintTool): void {
+  state.paintTool = t;
+  const el = document.getElementById('st-tool');
+  if (el) el.textContent = `Tool: ${TOOL_DEFS.find((d) => d.id === t)?.label.replace(/^\W+\s*/, '') ?? t}`;
+  setMode('terrain');
+  render();
+}
 
 // ── Brush list ────────────────────────────────────
 export function buildBrushList(): void {
@@ -64,6 +95,9 @@ export function setMode(m: EditorMode): void {
   );
   document.getElementById(`mode-${m}`)?.classList.add('active');
 
+  TOOL_DEFS.forEach((d) =>
+    document.getElementById(`tool-${d.id}`)?.classList.toggle('active', m === 'terrain' && d.id === state.paintTool),
+  );
   if (m !== 'terrain') {
     document.getElementById(`brush-${state.brushIdx}`)?.classList.remove('active');
   } else {

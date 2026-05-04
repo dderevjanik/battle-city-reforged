@@ -1,9 +1,10 @@
 import { GW, GH, DEF_PLAYER, DEF_ENEMY, DEF_BASES } from './constants';
-import type { EditorMode, EnemyEntry, HistorySnapshot, SpawnPoint } from './types';
+import type { EditorMode, EnemyEntry, HistorySnapshot, PaintTool, SpawnPoint } from './types';
 
 interface EditorState {
   grid: Uint8Array;
   mode: EditorMode;
+  paintTool: PaintTool;
   brushIdx: number;
   zoom: number;
   panX: number;
@@ -24,6 +25,8 @@ interface EditorState {
   paintAnchorCX: number;
   paintAnchorCY: number;
   paintHasDragged: boolean;
+  dragStartCol: number;
+  dragStartRow: number;
   playerSpawns: SpawnPoint[];
   enemySpawns: SpawnPoint[];
   basePositions: SpawnPoint[];
@@ -35,6 +38,7 @@ interface EditorState {
 export const state: EditorState = {
   grid:         new Uint8Array(GW * GH),
   mode:         'terrain',
+  paintTool:    'free',
   brushIdx:     0,
 
   zoom:         1.0,
@@ -60,6 +64,8 @@ export const state: EditorState = {
   paintAnchorCX: 0,
   paintAnchorCY: 0,
   paintHasDragged: false,
+  dragStartCol: 0,
+  dragStartRow: 0,
 
   playerSpawns: DEF_PLAYER.map((s) => ({ ...s })),
   enemySpawns:  DEF_ENEMY.map((s) => ({ ...s })),

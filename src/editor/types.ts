@@ -46,6 +46,8 @@ export interface MapDto {
 
 export type EditorMode = 'terrain' | 'player-spawn' | 'enemy-spawn' | 'base-spawn';
 
+export type PaintTool = 'free' | 'rect' | 'line' | 'fill';
+
 export type SpriteRect = [number, number, number, number];
 
 export interface HistorySnapshot {

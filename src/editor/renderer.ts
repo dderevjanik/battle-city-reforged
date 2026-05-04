@@ -1,6 +1,6 @@
 import { FIELD, TS, TM, TL, GW, GH, COLORS, BRUSHES, I2T, SRECTS, SPRITE_SRC, PLAYER_TANK_RECTS } from './constants';
 import { state } from './state';
-import { snapBrush } from './grid';
+import { snapBrush, cellAt, lineCells, floodFill } from './grid';
 
 // ── Canvas refs (set via setup()) ──────────────────
 let canvas: HTMLCanvasElement;
@@ -123,7 +123,16 @@ export function render(): void {
   state.enemySpawns.forEach( (s, i) => drawMarker(s.x, s.y, `E${i + 1}`, '#da3633', '#ff8080', SRECTS.enemyTank));
 
   // ── Brush preview ──
-  if (state.mode === 'terrain' && !state.isPanning) drawBrushPreview();
+  if (state.mode === 'terrain' && !state.isPanning) {
+    const tool = state.paintTool;
+    if (state.isDrawing && !state.isErasing && (tool === 'rect' || tool === 'line')) {
+      drawShapePreview(tool);
+    } else if (!state.isDrawing && tool === 'fill') {
+      drawFillHoverPreview();
+    } else {
+      drawBrushPreview();
+    }
+  }
   if (state.mode === 'base-spawn' && !state.isPanning) drawBasePreview();
   if (state.mode === 'player-spawn' && !state.isPanning) {
     const nextIdx = Math.min(state.playerSpawns.length, PLAYER_TANK_RECTS.length - 1);
@@ -263,6 +272,62 @@ function drawSpawnPreview(color: string, sprRect: [number, number, number, numbe
       p.x + (sz - dw) / 2, p.y + (sz - dh) / 2, dw, dh);
   }
   ctx.globalAlpha = 1;
+}
+
+function brushColors(): { fill: string; stroke: string } {
+  const b = BRUSHES[state.brushIdx];
+  if (b.type) return { fill: COLORS[b.type] + '55', stroke: COLORS[b.type] };
+  return { fill: 'rgba(255,80,80,0.18)', stroke: '#f85149' };
+}
+
+function drawShapePreview(tool: 'rect' | 'line'): void {
+  const b = BRUSHES[state.brushIdx];
+  const step = Math.max(1, Math.floor(b.size / TS));
+  const cur = cellAt(state.mouseWX, state.mouseWY);
+  const startBC = Math.floor(state.dragStartCol / step);
+  const startBR = Math.floor(state.dragStartRow / step);
+  const endBC = Math.floor(cur.col / step);
+  const endBR = Math.floor(cur.row / step);
+
+  const { fill, stroke } = brushColors();
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = 1.5;
+
+  const blockPx = step * TS;
+  if (tool === 'rect') {
+    const bcMin = Math.min(startBC, endBC);
+    const bcMax = Math.max(startBC, endBC);
+    const brMin = Math.min(startBR, endBR);
+    const brMax = Math.max(startBR, endBR);
+    const p = w2c(bcMin * blockPx, brMin * blockPx);
+    const w = (bcMax - bcMin + 1) * blockPx * state.zoom;
+    const h = (brMax - brMin + 1) * blockPx * state.zoom;
+    ctx.fillRect(p.x, p.y, w, h);
+    ctx.strokeRect(p.x, p.y, w, h);
+  } else {
+    const blocks = lineCells(startBC, startBR, endBC, endBR);
+    const sz = blockPx * state.zoom;
+    for (const [bc, br] of blocks) {
+      const p = w2c(bc * blockPx, br * blockPx);
+      ctx.fillRect(p.x, p.y, sz + 0.5, sz + 0.5);
+    }
+  }
+}
+
+function drawFillHoverPreview(): void {
+  const cur = cellAt(state.mouseWX, state.mouseWY);
+  if (state.mouseWX < 0 || state.mouseWX >= FIELD || state.mouseWY < 0 || state.mouseWY >= FIELD) return;
+  const result = floodFill(cur.col, cur.row, -1, 512);
+  if (result.matched.length === 0 || result.capped) return;
+
+  const { fill } = brushColors();
+  ctx.fillStyle = fill;
+  const sz = TS * state.zoom;
+  for (const [c, r] of result.matched) {
+    const p = w2c(c * TS, r * TS);
+    ctx.fillRect(p.x, p.y, sz + 0.5, sz + 0.5);
+  }
 }
 
 function drawBrushPreview(): void {

@@ -1,11 +1,11 @@
-import { TS, TL, FIELD, BRUSHES } from './constants';
-import { paint } from './grid';
+import { TS, TL, FIELD, GW, BRUSHES, T2I } from './constants';
+import { paint, paintRect, paintLine, floodFill, cellAt } from './grid';
 import { stepUndo, stepRedo, pushHistory } from './history';
 import { render, resizeCanvas, centerView, c2w, w2c } from './renderer';
 import { state } from './state';
-import { selectBrush, setMode, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus, addEnemy } from './ui';
+import { selectBrush, setMode, selectTool, toggleGrid, refreshSpawnLists, updateStatusCoords, updateZoomStatus, addEnemy } from './ui';
 import { newMap, saveMap, openFile, onFileSelected, testMap, openMapBrowser } from './io';
-import type { SpawnPoint } from './types';
+import type { PaintTool, SpawnPoint } from './types';
 
 function clamp(v: number, lo: number, hi: number): number {
   return v < lo ? lo : v > hi ? hi : v;
@@ -44,11 +44,37 @@ export function bindViewport(viewport: HTMLElement): void {
 
     if (state.mode === 'terrain') {
       if (!inField(world.x, world.y)) return;
+      const isErase = e.button === 2;
+      const tool: PaintTool = isErase ? 'free' : state.paintTool;
+
+      if (tool === 'fill') {
+        const { col, row } = cellAt(world.x, world.y);
+        const b = BRUSHES[state.brushIdx];
+        const fillIdx = b.type ? (T2I[b.type] ?? 0) : 0;
+        pushHistory();
+        const result = floodFill(col, row, fillIdx);
+        for (const [c, r] of result.matched) {
+          state.grid[r * GW + c] = fillIdx;
+        }
+        render();
+        return;
+      }
+
       state.isDrawing = true;
-      state.isErasing = e.button === 2;
+      state.isErasing = isErase;
       state.paintAnchorCX = e.clientX;
       state.paintAnchorCY = e.clientY;
       state.paintHasDragged = false;
+
+      if (tool === 'rect' || tool === 'line') {
+        const { col, row } = cellAt(world.x, world.y);
+        state.dragStartCol = col;
+        state.dragStartRow = row;
+        pushHistory();
+        render();
+        return;
+      }
+
       pushHistory();
       paint(world.x, world.y, state.isErasing);
       render();
@@ -96,16 +122,21 @@ export function bindViewport(viewport: HTMLElement): void {
       return;
     }
 
-    if (state.isDrawing && state.mode === 'terrain' && inField(world.x, world.y)) {
-      if (!state.paintHasDragged) {
-        const dx = e.clientX - state.paintAnchorCX;
-        const dy = e.clientY - state.paintAnchorCY;
-        if (dx * dx + dy * dy >= DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX) {
-          state.paintHasDragged = true;
+    if (state.isDrawing && state.mode === 'terrain') {
+      const tool: PaintTool = state.isErasing ? 'free' : state.paintTool;
+      if (tool === 'rect' || tool === 'line') {
+        // Preview is rendered via render() below; nothing to commit yet.
+      } else if (inField(world.x, world.y)) {
+        if (!state.paintHasDragged) {
+          const dx = e.clientX - state.paintAnchorCX;
+          const dy = e.clientY - state.paintAnchorCY;
+          if (dx * dx + dy * dy >= DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX) {
+            state.paintHasDragged = true;
+          }
         }
-      }
-      if (state.paintHasDragged) {
-        paint(world.x, world.y, state.isErasing);
+        if (state.paintHasDragged) {
+          paint(world.x, world.y, state.isErasing);
+        }
       }
     }
 
@@ -115,15 +146,42 @@ export function bindViewport(viewport: HTMLElement): void {
     render();
   });
 
-  const stopDrag = () => {
+  const commitShapeIfNeeded = (e: MouseEvent | null): void => {
+    if (!state.isDrawing || state.mode !== 'terrain' || state.isErasing) return;
+    const tool = state.paintTool;
+    if (tool !== 'rect' && tool !== 'line') return;
+
+    let endCol = state.dragStartCol;
+    let endRow = state.dragStartRow;
+    if (e) {
+      const rect = viewport.getBoundingClientRect();
+      const world = c2w(e.clientX - rect.left, e.clientY - rect.top);
+      const c = cellAt(world.x, world.y);
+      endCol = c.col;
+      endRow = c.row;
+    }
+
+    const b = BRUSHES[state.brushIdx];
+    const idx = b.type ? (T2I[b.type] ?? 0) : 0;
+    const step = Math.max(1, Math.floor(b.size / TS));
+    if (tool === 'rect') {
+      paintRect(state.dragStartCol, state.dragStartRow, endCol, endRow, idx, step);
+    } else {
+      paintLine(state.dragStartCol, state.dragStartRow, endCol, endRow, idx, step);
+    }
+  };
+
+  const stopDrag = (e?: MouseEvent) => {
+    commitShapeIfNeeded(e ?? null);
     state.isPanning = false;
     state.isDrawing = false;
     state.isErasing = false;
     state.lastPaintCol = -1;
     state.lastPaintRow = -1;
+    render();
   };
-  viewport.addEventListener('mouseup',    stopDrag);
-  viewport.addEventListener('mouseleave', stopDrag);
+  viewport.addEventListener('mouseup',    (e) => stopDrag(e));
+  viewport.addEventListener('mouseleave', (e) => stopDrag(e));
 
   viewport.addEventListener('wheel', (e: WheelEvent) => {
     e.preventDefault();
@@ -169,6 +227,12 @@ export function bindKeyboard(): void {
     }
 
     const key = e.key.toLowerCase();
+    switch (key) {
+      case '1': selectTool('free'); return;
+      case '2': selectTool('rect'); return;
+      case '3': selectTool('line'); return;
+      case '4': selectTool('fill'); return;
+    }
     switch (key) {
       case 'b': cycleBrushGroup(0, 3); break;
       case 's': cycleBrushGroup(3, 2); break;

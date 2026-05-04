@@ -1,5 +1,5 @@
 import { setup, resizeCanvas, centerView, loadSprite, paintBrushSwatches, render } from './renderer';
-import { buildBrushList, buildEnemyRows, refreshSpawnLists } from './ui';
+import { buildBrushList, buildEnemyRows, buildToolList, refreshSpawnLists } from './ui';
 import { pushHistory } from './history';
 import { bindViewport, bindKeyboard, bindToolbar, bindResize } from './events';
 import { paintBaseDefense } from './io';
@@ -11,6 +11,7 @@ function init(): void {
   setup(canvas, viewport);
   resizeCanvas();
 
+  buildToolList();
   buildBrushList();
   buildEnemyRows();
   refreshSpawnLists();

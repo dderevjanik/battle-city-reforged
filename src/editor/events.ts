@@ -1,5 +1,5 @@
 import { TS, TL, FIELD, GW, BRUSHES, T2I } from './constants';
-import { paint, paintRect, paintLine, floodFill, cellAt } from './grid';
+import { paint, paintRect, paintLine, floodFill, cellAt, pickBrushAtCell } from './grid';
 import { stepUndo, stepRedo, pushHistory } from './history';
 import { render, resizeCanvas, centerView, c2w, w2c } from './renderer';
 import { state } from './state';
@@ -44,6 +44,15 @@ export function bindViewport(viewport: HTMLElement): void {
 
     if (state.mode === 'terrain') {
       if (!inField(world.x, world.y)) return;
+
+      // Eyedropper: Alt + left-click adopts terrain under cursor as the active brush.
+      if (e.altKey && e.button === 0) {
+        const { col, row } = cellAt(world.x, world.y);
+        selectBrush(pickBrushAtCell(col, row));
+        render();
+        return;
+      }
+
       const isErase = e.button === 2;
       const tool: PaintTool = isErase ? 'free' : state.paintTool;
 
@@ -112,6 +121,10 @@ export function bindViewport(viewport: HTMLElement): void {
     const world = c2w(cx, cy);
     state.mouseWX = world.x;
     state.mouseWY = world.y;
+
+    viewport.style.cursor = (e.altKey && state.mode === 'terrain' && inField(world.x, world.y))
+      ? 'crosshair'
+      : '';
 
     if (state.isPanning) {
       state.panX = state.panAnchorPX + (e.clientX - state.panAnchorX);

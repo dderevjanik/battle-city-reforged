@@ -21,6 +21,23 @@ function snapBrush(wx: number, wy: number, size: number): { sx: number; sy: numb
 
 export { snapBrush };
 
+/**
+ * Find the brush index that best matches the terrain at the given cell.
+ * Empty cells map to the eraser. When the picked type has multiple brush sizes,
+ * the current brush's size is preferred so eyedropping doesn't unexpectedly
+ * change the active size.
+ */
+export function pickBrushAtCell(col: number, row: number): number {
+  const v = getCell(col, row);
+  if (v === 0) return BRUSHES.length - 1;
+  const type = I2T[v];
+  const currentSize = BRUSHES[state.brushIdx]?.size;
+  const sameSize = BRUSHES.findIndex((b) => b.type === type && b.size === currentSize);
+  if (sameSize !== -1) return sameSize;
+  const anyMatch = BRUSHES.findIndex((b) => b.type === type);
+  return anyMatch !== -1 ? anyMatch : state.brushIdx;
+}
+
 export function cellAt(wx: number, wy: number): { col: number; row: number } {
   return {
     col: Math.max(0, Math.min(GW - 1, Math.floor(wx / TS))),

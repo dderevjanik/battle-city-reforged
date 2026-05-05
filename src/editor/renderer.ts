@@ -1,5 +1,6 @@
-import { FIELD, TS, TM, TL, GW, GH, COLORS, SNAP, BRUSHES, I2T, SRECTS, SPRITE_SRC, PLAYER_TANK_RECTS } from './constants';
+import { FIELD, TS, TM, TL, GW, GH, COLORS, BRUSHES, I2T, SRECTS, SPRITE_SRC, PLAYER_TANK_RECTS } from './constants';
 import { state } from './state';
+import { snapBrush } from './grid';
 
 // ── Canvas refs (set via setup()) ──────────────────
 let canvas: HTMLCanvasElement;
@@ -265,12 +266,10 @@ function drawSpawnPreview(color: string, sprRect: [number, number, number, numbe
 }
 
 function drawBrushPreview(): void {
-  const b    = BRUSHES[state.brushIdx];
-  const snap = b.type ? SNAP[b.type] : TS;
-  const sx   = Math.floor(state.mouseWX / snap) * snap;
-  const sy   = Math.floor(state.mouseWY / snap) * snap;
-  const p    = w2c(sx, sy);
-  const sz   = b.size * state.zoom;
+  const b = BRUSHES[state.brushIdx];
+  const { sx, sy } = snapBrush(state.mouseWX, state.mouseWY, b.size);
+  const p  = w2c(sx, sy);
+  const sz = b.size * state.zoom;
 
   if (b.type) {
     ctx.fillStyle   = COLORS[b.type] + '55';

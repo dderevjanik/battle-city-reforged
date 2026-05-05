@@ -1,4 +1,4 @@
-import { GW, GH, TS, BRUSHES, SNAP, T2I, I2T } from './constants';
+import { FIELD, GW, GH, TS, BRUSHES, T2I, I2T } from './constants';
 import { state } from './state';
 import type { TerrainRegion } from './types';
 
@@ -12,15 +12,27 @@ export function setCell(col: number, row: number, v: number): void {
   state.grid[row * GW + col] = v;
 }
 
+function snapBrush(wx: number, wy: number, size: number): { sx: number; sy: number } {
+  const half = size / 2;
+  const sx = Math.max(0, Math.min(FIELD - size, Math.round((wx - half) / size) * size));
+  const sy = Math.max(0, Math.min(FIELD - size, Math.round((wy - half) / size) * size));
+  return { sx, sy };
+}
+
+export { snapBrush };
+
 export function paint(wx: number, wy: number, erase: boolean): void {
-  const b    = BRUSHES[state.brushIdx];
-  const snap = erase ? TS : (b.type ? SNAP[b.type] : TS);
-  const sx   = Math.floor(wx / snap) * snap;
-  const sy   = Math.floor(wy / snap) * snap;
+  const b = BRUSHES[state.brushIdx];
+  const { sx, sy } = snapBrush(wx, wy, b.size);
   const col0 = Math.round(sx / TS);
   const row0 = Math.round(sy / TS);
-  const n    = b.size / TS;
-  const v    = erase ? 0 : (T2I[b.type ?? ''] ?? 0);
+
+  if (col0 === state.lastPaintCol && row0 === state.lastPaintRow) return;
+  state.lastPaintCol = col0;
+  state.lastPaintRow = row0;
+
+  const n = b.size / TS;
+  const v = erase ? 0 : (T2I[b.type ?? ''] ?? 0);
 
   for (let r = 0; r < n; r++) {
     for (let c = 0; c < n; c++) {

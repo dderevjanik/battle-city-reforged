@@ -15,6 +15,8 @@ function inField(wx: number, wy: number): boolean {
   return wx >= 0 && wx < FIELD && wy >= 0 && wy < FIELD;
 }
 
+const DRAG_THRESHOLD_PX = 8;
+
 function snapToTL(wx: number, wy: number): SpawnPoint {
   return {
     x: clamp(Math.floor(wx / TL) * TL, 0, FIELD - TL),
@@ -44,6 +46,9 @@ export function bindViewport(viewport: HTMLElement): void {
       if (!inField(world.x, world.y)) return;
       state.isDrawing = true;
       state.isErasing = e.button === 2;
+      state.paintAnchorCX = e.clientX;
+      state.paintAnchorCY = e.clientY;
+      state.paintHasDragged = false;
       pushHistory();
       paint(world.x, world.y, state.isErasing);
       render();
@@ -92,7 +97,16 @@ export function bindViewport(viewport: HTMLElement): void {
     }
 
     if (state.isDrawing && state.mode === 'terrain' && inField(world.x, world.y)) {
-      paint(world.x, world.y, state.isErasing);
+      if (!state.paintHasDragged) {
+        const dx = e.clientX - state.paintAnchorCX;
+        const dy = e.clientY - state.paintAnchorCY;
+        if (dx * dx + dy * dy >= DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX) {
+          state.paintHasDragged = true;
+        }
+      }
+      if (state.paintHasDragged) {
+        paint(world.x, world.y, state.isErasing);
+      }
     }
 
     const fx  = clamp(Math.round(world.x), 0, FIELD - 1);
@@ -105,6 +119,8 @@ export function bindViewport(viewport: HTMLElement): void {
     state.isPanning = false;
     state.isDrawing = false;
     state.isErasing = false;
+    state.lastPaintCol = -1;
+    state.lastPaintRow = -1;
   };
   viewport.addEventListener('mouseup',    stopDrag);
   viewport.addEventListener('mouseleave', stopDrag);

@@ -19,6 +19,11 @@ interface EditorState {
   panAnchorPY: number;
   mouseWX: number;
   mouseWY: number;
+  lastPaintCol: number;
+  lastPaintRow: number;
+  paintAnchorCX: number;
+  paintAnchorCY: number;
+  paintHasDragged: boolean;
   playerSpawns: SpawnPoint[];
   enemySpawns: SpawnPoint[];
   basePositions: SpawnPoint[];
@@ -49,6 +54,12 @@ export const state: EditorState = {
 
   mouseWX:      0,
   mouseWY:      0,
+
+  lastPaintCol: -1,
+  lastPaintRow: -1,
+  paintAnchorCX: 0,
+  paintAnchorCY: 0,
+  paintHasDragged: false,
 
   playerSpawns: DEF_PLAYER.map((s) => ({ ...s })),
   enemySpawns:  DEF_ENEMY.map((s) => ({ ...s })),

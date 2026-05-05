@@ -3,6 +3,7 @@ import { Timer } from '../../core/Timer';
 import { Difficulty } from '../../game/Difficulty';
 import { Curtain } from '../../gameObjects/Curtain';
 import { LevelTitle } from '../../gameObjects/text/LevelTitle';
+import { SpriteText } from '../../gameObjects/text/SpriteText';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
@@ -11,6 +12,7 @@ export class LevelIntroScript extends LevelScript {
   public completed = new Subject();
   private curtain!: Curtain;
   private title!: LevelTitle;
+  private demoLabel: SpriteText | null = null;
   private timer!: Timer;
 
   protected setup(): void {
@@ -52,6 +54,16 @@ export class LevelIntroScript extends LevelScript {
     this.title.setCenter(this.world.sceneRoot.getSelfCenter());
     this.title.origin.set(0.5, 0.5);
     this.world.sceneRoot.add(this.title);
+
+    if (this.session.isDemo()) {
+      this.demoLabel = new SpriteText('DEMO', { color: config.COLOR_RED });
+      this.demoLabel.setZIndex(config.LEVEL_TITLE_Z_INDEX);
+      const center = this.world.sceneRoot.getSelfCenter();
+      this.demoLabel.setCenter(center);
+      this.demoLabel.position.setY(center.y + 64);
+      this.demoLabel.origin.set(0.5, 0.5);
+      this.world.sceneRoot.add(this.demoLabel);
+    }
   }
 
   private getDifficultyText(difficulty: Difficulty): string {
@@ -73,6 +85,7 @@ export class LevelIntroScript extends LevelScript {
   private handleTimer = (): void => {
     this.curtain.open();
     this.title.setVisible(false);
+    this.demoLabel?.setVisible(false);
     this.completed.notify(null);
   };
 }

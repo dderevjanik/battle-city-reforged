@@ -1,5 +1,6 @@
 import { LevelInfo } from '../../gameObjects/info/LevelInfo';
 import { LevelScoreInfo } from '../../gameObjects/info/LevelScoreInfo';
+import { SpriteText } from '../../gameObjects/text/SpriteText';
 import * as config from '../../config';
 
 import { LevelScript } from '../LevelScript';
@@ -26,7 +27,11 @@ export class LevelInfoScript extends LevelScript {
     );
     this.world.sceneRoot.add(this.info);
 
-    if (this.session.getPlayerCount() === 1) {
+    if (this.session.isDemo()) {
+      const demoLabel = new SpriteText('DEMO', { color: config.COLOR_RED });
+      demoLabel.position.set(5, 0);
+      this.world.sceneRoot.add(demoLabel);
+    } else if (this.session.getPlayerCount() === 1) {
       this.scoreInfo = new LevelScoreInfo();
       this.scoreInfo.position.set(5, 0);
       this.world.sceneRoot.add(this.scoreInfo);

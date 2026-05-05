@@ -155,6 +155,19 @@ export function bindKeyboard(): void {
     if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveMap(); return; }
     if (e.ctrlKey && e.key === 'o') { e.preventDefault(); openFile(); return; }
 
+    if (e.key.startsWith('Arrow')) {
+      const step = e.shiftKey ? 128 : 32;
+      switch (e.key) {
+        case 'ArrowLeft':  state.panX += step; break;
+        case 'ArrowRight': state.panX -= step; break;
+        case 'ArrowUp':    state.panY += step; break;
+        case 'ArrowDown':  state.panY -= step; break;
+      }
+      e.preventDefault();
+      render();
+      return;
+    }
+
     const key = e.key.toLowerCase();
     switch (key) {
       case 'b': cycleBrushGroup(0, 3); break;

@@ -5,3 +5,4 @@ data/**/*.tmp
 .env.local
 .env.production
 .env.development
+battle-city.nes

@@ -1,0 +1,127 @@
+import { gridToRegionsPure } from '../editor/grid';
+import type { MapDto } from '../map/MapDto';
+import { TankAiMode } from '../tank/TankAiMode';
+import { TankKind } from '../tank/TankTypes';
+import { TerrainType } from '../terrain/TerrainType';
+import { TilesetId } from '../terrain/TilesetId';
+import { EDITOR_TERRAIN_TYPES } from '../share/mapEnums';
+
+import {
+  BASE_BLOCK_X,
+  BASE_BLOCK_Y,
+  BLOCK_PATTERNS,
+  DROP_INDICES,
+  NES_BLOCK_PX,
+  NES_DISPLAY_SCALE,
+  NES_ENEMY_TYPE_MAP,
+  NES_GRID,
+  Q_BL,
+  Q_BR,
+  Q_TL,
+  Q_TR,
+} from './constants';
+import { extractEnemyConvoy } from './extractEnemies';
+import { extractSharedSpawns } from './extractSpawns';
+import { extractStage } from './extractStage';
+import type { NesRom } from './parseRom';
+
+const TS = 16;
+const TL = NES_BLOCK_PX * NES_DISPLAY_SCALE; // 64
+const FIELD_PX = NES_GRID * TL; // 832
+const GRID_W = FIELD_PX / TS; // 52
+
+// TerrainType → editor terrain index (matches src/share/mapEnums.ts).
+const TERRAIN_INDEX: Record<string, number> = Object.fromEntries(
+  EDITOR_TERRAIN_TYPES.map((t, i) => [t, i]),
+);
+
+// Each NES block spans 4×4 TS cells. A quadrant covers a 2×2 TS-cell sub-patch.
+const QUADRANT_PATCHES: ReadonlyArray<readonly [number, readonly [number, number]]> = [
+  [Q_TL, [0, 0]],
+  [Q_TR, [2, 0]],
+  [Q_BL, [0, 2]],
+  [Q_BR, [2, 2]],
+];
+
+export interface StageToMapDtoOptions {
+  title?: string;
+}
+
+export function stageToMapDto(
+  rom: NesRom,
+  idx: number,
+  opts: StageToMapDtoOptions = {},
+): MapDto {
+  const stage = extractStage(rom, idx);
+  const grid = new Uint8Array(GRID_W * GRID_W);
+
+  for (let by = 0; by < NES_GRID; by++) {
+    for (let bx = 0; bx < NES_GRID; bx++) {
+      const nibble = stage.blocks[by * NES_GRID + bx];
+      const pattern = BLOCK_PATTERNS[nibble];
+      if (!pattern.terrain || pattern.mask === 0) continue;
+      const terrainIdx = TERRAIN_INDEX[pattern.terrain] ?? 0;
+      if (!terrainIdx) continue;
+      const baseCol = bx * 4;
+      const baseRow = by * 4;
+      for (const [bit, [qx, qy]] of QUADRANT_PATCHES) {
+        if ((pattern.mask & bit) === 0) continue;
+        for (let r = 0; r < 2; r++) {
+          for (let c = 0; c < 2; c++) {
+            grid[(baseRow + qy + r) * GRID_W + (baseCol + qx + c)] = terrainIdx;
+          }
+        }
+      }
+    }
+  }
+
+  const regions = gridToRegionsPure(grid, GRID_W, GRID_W, TS);
+
+  const spawns = extractSharedSpawns(rom);
+  const convoy = extractEnemyConvoy(rom, idx);
+
+  const enemyList: { type: TankKind; ai: TankAiMode; drop?: 'random' }[] = [];
+  for (const slot of convoy.slots) {
+    const kind = NES_ENEMY_TYPE_MAP[slot.type];
+    if (kind === undefined) {
+      // eslint-disable-next-line no-console
+      console.warn(`[nes] stage ${idx}: unknown enemy type ${slot.type} → falling back to basic`);
+    }
+    for (let i = 0; i < slot.count; i++) {
+      enemyList.push({ type: kind ?? TankKind.Basic, ai: TankAiMode.Classic });
+    }
+  }
+  for (const dropIdx of DROP_INDICES) {
+    if (enemyList[dropIdx]) enemyList[dropIdx].drop = 'random';
+  }
+
+  const dto: MapDto = {
+    tileset: TilesetId.Classic,
+    title: opts.title ?? `STAGE ${idx + 1}`,
+    width: FIELD_PX,
+    height: FIELD_PX,
+    spawn: {
+      enemy: {
+        spawnDelay: 3,
+        maxAliveCount: 4,
+        list: enemyList,
+        locations: spawns.enemySpawns.map((p) => ({ x: p.x, y: p.y })),
+      },
+      player: {
+        locations: spawns.playerSpawns.map((p) => ({ x: p.x, y: p.y })),
+      },
+      bases: [{ x: BASE_BLOCK_X * TL, y: BASE_BLOCK_Y * TL }],
+    },
+    terrain: {
+      regions: regions.map((r) => ({
+        type: r.type as TerrainType,
+        x: r.x,
+        y: r.y,
+        width: r.width,
+        height: r.height,
+      })),
+    },
+  };
+
+  return dto;
+}

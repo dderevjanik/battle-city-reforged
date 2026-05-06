@@ -150,22 +150,34 @@ export function paint(wx: number, wy: number, erase: boolean): void {
 
 /** Greedy rectangle merge: grid cells → compact region list */
 export function gridToRegions(): TerrainRegion[] {
-  const { gw, gh } = state;
+  return gridToRegionsPure(state.grid, state.gw, state.gh, TS);
+}
+
+/**
+ * Pure variant — does not depend on editor state. Lets the NES importer (and
+ * tests) reuse the same merging logic in Node and the browser.
+ */
+export function gridToRegionsPure(
+  grid: Uint8Array,
+  gw: number,
+  gh: number,
+  ts: number,
+): TerrainRegion[] {
   const visited = new Uint8Array(gw * gh);
   const regions: TerrainRegion[] = [];
 
   for (let ti = 1; ti <= 5; ti++) {
     for (let row = 0; row < gh; row++) {
       for (let col = 0; col < gw; col++) {
-        if (state.grid[row * gw + col] !== ti || visited[row * gw + col]) continue;
+        if (grid[row * gw + col] !== ti || visited[row * gw + col]) continue;
 
         let w = 1;
-        while (col + w < gw && state.grid[row * gw + col + w] === ti && !visited[row * gw + col + w]) w++;
+        while (col + w < gw && grid[row * gw + col + w] === ti && !visited[row * gw + col + w]) w++;
 
         let h = 1;
         outer: while (row + h < gh) {
           for (let c = 0; c < w; c++) {
-            if (state.grid[(row + h) * gw + col + c] !== ti || visited[(row + h) * gw + col + c]) break outer;
+            if (grid[(row + h) * gw + col + c] !== ti || visited[(row + h) * gw + col + c]) break outer;
           }
           h++;
         }
@@ -176,7 +188,7 @@ export function gridToRegions(): TerrainRegion[] {
           }
         }
 
-        regions.push({ type: I2T[ti], x: col * TS, y: row * TS, width: w * TS, height: h * TS });
+        regions.push({ type: I2T[ti], x: col * ts, y: row * ts, width: w * ts, height: h * ts });
       }
     }
   }

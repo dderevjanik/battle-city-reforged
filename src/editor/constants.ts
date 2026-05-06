@@ -1,3 +1,5 @@
+import { EDITOR_TERRAIN_TYPES } from '../share/mapEnums';
+
 import type { Brush, SpawnPoint, SpriteRect } from './types';
 
 export const TS    = 16;          // smallest tile (brick)
@@ -43,10 +45,8 @@ export const BRUSHES: Brush[] = [
   { type: null,     size: 32 },  // eraser
 ];
 
-export const T2I: Record<string, number> = {
-  '': 0, brick: 1, steel: 2, jungle: 3, water: 4, ice: 5,
-};
-export const I2T: string[] = ['', 'brick', 'steel', 'jungle', 'water', 'ice'];
+export const I2T: string[] = [...EDITOR_TERRAIN_TYPES];
+export const T2I: Record<string, number> = Object.fromEntries(I2T.map((t, i) => [t, i]));
 
 // Served at root by webpack-dev-server (data/ is copied to dist/data/)
 export const SPRITE_SRC = 'data/graphics/sprite.png';

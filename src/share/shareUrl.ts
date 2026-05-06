@@ -1,5 +1,7 @@
 import type { MapDto } from '../editor/types';
 
+import { packMap, unpackMap } from './mapBinary';
+
 const FORMAT_PREFIX = 'v1:';
 
 function bytesToBase64Url(bytes: Uint8Array): string {
@@ -36,13 +38,9 @@ async function inflate(input: Uint8Array): Promise<Uint8Array> {
 }
 
 export async function encodeMapToHash(dto: MapDto): Promise<string> {
-  const json = JSON.stringify(dto);
-  const jsonBytes = new TextEncoder().encode(json);
-  if (typeof CompressionStream === 'undefined') {
-    return FORMAT_PREFIX + encodeURIComponent(json);
-  }
-  const compressed = await deflate(jsonBytes);
-  return FORMAT_PREFIX + bytesToBase64Url(compressed);
+  const packed = packMap(dto);
+  const bytes = typeof CompressionStream === 'undefined' ? packed : await deflate(packed);
+  return FORMAT_PREFIX + bytesToBase64Url(bytes);
 }
 
 export async function decodeMapFromHash(hash: string): Promise<MapDto | null> {
@@ -53,15 +51,14 @@ export async function decodeMapFromHash(hash: string): Promise<MapDto | null> {
   const payload = raw.slice(FORMAT_PREFIX.length);
 
   try {
-    let json: string;
-    if (payload.startsWith('%') || payload.startsWith('{')) {
-      json = decodeURIComponent(payload);
-    } else {
-      const bytes = base64UrlToBytes(payload);
-      const inflated = await inflate(bytes);
-      json = new TextDecoder().decode(inflated);
+    const bytes = base64UrlToBytes(payload);
+    let packed: Uint8Array;
+    try {
+      packed = await inflate(bytes);
+    } catch {
+      packed = bytes;
     }
-    return JSON.parse(json) as MapDto;
+    return unpackMap(packed);
   } catch (err) {
     console.warn('Failed to decode shared map hash:', err);
     return null;

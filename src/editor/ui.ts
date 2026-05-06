@@ -1,8 +1,13 @@
+import { EDITOR_DROPS, EDITOR_ENEMY_AIS, EDITOR_ENEMY_TYPES } from '../share/mapEnums';
+
 import { BRUSHES, COLORS, SRECTS } from './constants';
 import { pushHistory } from './history';
 import { render, paintBrushSwatches, paintEnemyPreview, spriteReady } from './renderer';
 import { state } from './state';
 import type { EditorMode, PaintTool } from './types';
+
+const AI_LABELS: Record<string, string>   = { attack_base: 'atk base' };
+const DROP_LABELS: Record<string, string> = { '': 'none' };
 
 const TOOL_DEFS: Array<{ id: PaintTool; label: string; key: string }> = [
   { id: 'free', label: '✎ Free',   key: '1' },
@@ -126,10 +131,9 @@ export function buildEnemyRows(): void {
     num.className   = 'enemy-num';
     num.textContent = String(i + 1);
 
-    const typeOpts: [string, string][] = [['basic','basic'],['fast','fast'],['medium','medium'],['heavy','heavy']];
-    const aiOpts:   [string, string][] = [['classic','classic'],['hunter','hunter'],['ambush','ambush'],['attack_base','atk base']];
-    const dropOpts: [string, string][] = [['','none'],['random','random'],['shield','shield'],['freeze','freeze'],
-      ['upgrade','upgrade'],['life','life'],['wipeout','wipeout'],['defence','defence']];
+    const typeOpts: [string, string][] = EDITOR_ENEMY_TYPES.map(v => [v, v]);
+    const aiOpts:   [string, string][] = EDITOR_ENEMY_AIS.map(v => [v, AI_LABELS[v] ?? v]);
+    const dropOpts: [string, string][] = EDITOR_DROPS.map(v => [v, DROP_LABELS[v] ?? v]);
 
     const idx = i;
     const mkSel = (opts: [string, string][], val: string, cb: (v: string) => void): HTMLSelectElement => {

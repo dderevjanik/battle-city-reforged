@@ -1,6 +1,6 @@
 {
   "file": "data/fonts/sprite-font.png",
-  "characterSet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-ⅠⅡ←→[]?()/+.↑↓!ⅢⅣ \"#$%&'*,:;<=>@\\^_`{|}~",
+  "characterSet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-ⅠⅡ←→[]?()/+.↑↓!ⅢⅣ       \"#$%&'*,:;<=>@\\^_`{|}~",
   "characterWidth": 28,
   "characterHeight": 28,
   "rowCount": 9,

@@ -1,6 +1,6 @@
 import { PLAYTEST_STORAGE_KEY } from '../core/render/BridgeScene';
 import { encodeMapToHash } from '../share/shareUrl';
-import { T2I, TS, defaultPlayerSpawns, defaultEnemySpawns, defaultBases } from './constants';
+import { COLORS, T2I, TL, TS, defaultPlayerSpawns, defaultEnemySpawns, defaultBases } from './constants';
 import { gridToRegions, regionsToGrid } from './grid';
 import { pushHistory } from './history';
 import { render } from './renderer';
@@ -220,6 +220,60 @@ export async function loadMapFromUrl(url: string): Promise<void> {
   loadDto(await res.json() as MapDto);
 }
 
+/**
+ * Render a top-down preview of a map onto the given canvas. Used for thumbnails
+ * in the map browser. Draws terrain regions, then base / player / enemy markers.
+ */
+export function renderMapThumbnail(canvas: HTMLCanvasElement, dto: MapDto): void {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const cw = canvas.width;
+  const ch = canvas.height;
+  const fieldW = dto.width  || 832;
+  const fieldH = dto.height || 832;
+  const scale = Math.min(cw / fieldW, ch / fieldH);
+  const ox = (cw - fieldW * scale) / 2;
+  const oy = (ch - fieldH * scale) / 2;
+
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, cw, ch);
+  ctx.fillStyle = '#131f11';
+  ctx.fillRect(ox, oy, fieldW * scale, fieldH * scale);
+
+  for (const r of dto.terrain?.regions ?? []) {
+    const color = COLORS[r.type];
+    if (!color) continue;
+    ctx.fillStyle = color;
+    ctx.fillRect(ox + r.x * scale, oy + r.y * scale, r.width * scale, r.height * scale);
+  }
+
+  const tankPx = TL * scale;
+  const bases = dto.spawn?.bases ?? (dto.spawn?.base ? [dto.spawn.base] : []);
+  for (const b of bases) {
+    ctx.fillStyle = '#e3b341';
+    ctx.fillRect(ox + b.x * scale, oy + b.y * scale, tankPx, tankPx);
+  }
+  for (const p of dto.spawn?.player?.locations ?? []) {
+    ctx.fillStyle = '#1f6feb';
+    ctx.fillRect(ox + p.x * scale, oy + p.y * scale, tankPx, tankPx);
+  }
+  for (const e of dto.spawn?.enemy?.locations ?? []) {
+    ctx.fillStyle = '#da3633';
+    ctx.fillRect(ox + e.x * scale, oy + e.y * scale, tankPx, tankPx);
+  }
+
+  ctx.strokeStyle = '#3d4450';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(ox + 0.5, oy + 0.5, fieldW * scale - 1, fieldH * scale - 1);
+}
+
+async function fetchMapDto(url: string): Promise<MapDto> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<MapDto>;
+}
+
 export function openMapBrowser(): void {
   const existing = document.getElementById('map-browser-overlay');
   if (existing) { existing.remove(); return; }
@@ -234,7 +288,7 @@ export function openMapBrowser(): void {
   const dialog = document.createElement('div');
   Object.assign(dialog.style, {
     background: '#161b22', border: '1px solid #30363d', padding: '16px',
-    minWidth: '320px', maxHeight: '80vh', display: 'flex', flexDirection: 'column',
+    width: 'min(720px, 90vw)', maxHeight: '80vh', display: 'flex', flexDirection: 'column',
     fontFamily: "'Courier New', monospace", fontSize: '12px', color: '#e0e0e0',
   });
 
@@ -272,22 +326,61 @@ export function openMapBrowser(): void {
         body.append(groupLabel);
 
         const grid = document.createElement('div');
-        Object.assign(grid.style, { display: 'flex', flexWrap: 'wrap', gap: '4px' });
+        Object.assign(grid.style, {
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, 104px)',
+          gap: '8px',
+        });
 
         for (const entry of group.maps) {
-          const btn = document.createElement('button');
-          btn.textContent = entry.label;
-          Object.assign(btn.style, {
+          const card = document.createElement('button');
+          Object.assign(card.style, {
             background: '#0d1117', border: '1px solid #21262d', color: '#c9d1d9',
-            padding: '4px 10px', cursor: 'pointer', font: 'inherit', fontSize: '11px',
+            padding: '6px', cursor: 'pointer', font: 'inherit', fontSize: '10px',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
           });
-          btn.onmouseenter = () => { btn.style.borderColor = '#388bfd'; };
-          btn.onmouseleave = () => { btn.style.borderColor = '#21262d'; };
-          btn.onclick = () => {
+          card.onmouseenter = () => { card.style.borderColor = '#388bfd'; };
+          card.onmouseleave = () => { card.style.borderColor = '#21262d'; };
+          card.onclick = () => {
             overlay.remove();
             loadMapFromUrl(entry.file).catch(err => alert(`Failed to load map: ${(err as Error).message}`));
           };
-          grid.append(btn);
+
+          const thumb = document.createElement('canvas');
+          thumb.width = 88;
+          thumb.height = 88;
+          Object.assign(thumb.style, {
+            width: '88px', height: '88px',
+            background: '#0d1117', imageRendering: 'pixelated',
+          });
+          const tctx = thumb.getContext('2d');
+          if (tctx) {
+            tctx.fillStyle = '#161b22';
+            tctx.fillRect(0, 0, 88, 88);
+          }
+
+          const label = document.createElement('span');
+          label.textContent = entry.label;
+          Object.assign(label.style, {
+            color: '#c9d1d9', textAlign: 'center', lineHeight: '1.2',
+            wordBreak: 'break-word', maxWidth: '88px',
+          });
+
+          card.append(thumb, label);
+          grid.append(card);
+
+          fetchMapDto(entry.file)
+            .then((dto) => renderMapThumbnail(thumb, dto))
+            .catch(() => {
+              if (!tctx) return;
+              tctx.fillStyle = '#21262d';
+              tctx.fillRect(0, 0, 88, 88);
+              tctx.fillStyle = '#6e7681';
+              tctx.font = "10px 'Courier New', monospace";
+              tctx.textAlign = 'center';
+              tctx.textBaseline = 'middle';
+              tctx.fillText('?', 44, 44);
+            });
         }
         body.append(grid);
       }

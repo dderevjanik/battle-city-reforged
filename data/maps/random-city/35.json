@@ -1,0 +1,457 @@
+{
+  "tileset": "classic",
+  "title": "STAGE 35",
+  "width": 832,
+  "height": 832,
+  "spawn": {
+    "enemy": {
+      "spawnDelay": 3,
+      "maxAliveCount": 4,
+      "list": [
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic",
+          "drop": "random"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic",
+          "drop": "random"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic"
+        },
+        {
+          "type": "fast",
+          "ai": "classic",
+          "drop": "random"
+        },
+        {
+          "type": "basic",
+          "ai": "classic"
+        },
+        {
+          "type": "heavy",
+          "ai": "classic"
+        }
+      ],
+      "locations": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 384,
+          "y": 0
+        },
+        {
+          "x": 768,
+          "y": 0
+        }
+      ]
+    },
+    "player": {
+      "locations": [
+        {
+          "x": 256,
+          "y": 768
+        },
+        {
+          "x": 512,
+          "y": 768
+        }
+      ]
+    },
+    "bases": [
+      {
+        "x": 384,
+        "y": 768
+      }
+    ]
+  },
+  "terrain": {
+    "regions": [
+      {
+        "type": "brick",
+        "x": 128,
+        "y": 0,
+        "width": 192,
+        "height": 128
+      },
+      {
+        "type": "brick",
+        "x": 448,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 704,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 64,
+        "y": 64,
+        "width": 64,
+        "height": 320
+      },
+      {
+        "type": "brick",
+        "x": 320,
+        "y": 64,
+        "width": 64,
+        "height": 192
+      },
+      {
+        "type": "brick",
+        "x": 768,
+        "y": 64,
+        "width": 64,
+        "height": 768
+      },
+      {
+        "type": "brick",
+        "x": 0,
+        "y": 128,
+        "width": 64,
+        "height": 256
+      },
+      {
+        "type": "brick",
+        "x": 128,
+        "y": 128,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 384,
+        "y": 128,
+        "width": 64,
+        "height": 256
+      },
+      {
+        "type": "brick",
+        "x": 640,
+        "y": 128,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 192,
+        "y": 192,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 576,
+        "y": 192,
+        "width": 64,
+        "height": 320
+      },
+      {
+        "type": "brick",
+        "x": 704,
+        "y": 192,
+        "width": 64,
+        "height": 128
+      },
+      {
+        "type": "brick",
+        "x": 128,
+        "y": 256,
+        "width": 128,
+        "height": 128
+      },
+      {
+        "type": "brick",
+        "x": 544,
+        "y": 256,
+        "width": 32,
+        "height": 256
+      },
+      {
+        "type": "brick",
+        "x": 256,
+        "y": 320,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 32,
+        "y": 448,
+        "width": 448,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 640,
+        "y": 448,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 320,
+        "y": 512,
+        "width": 128,
+        "height": 32
+      },
+      {
+        "type": "brick",
+        "x": 640,
+        "y": 576,
+        "width": 64,
+        "height": 128
+      },
+      {
+        "type": "brick",
+        "x": 352,
+        "y": 736,
+        "width": 128,
+        "height": 32
+      },
+      {
+        "type": "brick",
+        "x": 352,
+        "y": 768,
+        "width": 32,
+        "height": 64
+      },
+      {
+        "type": "brick",
+        "x": 448,
+        "y": 768,
+        "width": 32,
+        "height": 64
+      },
+      {
+        "type": "steel",
+        "x": 384,
+        "y": 64,
+        "width": 96,
+        "height": 32
+      },
+      {
+        "type": "steel",
+        "x": 576,
+        "y": 64,
+        "width": 64,
+        "height": 32
+      },
+      {
+        "type": "steel",
+        "x": 448,
+        "y": 96,
+        "width": 32,
+        "height": 160
+      },
+      {
+        "type": "steel",
+        "x": 256,
+        "y": 128,
+        "width": 64,
+        "height": 64
+      },
+      {
+        "type": "steel",
+        "x": 128,
+        "y": 192,
+        "width": 64,
+        "height": 64
+      },
+      {
+        "type": "steel",
+        "x": 256,
+        "y": 256,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "steel",
+        "x": 64,
+        "y": 384,
+        "width": 384,
+        "height": 32
+      },
+      {
+        "type": "steel",
+        "x": 0,
+        "y": 512,
+        "width": 128,
+        "height": 32
+      },
+      {
+        "type": "steel",
+        "x": 544,
+        "y": 576,
+        "width": 96,
+        "height": 32
+      },
+      {
+        "type": "steel",
+        "x": 544,
+        "y": 608,
+        "width": 32,
+        "height": 32
+      },
+      {
+        "type": "steel",
+        "x": 128,
+        "y": 640,
+        "width": 128,
+        "height": 32
+      },
+      {
+        "type": "jungle",
+        "x": 512,
+        "y": 128,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "jungle",
+        "x": 512,
+        "y": 192,
+        "width": 64,
+        "height": 64
+      },
+      {
+        "type": "jungle",
+        "x": 512,
+        "y": 512,
+        "width": 192,
+        "height": 64
+      },
+      {
+        "type": "jungle",
+        "x": 0,
+        "y": 576,
+        "width": 192,
+        "height": 64
+      },
+      {
+        "type": "jungle",
+        "x": 0,
+        "y": 640,
+        "width": 128,
+        "height": 128
+      },
+      {
+        "type": "jungle",
+        "x": 512,
+        "y": 640,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "water",
+        "x": 640,
+        "y": 0,
+        "width": 64,
+        "height": 128
+      },
+      {
+        "type": "water",
+        "x": 640,
+        "y": 192,
+        "width": 64,
+        "height": 256
+      },
+      {
+        "type": "water",
+        "x": 704,
+        "y": 384,
+        "width": 64,
+        "height": 64
+      },
+      {
+        "type": "water",
+        "x": 192,
+        "y": 512,
+        "width": 128,
+        "height": 64
+      },
+      {
+        "type": "water",
+        "x": 704,
+        "y": 512,
+        "width": 64,
+        "height": 320
+      },
+      {
+        "type": "ice",
+        "x": 640,
+        "y": 704,
+        "width": 64,
+        "height": 128
+      }
+    ]
+  },
+  "version": 1,
+  "viewMode": "fit"
+}

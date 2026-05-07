@@ -17,6 +17,7 @@ Project is not commercial and was created for learning purposes only.
 - Up to 4 players on one PC (original supported 2)
 - 3 difficulty levels: Classic, Hard, Extreme
 - 17 unlockable achievements (based on [RetroAchievements](https://retroachievements.org/game/2420))
+- 3 campaigns, 105 levels total — Original (35), Googie City (35) and Random City (35), imported from fan-made NES hacks
 - Full [level editor](https://dderevjanik.github.io/battle-city-reforged/editor) with JSON save/load
 - Custom maps mode
 - Gun powerup with instant max-tier upgrade and rare weighted spawning
@@ -33,7 +34,7 @@ Project is not commercial and was created for learning purposes only.
 
 ## Features
 
-- Single player campaign (35 original maps) with Continue support — auto-saves at the start of each level so you can resume from the Main Menu after closing the tab; cleared on death so you can't dodge a game-over
+- Single player campaign with Continue support — pick from 3 campaigns (Original, Googie City, Random City; 35 levels each, 105 total). Auto-saves at the start of each level so you can resume from the Main Menu after closing the tab; cleared on death so you can't dodge a game-over
 - Multiplayer (up to 4 players, same PC)
 - 3 difficulty modes (Classic / Hard / Extreme)
 - 7 powerups with weighted spawn distribution — enemy tanks can also pick up powerups
@@ -81,6 +82,8 @@ npm run nes:import -- path/to/rom.nes  # extract stages from a .nes ROM
 ## Acknowledgments
 
 - Original project [cattle-bity](https://github.com/dogballs/cattle-bity) by **Michael Radionov** — the foundation this fork builds upon
+- "Googie City" levels by **Googie** — 35 levels imported from the Battle City NES hack of the same name
+- "Random City" levels by **Dendymask** — 35 levels imported from the Battle City NES hack of the same name
 - Battle City by Namco (1985) — the classic game that inspired it all
 
 ## License

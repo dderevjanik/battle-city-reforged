@@ -100,7 +100,10 @@ export class LevelSelectionScene extends GameScene {
     this.completeText.origin.setX(0.5);
     this.completeText.position.set(660, 304);
     this.completeText.setVisible(
-      this.levelProgressManager.isLevelCompleted(this.stageItem.getValue()!),
+      this.levelProgressManager.isLevelCompleted(
+        this.getActiveGroupName(),
+        this.stageItem.getValue()!,
+      ),
     );
     this.root.add(this.completeText);
 
@@ -143,7 +146,10 @@ export class LevelSelectionScene extends GameScene {
     this.stageItem = this.createStageItem();
     this.menu.setItems(this.buildMenuItems());
     this.completeText.setVisible(
-      this.levelProgressManager.isLevelCompleted(this.stageItem.getValue()!),
+      this.levelProgressManager.isLevelCompleted(
+        this.getActiveGroupName(),
+        this.stageItem.getValue()!,
+      ),
     );
     this.mapLoader.loadAsync(this.stageItem.getValue()!);
   };
@@ -186,13 +192,20 @@ export class LevelSelectionScene extends GameScene {
   ): void => {
     this.mapLoader.loadAsync(choice.value);
     this.completeText.setVisible(
-      this.levelProgressManager.isLevelCompleted(choice.value),
+      this.levelProgressManager.isLevelCompleted(
+        this.getActiveGroupName(),
+        choice.value,
+      ),
     );
   };
 
   private handleMapLoaded = (mapConfig: MapConfig): void => {
     this.preview.setRegions(mapConfig.getTerrainRegions());
   };
+
+  private getActiveGroupName(): string {
+    return this.mapLoader.getActiveGroupName() ?? '';
+  }
 
   private getEnemyPowerupsText(): string {
     return `ENEMY POWERUPS [${this.session.isEnemyPowerupsEnabled() ? "ON" : "OFF"}]`;

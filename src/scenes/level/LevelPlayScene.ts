@@ -6,6 +6,7 @@ import { Session } from '../../game/Session';
 import { Border } from '../../gameObjects/Border';
 import { BorderWall } from '../../gameObjects/BorderWall';
 import { InputManager } from '../../input/InputManager';
+import { MapLoader } from '../../map/MapLoader';
 import { ContinueManager } from '../../progress/ContinueManager';
 import { LevelProgressManager } from '../../progress/LevelProgressManager';
 import { PowerupType } from '../../powerup/PowerupType';
@@ -52,6 +53,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private session!: Session;
   private inputManager!: InputManager;
   private levelProgressManager!: LevelProgressManager;
+  private mapLoader!: MapLoader;
   private continueManager!: ContinueManager;
   private analytics!: Analytics;
   private debugCollisionMenu!: DebugCollisionMenu;
@@ -89,7 +91,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private cameraScript: LevelCameraScript | null = null;
 
   protected setup(context: GameContext): void {
-    const { analytics, collisionSystem, continueManager, inputManager, levelProgressManager, session } = context;
+    const { analytics, collisionSystem, continueManager, inputManager, levelProgressManager, mapLoader, session } = context;
 
     this.debugCollisionMenu = new DebugCollisionMenu(
       collisionSystem,
@@ -101,6 +103,7 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
 
     this.inputManager = inputManager;
     this.levelProgressManager = levelProgressManager;
+    this.mapLoader = mapLoader;
     this.continueManager = continueManager;
     this.session = session;
     this.analytics = analytics;
@@ -559,7 +562,10 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
       time_sec: Math.round((Date.now() - this.levelStartMs) / 1000),
     });
 
-    this.levelProgressManager.markLevelCompleted(this.session.getLevelNumber());
+    this.levelProgressManager.markLevelCompleted(
+      this.mapLoader.getActiveGroupName() ?? '',
+      this.session.getLevelNumber(),
+    );
     this.navigator.replace(GameSceneType.LevelScore, {
       title: this.params.mapConfig.getTitle(this.session.getLevelNumber()),
     });

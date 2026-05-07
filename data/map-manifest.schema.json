@@ -2,20 +2,38 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "map-manifest.schema.json",
   "type": "object",
-  "required": ["list"],
+  "required": ["groups"],
   "additionalProperties": false,
   "properties": {
-    "list": {
+    "groups": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["file"],
+        "required": ["name", "maps"],
         "additionalProperties": false,
         "properties": {
-          "file": {
+          "name": {
             "type": "string",
             "minLength": 1
+          },
+          "maps": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["file"],
+              "additionalProperties": false,
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "file": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
           }
         }
       }

@@ -61,21 +61,30 @@ export class FileMapListReader extends MapListReader {
 }
 
 interface MapManifestListItem {
+  label?: string;
   file: string;
 }
 
+interface MapManifestGroup {
+  name: string;
+  maps: MapManifestListItem[];
+}
+
 interface MapManifest {
-  list: MapManifestListItem[];
+  groups: MapManifestGroup[];
 }
 
 const validateMapManifest = new Ajv().compile<MapManifest>(mapManifestSchema);
 
 // Used to load out-of-the-box maps.
 // Reads map list from JSON manifest. Maps are loaded over HTTP.
+// The manifest is grouped (e.g. Original, Tank 1990); the active group can
+// be switched at runtime, e.g. from the level selection screen.
 export class ManifestMapListReader extends MapListReader {
   private readonly manifest: MapManifest;
+  private activeGroupName: string;
 
-  constructor(manifest: MapManifest) {
+  constructor(manifest: MapManifest, defaultGroupName?: string) {
     super();
 
     if (!validateMapManifest(manifest)) {
@@ -84,11 +93,32 @@ export class ManifestMapListReader extends MapListReader {
       );
     }
     this.manifest = manifest;
+
+    const initialGroup =
+      (defaultGroupName !== undefined &&
+        manifest.groups.find((g) => g.name === defaultGroupName)?.name) ||
+      manifest.groups[0].name;
+    this.activeGroupName = initialGroup;
+  }
+
+  public getGroupNames(): string[] {
+    return this.manifest.groups.map((g) => g.name);
+  }
+
+  public getActiveGroupName(): string {
+    return this.activeGroupName;
+  }
+
+  public setActiveGroup(name: string): void {
+    if (this.manifest.groups.some((g) => g.name === name)) {
+      this.activeGroupName = name;
+    }
   }
 
   public async readAsync(levelNumber: number): Promise<void> {
+    const group = this.getActiveGroup();
     const index = levelNumber - 1;
-    const item = this.manifest.list[index];
+    const item = group.maps[index];
     if (item === undefined) {
       this.error.notify(new Error(`Level "${levelNumber} not found`));
       return;
@@ -109,7 +139,14 @@ export class ManifestMapListReader extends MapListReader {
   }
 
   public getCount(): number {
-    return this.manifest.list.length;
+    return this.getActiveGroup().maps.length;
+  }
+
+  private getActiveGroup(): MapManifestGroup {
+    const group = this.manifest.groups.find(
+      (g) => g.name === this.activeGroupName,
+    );
+    return group ?? this.manifest.groups[0];
   }
 }
 

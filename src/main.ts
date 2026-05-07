@@ -41,7 +41,7 @@ import audioManifest from '../data/audio.manifest.json';
 import spriteManifest from '../data/sprite.manifest.json';
 import spriteFontConfig from '../data/fonts/sprite-font.json';
 import rectFontConfig from '../data/fonts/rect-font.json';
-import mapManifest from '../data/map.manifest.json';
+import mapManifest from '../data/maps/manifest.json';
 
 const loadingElement = document.querySelector('[data-loading]');
 
@@ -68,7 +68,7 @@ rectFontLoader.register(config.PRIMARY_RECT_FONT_ID, rectFontConfig, {
   scale: config.TILE_SIZE_SMALL,
 });
 
-const manifestMapListReader = new ManifestMapListReader(mapManifest);
+const manifestMapListReader = new ManifestMapListReader(mapManifest, 'Original');
 const mapLoader = new MapLoader(manifestMapListReader);
 
 const audioManager = new AudioManager(audioLoader, gameStorage);

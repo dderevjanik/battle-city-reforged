@@ -43,6 +43,31 @@ const QUADRANT_PATCHES: ReadonlyArray<readonly [number, readonly [number, number
   [Q_BR, [2, 2]],
 ];
 
+/**
+ * Paints the eagle's brick surround (top wall + side wings) into `grid` —
+ * only into cells that are currently empty, so ROM terrain placed on top of
+ * the base (steel, jungle, water, ice, …) overrides it.
+ *
+ * Geometry mirrors editor's paintBaseDefense (io.ts).
+ */
+function paintBaseDefense(grid: Uint8Array): void {
+  const brickIdx = TERRAIN_INDEX[TerrainType.Brick] ?? 0;
+  if (!brickIdx) return;
+  const heartCol = (BASE_BLOCK_X * TL) / TS;
+  const heartRow = (BASE_BLOCK_Y * TL) / TS;
+  const fillIfEmpty = (col: number, row: number, cols: number, rows: number): void => {
+    for (let r = row; r < row + rows; r++) {
+      for (let c = col; c < col + cols; c++) {
+        if (c < 0 || c >= GRID_W || r < 0 || r >= GRID_W) continue;
+        if (grid[r * GRID_W + c] === 0) grid[r * GRID_W + c] = brickIdx;
+      }
+    }
+  };
+  fillIfEmpty(heartCol - 2, heartRow - 2, 8, 2); // top wall
+  fillIfEmpty(heartCol - 2, heartRow,     2, 4); // left wing
+  fillIfEmpty(heartCol + 4, heartRow,     2, 4); // right wing
+}
+
 export interface StageToMapDtoOptions {
   title?: string;
 }
@@ -74,6 +99,11 @@ export function stageToMapDto(
       }
     }
   }
+
+  // Paint the original Battle City eagle-base brick surround. Only fill cells
+  // the ROM left empty — ROM-defined terrain (steel, jungle, water, ice, brick)
+  // wins, matching the in-game overlay rendering.
+  paintBaseDefense(grid);
 
   const regions = gridToRegionsPure(grid, GRID_W, GRID_W, TS);
 

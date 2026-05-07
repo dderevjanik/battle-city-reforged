@@ -2,7 +2,7 @@
 
 Battle City (1985, Namco) remake written from scratch in TypeScript.
 
-### [Play web version](https://dderevjanik.github.io/battle-city-reforged/) | [Map Editor](https://dderevjanik.github.io/battle-city-reforged/editor)
+### [Play web version](https://dderevjanik.github.io/battle-city-reforged/) | [Map Editor](https://dderevjanik.github.io/battle-city-reforged/editor) | [Fonts Viewer](https://dderevjanik.github.io/battle-city-reforged/fonts)
 
 ![screenshot](./docs/screenshots.png)
 
@@ -49,16 +49,26 @@ Project is not commercial and was created for learning purposes only.
 - Score tracking and highscores
 - Offline support via PWA — installable and fully playable offline after first load
 
+## Apps
+
+The repo ships four entry points:
+
+- **Game** — `/` — the playable game (single player, multiplayer, custom maps, demo)
+- **Map Editor** — `/editor` — design levels, save/load JSON, generate shareable play links
+- **Fonts Viewer** — `/fonts` — browse the bitmap font glyphs used by the UI
+- **NES ROM extractor** — `src/nes` — Node CLI that parses an original Battle City `.nes` ROM and exports its 35 stages as `MapDto` JSON. Run with `npm run nes:import -- <rom.nes> [--out <dir>] [--stage N] [--all]`.
+
 ## Getting Started
 
 Prerequisites: Node >= 24
 
 ```bash
 npm install
-npm start          # dev server (opens browser)
+npm start          # dev server (opens browser at /, /editor, /fonts)
 npm run build      # production build
 npm run typecheck  # type checking
 npm test           # run tests
+npm run nes:import -- path/to/rom.nes  # extract stages from a .nes ROM
 ```
 
 ## Tech Stack

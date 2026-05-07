@@ -1,7 +1,7 @@
 import { Subject } from '../core/Subject';
 
 import { MapConfig } from './MapConfig';
-import { MapListReader } from './MapListReaders';
+import { ManifestMapListReader, MapListReader } from './MapListReaders';
 
 // Container for map list readers used in the game. Readers can be switched
 // in runtime, so maps can be loaded from different sources.
@@ -42,6 +42,26 @@ export class MapLoader {
 
   public getItemsCount(): number {
     return this.activeReader!.getCount();
+  }
+
+  public getGroupNames(): string[] {
+    if (this.activeReader instanceof ManifestMapListReader) {
+      return this.activeReader.getGroupNames();
+    }
+    return [];
+  }
+
+  public getActiveGroupName(): string | null {
+    if (this.activeReader instanceof ManifestMapListReader) {
+      return this.activeReader.getActiveGroupName();
+    }
+    return null;
+  }
+
+  public setActiveGroup(name: string): void {
+    if (this.activeReader instanceof ManifestMapListReader) {
+      this.activeReader.setActiveGroup(name);
+    }
   }
 
   private handleReaderLoaded = (mapConfig: any): void => {

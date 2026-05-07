@@ -63,7 +63,7 @@ export class Menu extends GameObject {
 
     this.add(this.cursor);
 
-    this.focusItem(0);
+    this.focusItem(this.getFirstFocusableIndex());
   }
 
   public hideCursor(): void {
@@ -76,7 +76,7 @@ export class Menu extends GameObject {
   }
 
   public reset(): void {
-    this.focusItem(0);
+    this.focusItem(this.getFirstFocusableIndex());
   }
 
   protected update(_deltaTime: number): void {
@@ -260,6 +260,10 @@ export class Menu extends GameObject {
     } while (nextItem.isFocusable() === false);
 
     return nextIndex;
+  }
+
+  private getFirstFocusableIndex(): number {
+    return this.items.findIndex((item) => item.isFocusable());
   }
 
   private hasFocusableItems(): boolean {

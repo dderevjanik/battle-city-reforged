@@ -37,7 +37,8 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test 'src/**/*.test.ts'",
     "test:coverage": "tsx --test --experimental-test-coverage 'src/**/*.test.ts'",
-    "nes:import": "tsx scripts/nes-import.ts"
+    "nes:import": "tsx scripts/nes-import.ts",
+    "nes:extract-sprites": "tsx scripts/nes-extract-sprites.ts"
   },
   "dependencies": {
     "ajv": "^8.18.0",

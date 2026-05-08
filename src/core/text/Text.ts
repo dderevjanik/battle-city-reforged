@@ -37,13 +37,14 @@ export class Text<T> {
   public version = 0;
 
   constructor(text = '', options: TextOptions = {}) {
-    this.text = text;
+    this.text = text.toUpperCase();
     this.options = Object.assign({}, DEFAULT_OPTIONS, options);
   }
 
   public setText(text: string): this {
-    if (this.text !== text) {
-      this.text = text;
+    const next = text.toUpperCase();
+    if (this.text !== next) {
+      this.text = next;
       this.dirty = true;
     }
 

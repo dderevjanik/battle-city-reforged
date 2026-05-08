@@ -64,6 +64,20 @@ export class MapLoader {
     }
   }
 
+  public getGroupDescription(name: string): string {
+    if (this.activeReader instanceof ManifestMapListReader) {
+      return this.activeReader.getGroupDescription(name);
+    }
+    return '';
+  }
+
+  public getGroupMapCount(name: string): number {
+    if (this.activeReader instanceof ManifestMapListReader) {
+      return this.activeReader.getGroupMapCount(name);
+    }
+    return 0;
+  }
+
   private handleReaderLoaded = (mapConfig: any): void => {
     this.loaded.notify(mapConfig);
   };

@@ -8,6 +8,7 @@ export enum GameSceneType {
   MainAchievements,
   MainGameOver,
   MainHighscore,
+  MainMapGroup,
   MainMenu,
   MainMultiplayer,
   MainVictory,

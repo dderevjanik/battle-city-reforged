@@ -20,8 +20,6 @@ import { GameScene } from "../GameScene";
 import { GameSceneType } from "../GameSceneType";
 
 export class LevelSelectionScene extends GameScene {
-  private groupLabelItem: TextMenuItem | null = null;
-  private groupItem: SelectorMenuItem<string> | null = null;
   private stageItem!: SelectorMenuItem<number>;
   private difficultyLabelItem!: TextMenuItem;
   private difficultyItem!: SelectorMenuItem<Difficulty>;
@@ -42,21 +40,6 @@ export class LevelSelectionScene extends GameScene {
 
     const title = new SceneMenuTitle("SELECT STAGE");
     this.root.add(title);
-
-    const groupNames = this.mapLoader.getGroupNames();
-    if (groupNames.length > 1) {
-      this.groupLabelItem = new TextMenuItem("MAP GROUP");
-      this.groupLabelItem.setFocusable(false);
-
-      const groupChoices: SelectorMenuItemChoice<string>[] = groupNames.map(
-        (name) => ({ value: name, text: name.toUpperCase() }),
-      );
-      this.groupItem = new SelectorMenuItem(groupChoices);
-      this.groupItem.setValue(
-        this.mapLoader.getActiveGroupName() ?? groupNames[0],
-      );
-      this.groupItem.changed.addListener(this.handleGroupChanged);
-    }
 
     this.stageItem = this.createStageItem();
 
@@ -112,16 +95,12 @@ export class LevelSelectionScene extends GameScene {
   }
 
   private buildMenuItems(): MenuItem[] {
-    const menuItems: MenuItem[] = [];
-    if (this.groupLabelItem !== null && this.groupItem !== null) {
-      menuItems.push(this.groupLabelItem, this.groupItem);
-    }
-    menuItems.push(
+    const menuItems: MenuItem[] = [
       this.stageItem,
       this.difficultyLabelItem,
       this.difficultyItem,
       this.enemyPowerupsItem,
-    );
+    ];
     if (this.session.getPlayerCount() > 1) {
       menuItems.push(this.friendlyFireItem);
     }
@@ -138,21 +117,6 @@ export class LevelSelectionScene extends GameScene {
     item.changed.addListener(this.handleStageChanged);
     return item;
   }
-
-  private handleGroupChanged = (
-    choice: SelectorMenuItemChoice<string>,
-  ): void => {
-    this.mapLoader.setActiveGroup(choice.value);
-    this.stageItem = this.createStageItem();
-    this.menu.setItems(this.buildMenuItems());
-    this.completeText.setVisible(
-      this.levelProgressManager.isLevelCompleted(
-        this.getActiveGroupName(),
-        this.stageItem.getValue()!,
-      ),
-    );
-    this.mapLoader.loadAsync(this.stageItem.getValue()!);
-  };
 
   private handleStartSelected = (): void => {
     const stageNumber = this.stageItem.getValue()!;

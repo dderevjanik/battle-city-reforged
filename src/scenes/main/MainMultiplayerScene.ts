@@ -57,7 +57,7 @@ export class MainMultiplayerScene extends GameScene<MainMultiplayerLocationParam
       this.mapLoader.setListReader(this.params.fileMapListReader);
     }
 
-    this.navigator.push(GameSceneType.LevelSelection);
+    this.navigator.push(GameSceneType.MainMapGroup);
   }
 
   private handleTwoPlayerSelected = (): void => {

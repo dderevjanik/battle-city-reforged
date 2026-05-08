@@ -10,6 +10,7 @@ import { MainAboutScene } from '../../scenes/main/MainAboutScene';
 import { MainAchievementsScene } from '../../scenes/main/MainAchievementsScene';
 import { MainGameOverScene } from '../../scenes/main/MainGameOverScene';
 import { MainHighscoreScene } from '../../scenes/main/MainHighscoreScene';
+import { MainMapGroupScene } from '../../scenes/main/MainMapGroupScene';
 import { MainMenuScene } from '../../scenes/main/MainMenuScene';
 import { MainMultiplayerScene } from '../../scenes/main/MainMultiplayerScene';
 import { MainVictoryScene } from '../../scenes/main/MainVictoryScene';
@@ -42,6 +43,7 @@ const SCENE_REGISTRY: [GameSceneType, typeof Phaser.Scene][] = [
   [GameSceneType.MainAchievements, MainAchievementsScene],
   [GameSceneType.MainGameOver, MainGameOverScene],
   [GameSceneType.MainHighscore, MainHighscoreScene],
+  [GameSceneType.MainMapGroup, MainMapGroupScene],
   [GameSceneType.MainMenu, MainMenuScene],
   [GameSceneType.MainMultiplayer, MainMultiplayerScene],
   [GameSceneType.MainVictory, MainVictoryScene],

@@ -67,6 +67,7 @@ interface MapManifestListItem {
 
 interface MapManifestGroup {
   name: string;
+  description?: string;
   maps: MapManifestListItem[];
 }
 
@@ -113,6 +114,14 @@ export class ManifestMapListReader extends MapListReader {
     if (this.manifest.groups.some((g) => g.name === name)) {
       this.activeGroupName = name;
     }
+  }
+
+  public getGroupDescription(name: string): string {
+    return this.manifest.groups.find((g) => g.name === name)?.description ?? '';
+  }
+
+  public getGroupMapCount(name: string): number {
+    return this.manifest.groups.find((g) => g.name === name)?.maps.length ?? 0;
   }
 
   public async readAsync(levelNumber: number): Promise<void> {

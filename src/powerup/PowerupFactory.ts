@@ -1,4 +1,5 @@
 import { Powerup } from '../gameObjects/Powerup';
+import { getGameRandom } from '../core/Random';
 
 import { PowerupType } from './PowerupType';
 
@@ -22,7 +23,7 @@ export class PowerupFactory {
   }
 
   public static createRandom(): Powerup {
-    let roll = Math.random() * TOTAL_WEIGHT;
+    let roll = getGameRandom().next() * TOTAL_WEIGHT;
     for (const entry of WEIGHTED_TYPES) {
       roll -= entry.weight;
       if (roll < 0) {

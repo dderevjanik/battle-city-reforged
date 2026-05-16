@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 
 import { GameObject, initRenderer } from '../core/GameObject';
+import { maybeTraceTick } from '../core/determinism';
 import { setActiveScene } from '../core/scene/ActiveScene';
 import { SceneNavigator, SceneParams } from '../core/scene/Scene';
 import { GameContext } from '../game/GameUpdateArgs';
@@ -18,6 +19,18 @@ export abstract class GameScene<
   protected context!: GameContext;
   protected root!: GameObject;
   protected navigator!: SceneNavigator;
+
+  // Fixed-timestep accumulator. The sim runs in exact SIM_STEP_SEC increments
+  // regardless of the renderer's framerate, so two peers with different frame
+  // rates produce identical simulation output. Rendering still happens every
+  // browser frame.
+  private static readonly SIM_HZ = 60;
+  private static readonly SIM_STEP_SEC = 1 / GameScene.SIM_HZ;
+  // Cap so a long stall (tab backgrounded, breakpoint) doesn't trigger a
+  // multi-second catch-up that locks the page.
+  private static readonly MAX_STEPS_PER_FRAME = 5;
+  private simAccumulatorSec = 0;
+  protected simTick = 0;
 
   // ---------------------------------------------------------------------------
   // Phaser lifecycle
@@ -59,8 +72,32 @@ export abstract class GameScene<
   }
 
   public update(_time: number, delta: number): void {
+    // Convert Phaser's variable-millisecond delta into a fixed-step sim loop.
+    // Input is sampled once per browser frame; the sim runs zero or more times
+    // depending on how much real time has elapsed. Rendering then reflects the
+    // post-sim state.
     this.context.inputManager.update();
-    this.onUpdate(delta / 1000);
+
+    this.simAccumulatorSec += delta / 1000;
+
+    let steps = 0;
+    while (
+      this.simAccumulatorSec >= GameScene.SIM_STEP_SEC &&
+      steps < GameScene.MAX_STEPS_PER_FRAME
+    ) {
+      this.onUpdate(GameScene.SIM_STEP_SEC);
+      this.simAccumulatorSec -= GameScene.SIM_STEP_SEC;
+      this.simTick++;
+      steps++;
+      maybeTraceTick(this.simTick, this.root);
+    }
+
+    // If we hit the catch-up cap, drop the leftover backlog rather than
+    // spiraling. Better to skip a few ticks than to stall the page.
+    if (steps >= GameScene.MAX_STEPS_PER_FRAME) {
+      this.simAccumulatorSec = 0;
+    }
+
     this._renderScene();
     this.context.gameState.update();
   }

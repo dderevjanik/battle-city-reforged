@@ -2,6 +2,9 @@ import { Collider } from './Collider';
 import { Collision } from './Collision';
 import { CollisionContact } from './CollisionContact';
 
+const byEntityId = (a: Collider, b: Collider): number =>
+  a.object.entityId - b.object.entityId;
+
 export class CollisionSystem {
   private dynamicColliders: Collider[] = [];
   private staticColliders: Collider[] = [];
@@ -36,11 +39,18 @@ export class CollisionSystem {
   public update(): void {
     this.collisions = [];
 
-    for (const selfCollider of this.dynamicColliders) {
+    // Sort by entity ID before iteration so collision resolution order is a
+    // deterministic function of entity creation order, not of register/
+    // unregister churn. Required for lockstep multiplayer: two peers must
+    // produce identical collision sequences for identical inputs.
+    const dyn = this.dynamicColliders.slice().sort(byEntityId);
+    const stat = this.staticColliders.slice().sort(byEntityId);
+
+    for (const selfCollider of dyn) {
       let collision: Collision | null = null;
 
-      collision = this.checkAgainst(selfCollider, this.dynamicColliders, collision);
-      collision = this.checkAgainst(selfCollider, this.staticColliders, collision);
+      collision = this.checkAgainst(selfCollider, dyn, collision);
+      collision = this.checkAgainst(selfCollider, stat, collision);
 
       if (collision !== null) {
         this.collisions.push(collision);

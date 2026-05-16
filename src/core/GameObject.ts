@@ -41,7 +41,21 @@ const Y_AXIS = new Vector(0, -1);
  * - Rendering properties (painter, visibility, z-index)
  * - Game lifecycle (setup/update/collide)
  */
+// Monotonic entity ID counter. Reset at the start of every level via
+// `resetEntityIds()` so two peers running the same level get matching IDs
+// provided they create entities in the same order — which is what we want
+// collision iteration order to depend on for determinism.
+let _nextEntityId = 1;
+export function resetEntityIds(): void {
+  _nextEntityId = 1;
+}
+
 export class GameObject {
+  // Stable, monotonic ID assigned at construction. Used by the collision
+  // system to iterate colliders in a deterministic order independent of
+  // unregister/register churn.
+  public readonly entityId: number = _nextEntityId++;
+
   // --- Tree (formerly Node) ---
 
   public children: this[] = [];

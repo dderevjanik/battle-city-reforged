@@ -14,6 +14,8 @@ import { TankDeathReason } from '../../tank/TankTypes';
 import { TerrainFactory } from '../../terrain/TerrainFactory';
 import { TerrainGPULayer } from '../../terrain/TerrainGPULayer';
 import { TerrainTile } from '../../gameObjects/TerrainTile';
+import { seedGameRandom } from '../../core/Random';
+import { resetEntityIds } from '../../core/GameObject';
 import * as config from '../../config';
 
 import { LevelEventBus } from '../../level/LevelEventBus';
@@ -111,6 +113,16 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     this.levelStartMs = Date.now();
     this.levelKills = 0;
     this.levelDeaths = 0;
+
+    // Seed the gameplay PRNG deterministically from level metadata so that two
+    // peers running the same level produce identical RNG sequences. For
+    // networked play the host's seed will be sent over the wire instead.
+    let diffHash = 0;
+    for (const ch of session.getDifficulty()) {
+      diffHash = (diffHash * 31 + ch.charCodeAt(0)) | 0;
+    }
+    seedGameRandom((session.getLevelNumber() * 2654435761) ^ diffHash);
+    resetEntityIds();
 
     if (!session.isDemo() && !session.isPlaytest()) {
       this.analytics.track('level_start', {

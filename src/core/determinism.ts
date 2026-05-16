@@ -1,5 +1,6 @@
 import { GameObject } from './GameObject';
 import { Random, getGameRandom } from './Random';
+import { snapshot } from '../sim/snapshot';
 
 /**
  * Determinism test harness — Phase 1.
@@ -149,6 +150,23 @@ export function maybeTraceTick(tick: number, root: GameObject, maxTicks = 600): 
 
   if (typeof w.__SIM_DUMP === 'number' && w.__SIM_DUMP === tick) {
     dumpSimEntities(tick, root);
+  }
+
+  // Full Phase-2 snapshot dump: produces a JSON blob suitable for side-by-side
+  // diffing between two browser tabs. Set `window.__SIM_SNAPSHOT = <tick>` to
+  // capture once, or `'every'` to capture each tick (verbose).
+  if (w.__SIM_SNAPSHOT === tick || w.__SIM_SNAPSHOT === 'every') {
+    const snap = snapshot(root, {
+      tick,
+      // scores/lives/nextEntityId are not yet plumbed through; harness fills
+      // safe defaults so the dump still works. Phase 2.4 will pass real
+      // values from the GameScene loop.
+      scores: [],
+      lives: [],
+      nextEntityId: 0,
+    });
+    // eslint-disable-next-line no-console
+    console.log(`[sim-snapshot t=${tick}]`, JSON.stringify(snap, null, 2));
   }
 }
 

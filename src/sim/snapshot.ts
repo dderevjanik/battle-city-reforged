@@ -43,16 +43,11 @@ import {
   rotationToDir,
 } from './GameState';
 
-function ticksLeft(timer: { getTicksLeft?: () => number | null } | undefined): number {
-  if (!timer || typeof timer.getTicksLeft !== 'function') return 0;
-  return timer.getTicksLeft() ?? 0;
-}
-
 function snapTank(node: Tank): TankState {
-  // Tank stores most of its mutable state via tagged subsystems (weapon,
-  // shield, timers). We read through public fields where available and fall
-  // back to `any` for protected timers — Phase 2.4 will replace these reads
-  // with direct GameState lookups so the cast disappears.
+  // The Tank class now owns its effect state as plain serializable structs
+  // (sim/tankEffects.ts). We read through `any` only because those fields
+  // are `protected`; Phase 2.4 endgame will move them to GameState entirely
+  // and the cast will go away.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const t = node as any;
   return {
@@ -66,10 +61,10 @@ function snapTank(node: Tank): TankState {
     type: node.type ? String(node.type) : node.constructor.name,
     moving: t.state === 'Moving' || t.state?.toString?.() === 'Moving',
     hasShield: node.shield !== null && node.shield !== undefined,
-    shieldTicksLeft: ticksLeft(t.shieldTimer),
+    shieldTicksLeft: t.shieldEffect?.ticksLeft ?? 0,
     isOnIce: !!node.isOnIce,
-    slideTicksLeft: ticksLeft(t.slideTimer),
-    stunTicksLeft: ticksLeft(t.stunTimer),
+    slideTicksLeft: t.slideEffect?.ticksLeft ?? 0,
+    stunTicksLeft: t.stunEffect?.stunTicksLeft ?? 0,
   };
 }
 
@@ -141,7 +136,7 @@ function snapBase(node: Base) {
     x: node.position.x,
     y: node.position.y,
     alive: !node.isRemoved,
-    defenceTicksLeft: ticksLeft(t.defenceTimer),
+    defenceTicksLeft: t.defenceTimer?.getTicksLeft?.() ?? 0,
   };
 }
 

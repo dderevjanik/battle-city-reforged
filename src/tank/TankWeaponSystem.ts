@@ -1,26 +1,32 @@
 import { Subject } from '../core/Subject';
-import { Timer } from '../core/Timer';
 import { Tag } from '../game/Tag';
 import { Bullet } from '../gameObjects/Bullet';
+import {
+  WeaponState,
+  afterFire,
+  canFire,
+  initWeapon,
+  tickWeapon,
+} from '../sim/weapon';
 
 import type { Tank } from '../gameObjects/Tank';
-import type { TankAttributes } from './TankAttributesFactory';
 
+/**
+ * Adapter over src/sim/weapon.ts. Owns the live `bullets` array (which is
+ * a tree of Phaser GameObjects) and the `fired` Subject, but delegates the
+ * fire-eligibility decision and cooldown bookkeeping to the pure rule.
+ */
 export class TankWeaponSystem {
   public bullets: Bullet[] = [];
   public fired = new Subject<null>();
-  private lastFireTimer = new Timer();
+  private state: WeaponState = initWeapon();
 
-  public updateTimer(deltaTime: number): void {
-    this.lastFireTimer.update(deltaTime);
+  public updateTimer(_deltaTime: number): void {
+    this.state = tickWeapon(this.state);
   }
 
   public fire(tank: Tank): boolean | void {
-    if (this.bullets.length >= tank.attributes.bulletMaxCount) {
-      return;
-    }
-
-    if (this.lastFireTimer.isActive()) {
+    if (!canFire(this.state, this.bullets.length, tank.attributes.bulletMaxCount)) {
       return;
     }
 
@@ -56,8 +62,7 @@ export class TankWeaponSystem {
     });
 
     this.fired.notify(null);
-
-    this.lastFireTimer.reset(tank.attributes.bulletRapidFireDelay);
+    this.state = afterFire(this.state, tank.attributes.bulletRapidFireDelay);
 
     return true;
   }

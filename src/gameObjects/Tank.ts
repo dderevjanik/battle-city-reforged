@@ -19,11 +19,47 @@ import { TankAttributes, TankAttributesFactory } from '../tank/TankAttributesFac
 import { TankBehavior } from '../tank/TankBehavior';
 import { TankSkinAnimation } from '../tank/TankSkinAnimation';
 import { TankWeaponSystem } from '../tank/TankWeaponSystem';
+import { Side, rotationToDir } from '../sim/GameState';
+import { classifyBulletHit } from '../sim/bulletHit';
+import { isOnIce as isOnIceRule, minkowskiResolve } from '../sim/tankCollision';
+import { Box } from '../sim/wallHit';
+import {
+  shouldStartIceSlide,
+  snapPositionOnRotate,
+  tankMoveDelta,
+} from '../sim/tankMotion';
+import {
+  ShieldState,
+  SlideState,
+  StunState,
+  hasShield as hasShieldState,
+  initShield,
+  initSlide,
+  initStun,
+  isSliding as isSlidingState,
+  isStunned as isStunnedState,
+  startShield,
+  startSlide,
+  startStun,
+  tickShield,
+  tickSlide,
+  tickStun,
+} from '../sim/tankEffects';
 import * as config from '../config';
 
 import { BombBlast } from './BombBlast';
 import { Bullet } from './Bullet';
 import { Shield } from './Shield';
+
+// Bridge from engine BoundingBox to the {min, max} shape the pure rules
+// in sim/ consume. Kept inline rather than in a shared util because it is
+// only needed by Tank/Bullet adapters.
+function boxOf(b: BoundingBox): Box {
+  return {
+    min: { x: b.min.x, y: b.min.y },
+    max: { x: b.max.x, y: b.max.y },
+  };
+}
 
 export enum TankState {
   Uninitialized,
@@ -75,14 +111,13 @@ export class Tank extends GameObject {
   public state = TankState.Uninitialized;
   public freezeState = new State<boolean>(false);
   public isOnIce = false;
-  protected shieldTimer = new Timer();
+  protected shieldEffect: ShieldState = initShield();
+  protected slideEffect: SlideState = initSlide();
+  protected stunEffect: StunState = initStun();
   protected animation!: Animation<TankAnimationFrame>;
   protected skinLayers: GameObject[] = [];
   public get fired(): Subject<null> { return this.weapon.fired; }
   public get bullets(): Bullet[] { return this.weapon.bullets; }
-  protected slideTimer = new Timer();
-  protected stunTimer = new Timer();
-  protected stunBlinkTimer = new Timer();
   protected spawnCollisionState = new State<SpawnCollisionState>(
     SpawnCollisionState.WaitUpdate,
   );
@@ -111,8 +146,6 @@ export class Tank extends GameObject {
       this.type.spriteKind = this.attributes.sprite;
     }
 
-    this.shieldTimer.done.addListener(this.handleShieldTimer);
-    this.stunTimer.done.addListener(this.handleStunTimer);
   }
 
   protected setup(context: GameContext): void {
@@ -164,7 +197,16 @@ export class Tank extends GameObject {
       this.playerCollisionState.set(PlayerCollisionState.WaitCollide);
     }
 
-    this.shieldTimer.update(deltaTime);
+    // Shield: pure tick; on expiry edge, remove the Shield GameObject. The
+    // legacy code did this in a Timer.done callback (handleShieldTimer).
+    {
+      const r = tickShield(this.shieldEffect);
+      this.shieldEffect = r.state;
+      if (r.ended && this.shield !== null) {
+        this.shield.removeSelf();
+        this.shield = null;
+      }
+    }
 
     const shouldIdle =
       this.freezeState.hasChangedTo(true) ||
@@ -182,33 +224,24 @@ export class Tank extends GameObject {
       return;
     }
 
-    if (this.isSliding()) {
-      if (this.isOnIce) {
-        this.slideTimer.update(deltaTime);
-        if (this.slideTimer.isDone()) {
-          // If slide timer is done, then tank becomes idle wherever it stopped
-          // and player has control of it again.
-          this.idle(false);
-        } else {
-          // If on ice and still sliding - move tank in whatever direction it
-          // is facing
-          this.move(deltaTime);
-        }
-      } else {
-        // If tank is sliding, but appears not to be on ice any more, then
-        // stop sliding.
-        this.slideTimer.stop();
-        this.idle(false);
-      }
+    // Slide: pure rule decides per-tick action. The two "end" cases
+    // (timer expired vs. stepped off ice) collapse into the same edge
+    // because the legacy code reacted identically (idle with no
+    // ice-recheck).
+    {
+      const r = tickSlide(this.slideEffect, this.isOnIce);
+      this.slideEffect = r.state;
+      if (r.action === 'continue') this.move(deltaTime);
+      else if (r.action === 'end') this.idle(false);
     }
 
-    if (this.isStunned()) {
-      if (this.stunBlinkTimer.isDone()) {
-        this.stunBlinkTimer.reset(STUN_BLINK_DELAY);
-        this.setVisible(!this.getVisible());
-      }
-      this.stunBlinkTimer.update(deltaTime);
-      this.stunTimer.update(deltaTime);
+    // Stun: pure rule manages stun + blink countdowns and visibility
+    // toggling. On the expiry edge it forces visible=true (legacy
+    // handleStunTimer behavior).
+    if (isStunnedState(this.stunEffect)) {
+      const r = tickStun(this.stunEffect, STUN_BLINK_DELAY);
+      this.stunEffect = r.state;
+      if (r.visibilityChanged) this.setVisible(this.stunEffect.visible);
     }
 
     // Behavior code is responsible for blocking movement for a tank when it
@@ -261,7 +294,13 @@ export class Tank extends GameObject {
       this.state = TankState.Moving;
     }
 
-    this.translateY(this.attributes.moveSpeed * deltaTime);
+    const { dx, dy } = tankMoveDelta(
+      rotationToDir(this.rotation),
+      this.attributes.moveSpeed,
+      deltaTime,
+    );
+    this.position.x += dx;
+    this.position.y += dy;
     this.updateMatrix(true);
   }
 
@@ -270,34 +309,34 @@ export class Tank extends GameObject {
       this.state = TankState.Idle;
     }
 
-    // Whenever player lets go of his input controls, we check if tank is on ice
-    // and if it should slide.
+    // "Player releases controls while on ice" → start a brief slide.
     if (
-      checkIce &&
-      this.tags.includes(Tag.Player) &&
-      this.isOnIce &&
-      !this.isSliding()
+      shouldStartIceSlide(
+        checkIce,
+        this.tags.includes(Tag.Player),
+        this.isOnIce,
+        this.isSliding(),
+      )
     ) {
       this.slided.notify(null);
-      this.slideTimer.reset(config.ICE_SLIDE_DURATION);
+      this.slideEffect = startSlide(config.ICE_SLIDE_DURATION);
     }
   }
 
   public rotate(rotation: Rotation): this {
-    // When tank is rotating align it to grid. It is needed to:
-    // - simplify user navigation when moving into narrow passages; without it
-    //   user will be stuck on corners
-
-    if (rotation !== this.rotation) {
-      if (rotation === Rotation.Up || rotation === Rotation.Down) {
-        this.position.snapX(SNAP_SIZE);
-      } else if (rotation === Rotation.Left || rotation === Rotation.Right) {
-        this.position.snapY(SNAP_SIZE);
-      }
-    }
+    // Magnetic-doorway snap: when facing changes, align the perpendicular
+    // axis to the nearest tile so players don't get hung up on corners.
+    const snapped = snapPositionOnRotate(
+      this.position.x,
+      this.position.y,
+      rotationToDir(this.rotation),
+      rotationToDir(rotation),
+      SNAP_SIZE,
+    );
+    this.position.x = snapped.x;
+    this.position.y = snapped.y;
 
     super.rotate(rotation);
-
     return this;
   }
 
@@ -316,7 +355,6 @@ export class Tank extends GameObject {
   public activateShield(duration: number): void {
     if (this.shield !== null) {
       this.shield.removeSelf();
-      this.shieldTimer.stop();
       this.shield = null;
     }
 
@@ -326,7 +364,7 @@ export class Tank extends GameObject {
 
     this.add(this.shield);
 
-    this.shieldTimer.reset(duration);
+    this.shieldEffect = startShield(duration);
   }
 
   public isAlive(): boolean {
@@ -344,50 +382,23 @@ export class Tank extends GameObject {
   }
 
   public isSliding(): boolean {
-    return this.slideTimer.isActive();
+    return isSlidingState(this.slideEffect);
   }
 
   public isStunned(): boolean {
-    return this.stunTimer.isActive();
+    return isStunnedState(this.stunEffect);
   }
-
-  protected handleStunTimer = (): void => {
-    this.stunBlinkTimer.stop();
-    this.setVisible(true);
-  };
-
-  protected handleShieldTimer = (): void => {
-    this.shield!.removeSelf();
-    this.shield = null;
-  };
 
   protected collideIce(collision: Collision): void {
     // Only player can slip on ice
-    if (this.tags.includes(Tag.Enemy)) {
-      return;
-    }
+    if (this.tags.includes(Tag.Enemy)) return;
 
-    const iceTileContacts = collision.contacts.filter((contact) => {
-      return contact.collider.object.tags.includes(Tag.Ice);
-    });
+    const iceBoxes = collision.contacts
+      .filter((c) => c.collider.object.tags.includes(Tag.Ice))
+      .map((c) => boxOf(c.box));
+    if (iceBoxes.length === 0) return;
 
-    if (iceTileContacts.length === 0) {
-      return;
-    }
-
-    // Check if center of tank is on ice - if so then apply the effect.
-
-    const selfBox = this.getWorldBoundingBox();
-    const selfCenter = selfBox.getCenter();
-
-    const sumBox = new BoundingBox();
-    for (const contact of iceTileContacts) {
-      sumBox.unionWith(contact.box);
-    }
-
-    const isOnIce = sumBox.containsPoint(selfCenter);
-
-    this.isOnIce = isOnIce;
+    this.isOnIce = isOnIceRule(boxOf(this.getWorldBoundingBox()), iceBoxes);
   }
 
   // Try to solve the issue when some alive tank is
@@ -450,88 +461,32 @@ export class Tank extends GameObject {
   }
 
   protected resolveMinkowski(otherBox: BoundingBox, shouldSnap = false): void {
-    const selfCurrentBox = this.collider.getCurrentBox();
-    const selfPrevBox = this.collider.getPrevBox();
-    const selfPrevCenter = selfPrevBox.getCenter();
-
-    // Calculate Minksowski sum of collidable boxes.
-    const minkowskiBox = otherBox.clone().minkowskiSum(selfCurrentBox);
-
-    // Resulting box has diagonals. Next we are going to reposition those
-    // diagonals to the start of coordinate system. By computing cross product
-    // between those diagonals and a center of previous bounding box of
-    // collided object we will be able to identify which side of bounding box
-    // is collided. Thanks to this we will know what side to resolve collision
-    // with without relying on direction or rotation, which might not provide
-    // the correct result in different situations
-    const minkowskiRect = minkowskiBox.toRect();
-    const minkowskiCenter = minkowskiBox.getCenter();
-
-    // Move previous center position according to how diagonals are moved.
-    // It is important to use previous position, because current position
-    // might intersect from the other side and give the opposite info.
-    // We want to know from which direction collision came from.
-    const localPrev = new Vector(
-      selfPrevCenter.x - minkowskiCenter.x,
-      selfPrevCenter.y - minkowskiCenter.y,
+    // Pure rule decides side + raw displacement (legacy subX/subY signs).
+    const r = minkowskiResolve(
+      boxOf(this.collider.getCurrentBox()),
+      boxOf(this.collider.getPrevBox()),
+      boxOf(otherBox),
     );
 
-    // We will check on which side of diagonals the center is
+    if (r.side === 'none') {
+      // Degenerate (centers coincide); legacy code took no branch either.
+      this.updateMatrix(true);
+      this.collider.update();
+      return;
+    }
 
-    // Bottom-left to bottom-right diagonal
-    //    |  /
-    //    | /
-    // ___|/_____
-    //    |(0,0)
-    //    |
-    const blTrLocalDiag = new Vector(
-      minkowskiRect.width / 2,
-      minkowskiRect.height / 2,
-    );
+    this.position.x -= r.dx;
+    this.position.y -= r.dy;
 
-    // Top-left to bottom-right diagonal
-    //    |
-    // ___|(0,0)___
-    //    |\
-    //    | \
-    //    |  \
-    const tlBrLocalDiag = new Vector(
-      minkowskiRect.width / 2,
-      -minkowskiRect.height / 2,
-    );
-
-    const blTrCrossProduct = localPrev.cross(blTrLocalDiag);
-    const tlBrCrossProduct = localPrev.cross(tlBrLocalDiag);
-
-    const isTop = blTrCrossProduct < 0 && tlBrCrossProduct < 0;
-    const isBottom = blTrCrossProduct > 0 && tlBrCrossProduct > 0;
-    const isLeft = blTrCrossProduct > 0 && tlBrCrossProduct < 0;
-    const isRight = blTrCrossProduct < 0 && tlBrCrossProduct > 0;
-
-    if (isTop) {
-      this.position.subY(selfCurrentBox.min.y - otherBox.max.y);
-      if (shouldSnap) {
+    if (shouldSnap) {
+      if (r.side === 'top' || r.side === 'bottom') {
         this.position.snapY(SNAP_SIZE);
-      }
-    } else if (isBottom) {
-      this.position.subY(selfCurrentBox.max.y - otherBox.min.y);
-      if (shouldSnap) {
-        this.position.snapY(SNAP_SIZE);
-      }
-    } else if (isLeft) {
-      this.position.subX(selfCurrentBox.min.x - otherBox.max.x);
-      if (shouldSnap) {
-        this.position.snapX(SNAP_SIZE);
-      }
-    } else if (isRight) {
-      this.position.subX(selfCurrentBox.max.x - otherBox.min.x);
-      if (shouldSnap) {
+      } else {
         this.position.snapX(SNAP_SIZE);
       }
     }
 
     this.updateMatrix(true);
-
     this.collider.update();
   }
 
@@ -816,47 +771,49 @@ export class Tank extends GameObject {
 
     bulletContacts.forEach((contact) => {
       const bullet = contact.collider.object as Bullet;
+      const tankSide = this.tags.includes(Tag.Enemy) ? Side.Enemy : Side.Player;
+      const bulletSide = bullet.tags.includes(Tag.Enemy) ? Side.Enemy : Side.Player;
 
-      // Prevent self-destruction
-      if (this.weapon.hasBullet(bullet)) {
-        return;
-      }
+      const verdict = classifyBulletHit({
+        isSelfBullet: this.weapon.hasBullet(bullet),
+        hasShield: this.shield !== null,
+        bulletSide,
+        tankSide,
+        friendlyFireEnabled: this.context.session.isFriendlyFireEnabled(),
+        alreadyStunned: this.isStunned(),
+      });
 
-      // If tank has shield - swallow the bullet
-      if (this.shield !== null) {
-        bullet.nullify();
-        return;
-      }
-
-      // Enemy bullets don't affect enemy tanks
-      if (bullet.tags.includes(Tag.Enemy) && this.tags.includes(Tag.Enemy)) {
-        return;
-      }
-
-      bullet.explode();
-
-      // When friendly-fire - stun the tank which was hit so he can't move
-      // but can still fire
-      if (bullet.tags.includes(Tag.Player) && this.tags.includes(Tag.Player)) {
-        // If friendly fire is disabled - swallow the bullet
-        if (!this.context.session.isFriendlyFireEnabled()) {
+      switch (verdict) {
+        case 'self-bullet':
+        case 'enemy-vs-enemy':
+          return;
+        case 'shield-absorbs':
           bullet.nullify();
           return;
-        }
-
-        // If already stunned - ignore
-        if (this.isStunned()) {
+        case 'friendly-fire-disabled':
+          // Legacy parity: visible explosion AND silent nullify. Both are
+          // cleanups; nullify after explode is a no-op on tree but does
+          // re-fire the `died` Subject. Preserved.
+          bullet.explode();
+          bullet.nullify();
           return;
-        }
-
-        this.stunTimer.reset(config.FRIENDLY_FIRE_STUN_DURATION);
-        this.stunBlinkTimer.reset(STUN_BLINK_DELAY);
-        this.setVisible(false);
-        this.idle();
-        return;
+        case 'friendly-fire-already-stunned':
+          bullet.explode();
+          return;
+        case 'friendly-fire-stun':
+          bullet.explode();
+          this.stunEffect = startStun(
+            config.FRIENDLY_FIRE_STUN_DURATION,
+            STUN_BLINK_DELAY,
+          );
+          this.setVisible(this.stunEffect.visible);
+          this.idle();
+          return;
+        case 'damage':
+          bullet.explode();
+          this.receiveHit(bullet.tankDamage, bullet.ownerPartyIndex);
+          return;
       }
-
-      this.receiveHit(bullet.tankDamage, bullet.ownerPartyIndex);
     });
   }
 

@@ -1,143 +1,87 @@
-import { Logger } from '../../core/Logger';
-import { Timer } from '../../core/Timer';
+import { getGameRandom } from '../../core/Random';
 import { Vector } from '../../core/Vector';
-import { RandomUtils } from '../../core/utils';
 import { Rotation } from '../../game/Rotation';
 import { Tank } from '../../gameObjects/Tank';
+import { Dir, rotationToDir } from '../../sim/GameState';
+import {
+  AttackBaseState,
+  Point,
+  attackBasePhaseDecide,
+  attackBasePhaseFire,
+  attackBasePhaseStuck,
+  initAttackBase,
+  pickNearestBase,
+} from '../../sim/behaviors/attackBase';
 import * as config from '../../config';
 
 import { TankBehavior } from '../TankBehavior';
 
-enum State {
-  Moving,
-  Thinking,
-  Firing,
-}
-
-const THINK_DURATION = 0.3;
-const FIRE_MIN_DELAY = 0;
-const FIRE_MAX_DELAY = 1.5;
-const STUCK_FIRE_CHANCE = 30;
-const REDIRECT_INTERVAL = 0.4;
-
-const ROTATIONS = [Rotation.Up, Rotation.Down, Rotation.Left, Rotation.Right];
+const DIR_TO_ROTATION: readonly Rotation[] = [
+  Rotation.Up,
+  Rotation.Right,
+  Rotation.Down,
+  Rotation.Left,
+];
 
 // Always moves toward the player's base (nearest one if multiple).
 export class AttackBaseTankBehavior extends TankBehavior {
-  private basePositions: Vector[];
-  private state: State = State.Moving;
-  private lastPosition = new Vector(-1, -1);
-  private thinkTimer = new Timer();
-  private fireTimer = new Timer();
-  private redirectTimer = new Timer();
-  private log = new Logger(AttackBaseTankBehavior.name, Logger.Level.Info);
+  private bases: Point[];
+  private state: AttackBaseState = initAttackBase();
 
   constructor(basePositions: Vector[] = []) {
     super();
-    this.basePositions = basePositions;
+    this.bases =
+      basePositions.length > 0
+        ? basePositions.map((b) => ({ x: b.x, y: b.y }))
+        : [{ x: config.BASE_DEFAULT_POSITION.x, y: config.BASE_DEFAULT_POSITION.y }];
   }
 
   public update(tank: Tank, deltaTime: number): void {
-    if (this.fireTimer.isDone()) {
-      const hasFired = tank.fire();
-      if (hasFired && this.state === State.Firing) {
-        this.state = State.Moving;
-      }
-      this.attemptFire();
-    } else {
-      this.fireTimer.update(deltaTime);
-    }
+    const rand = getGameRandom();
 
-    if (this.state === State.Firing) {
-      return;
-    }
+    const fire = attackBasePhaseFire(this.state, rand);
+    this.state = fire.state;
+    const hadFired = fire.tryFire ? tank.fire() === true : false;
 
-    if (this.state === State.Thinking) {
-      if (this.thinkTimer.isDone()) {
-        if (this.shouldFireWhenStuck()) {
-          this.state = State.Firing;
-          return;
-        }
-        this.state = State.Moving;
-        tank.rotate(this.getBestRotation(tank, ROTATIONS.filter((r) => r !== tank.rotation)));
-        return;
-      }
-      this.thinkTimer.update(deltaTime);
-      return;
+    // Nearest base may change as the tank moves; recompute each phase.
+    const target = pickNearestBase(this.bases, tank.position.x, tank.position.y);
+
+    const decide = attackBasePhaseDecide(
+      this.state,
+      {
+        x: tank.position.x,
+        y: tank.position.y,
+        rotation: rotationToDir(tank.rotation),
+        targetX: target?.x ?? null,
+        targetY: target?.y ?? null,
+      },
+      hadFired,
+      rand,
+    );
+    this.state = decide.state;
+
+    if (decide.rotate !== null) {
+      tank.rotate(DIR_TO_ROTATION[decide.rotate as Dir]);
     }
+    if (!decide.willMove) return;
 
     tank.move(deltaTime);
 
-    const tankPosition = tank.position.clone().round();
-    const isStuck =
-      this.lastPosition.equals(tankPosition) && this.state === State.Moving;
-
-    if (isStuck) {
-      this.log.debug('AttackBase: stuck, thinking...');
-      this.state = State.Thinking;
-      this.thinkTimer.reset(THINK_DURATION);
-      return;
-    }
-
-    if (this.redirectTimer.isDone()) {
-      tank.rotate(this.getBestRotation(tank, ROTATIONS));
-      this.redirectTimer.reset(REDIRECT_INTERVAL);
-    } else {
-      this.redirectTimer.update(deltaTime);
-    }
-
-    this.lastPosition = tankPosition;
-  }
-
-  private attemptFire(): void {
-    const min = FIRE_MIN_DELAY * 1000;
-    const max = FIRE_MAX_DELAY * 1000;
-    this.fireTimer.reset(RandomUtils.number(min, max) / 1000);
-  }
-
-  private shouldFireWhenStuck(): boolean {
-    return RandomUtils.probability(STUCK_FIRE_CHANCE);
-  }
-
-  private getNearestBase(tankPosition: Vector): Vector {
-    const positions = this.basePositions.length > 0
-      ? this.basePositions
-      : [new Vector(config.BASE_DEFAULT_POSITION.x, config.BASE_DEFAULT_POSITION.y)];
-
-    let nearest = positions[0];
-    let minDist = tankPosition.distanceTo(nearest);
-    for (let i = 1; i < positions.length; i++) {
-      const dist = tankPosition.distanceTo(positions[i]);
-      if (dist < minDist) {
-        minDist = dist;
-        nearest = positions[i];
-      }
-    }
-    return nearest;
-  }
-
-  private getBestRotation(tank: Tank, candidates: Rotation[]): Rotation {
-    const base = this.getNearestBase(tank.position);
-    const diff = base.clone().sub(tank.position);
-    let best = candidates[0];
-    let bestScore = -Infinity;
-
-    for (const rotation of candidates) {
-      const score = this.scoreRotation(rotation, diff);
-      if (score > bestScore) {
-        bestScore = score;
-        best = rotation;
-      }
-    }
-    return best;
-  }
-
-  private scoreRotation(rotation: Rotation, diff: Vector): number {
-    switch (rotation) {
-      case Rotation.Right: return diff.x;
-      case Rotation.Left:  return -diff.x;
-      case Rotation.Down:  return diff.y;
-      case Rotation.Up:    return -diff.y;
+    const postTarget = pickNearestBase(this.bases, tank.position.x, tank.position.y);
+    const stuck = attackBasePhaseStuck(
+      this.state,
+      {
+        x: tank.position.x,
+        y: tank.position.y,
+        rotation: rotationToDir(tank.rotation),
+        targetX: postTarget?.x ?? null,
+        targetY: postTarget?.y ?? null,
+      },
+      rand,
+    );
+    this.state = stuck.state;
+    if (stuck.rotate !== null) {
+      tank.rotate(DIR_TO_ROTATION[stuck.rotate as Dir]);
     }
   }
 }

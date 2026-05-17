@@ -1,207 +1,89 @@
-import { Logger } from '../../core/Logger';
-import { Timer } from '../../core/Timer';
-import { Vector } from '../../core/Vector';
-import { RandomUtils } from '../../core/utils';
+import { getGameRandom } from '../../core/Random';
 import { Rotation } from '../../game/Rotation';
 import { Tank } from '../../gameObjects/Tank';
+import { Dir, rotationToDir } from '../../sim/GameState';
+import {
+  AiState,
+  aiPhaseDecide,
+  aiPhaseFire,
+  aiPhaseStuck,
+  initAi,
+} from '../../sim/behaviors/ai';
 import * as config from '../../config';
 
 import { TankBehavior } from '../TankBehavior';
 
-enum State {
-  Moving,
-  Thinking,
-  UnstuckThinking,
-  Firing,
-}
+const DIR_TO_ROTATION: readonly Rotation[] = [
+  Rotation.Up,
+  Rotation.Right,
+  Rotation.Down,
+  Rotation.Left,
+];
 
-const THINK_DURATION = 0.3;
-const FIRE_MIN_DELAY = 0;
-const FIRE_MAX_DELAY = 1.5;
-const STUCK_FIRE_CHANCE = 30;
-const UNSTUCK_THINK_CHANCE = 5;
-const ROTATE_TOWARDS_BASE_CHANCE = 30;
-const ROTATE_UP_CHANCE = 10;
-
-const ROTATIONS = [Rotation.Up, Rotation.Down, Rotation.Left, Rotation.Right];
-
+/**
+ * Thin adapter over the pure AI behavior in src/sim/behaviors/ai.ts.
+ *
+ * Per-tick orchestration:
+ *   1. aiPhaseFire:    decide tryFire; advance the fire timer in state.
+ *   2. tank.fire()     (only if tryFire) — adapter side effect.
+ *   3. aiPhaseDecide:  given fire result, decide rotate / move.
+ *   4. tank.rotate() and tank.move() — adapter side effects.
+ *   5. aiPhaseStuck:   given post-move position, detect being stuck.
+ *
+ * Mode/timers live inside `this.state` rather than on Timer instances so that
+ * everything the AI needs to network-replicate is one serializable struct.
+ */
 export class AiTankBehavior extends TankBehavior {
-  private state: State = State.Moving;
-  private lastPosition = new Vector(-1, -1);
-  private thinkTimer = new Timer();
-  private fireTimer = new Timer();
-  private log = new Logger(AiTankBehavior.name, Logger.Level.Info);
+  private state: AiState = initAi();
 
   public update(tank: Tank, deltaTime: number): void {
-    if (this.fireTimer.isDone()) {
-      const hasFired = tank.fire();
-      if (hasFired) {
-        this.log.debug('Fire!');
-
-        // If tank decided to fire during thinking phase, we wait for it
-        // here and then reset him
-        if (this.state === State.Firing) {
-          this.state = State.Moving;
-        }
-      } else {
-        this.log.debug('Could not fire :(');
-      }
-
-      // Fire next bullet in some random interval
-      this.attemptFire();
-    } else {
-      this.fireTimer.update(deltaTime);
-    }
-
-    // Simply waiting to fire after tank decided to fire
-    if (this.state === State.Firing) {
-      return;
-    }
-
-    if (this.state === State.Thinking || this.state === State.UnstuckThinking) {
-      if (this.thinkTimer.isDone()) {
-        // When tank is done thinking, he can either fire in his current
-        // direction or rotate and move to another direction. First, find out
-        // if he wants to fire.
-        if (this.state === State.Thinking && this.shouldFireWhenStuck()) {
-          this.log.debug('I am done thinking. I want to fire!');
-          this.state = State.Firing;
-          return;
-        }
-
-        // Otherwise, we pick some new random direction
-        this.state = State.Moving;
-        const nextRotation = this.getNextRotation(tank);
-        this.log.debug('I am done thinking. Rotating %s', nextRotation);
-        tank.rotate(nextRotation);
-        return;
-      }
-      this.thinkTimer.update(deltaTime);
-      return;
-    }
-
-    tank.move(deltaTime);
-
-    // Position might come as floats, but we need precise ints in here to
-    // check if positions is exactly the same
-    const tankPosition = tank.position.clone().round();
-
-    // If tank can no longer move it his direction, he has to decide what to do
-    // next.
-    const isStuck =
-      this.lastPosition.equals(tankPosition) && this.state === State.Moving;
-
-    if (isStuck) {
-      this.log.debug('I am stuck. Thinking...');
-      this.state = State.Thinking;
-      this.thinkTimer.reset(THINK_DURATION);
-      return;
-    }
-
-    // If tank is not stuck and can still move in his direction, there is a
-    // chance that he will do something instead of just moving forward
-    if (this.shouldThinkWhenUnstuck(tank)) {
-      this.log.debug('I changed my mind all of a sudden. Thinking...');
-      this.state = State.UnstuckThinking;
-      this.thinkTimer.reset(THINK_DURATION);
-      return;
-    }
-
-    this.lastPosition = tankPosition;
-  }
-
-  private attemptFire(): void {
-    // Convert seconds to milliseconds to use random integer func
-    const min = FIRE_MIN_DELAY * 1000;
-    const max = FIRE_MAX_DELAY * 1000;
-
-    const delay = RandomUtils.number(min, max) / 1000;
-
-    this.log.debug('I will try to fire in %f seconds', delay);
-    this.fireTimer.reset(delay);
-  }
-
-  private shouldThinkWhenUnstuck(tank: Tank): boolean {
-    const num = RandomUtils.number(1, 100);
-    const hasChance = num <= UNSTUCK_THINK_CHANCE;
-
-    const { rotation, position } = tank;
-
-    const isTankVertical =
-      rotation === Rotation.Up || rotation === Rotation.Down;
-    const isTankHorizontal =
-      rotation === Rotation.Left || rotation === Rotation.Right;
-
+    const rand = getGameRandom();
+    const baseX = config.BASE_DEFAULT_POSITION.x;
+    const baseY = config.BASE_DEFAULT_POSITION.y;
     const tileSize = config.TILE_SIZE_MEDIUM;
 
-    const isTankOnTileX = isTankHorizontal && position.x % tileSize === 0;
-    const isTankOnTileY = isTankVertical && position.y % tileSize === 0;
+    // Phase 1: fire timing.
+    const fire = aiPhaseFire(this.state, rand);
+    this.state = fire.state;
 
-    const shouldThink = hasChance && (isTankOnTileX || isTankOnTileY);
-
-    return shouldThink;
-  }
-
-  private shouldFireWhenStuck(): boolean {
-    const shouldFire = RandomUtils.probability(STUCK_FIRE_CHANCE);
-
-    return shouldFire;
-  }
-
-  private getNextRotation(tank: Tank): Rotation {
-    const shouldRotateTowardsBase = RandomUtils.probability(
-      ROTATE_TOWARDS_BASE_CHANCE,
-    );
-
-    if (shouldRotateTowardsBase) {
-      this.log.debug('I want to go towards base');
-      return this.getRotationTowardsBase(tank);
+    let hadFired = false;
+    if (fire.tryFire) {
+      hadFired = tank.fire() === true;
     }
 
-    // Enemy should rotate up less, because base it at the bottom
-    const shouldRotateUp = RandomUtils.probability(ROTATE_UP_CHANCE);
-    if (shouldRotateUp) {
-      this.log.debug('I want to go up');
-      return Rotation.Up;
+    // Phase 2: rotate / move decision.
+    const preObs = {
+      x: tank.position.x,
+      y: tank.position.y,
+      rotation: rotationToDir(tank.rotation),
+      baseX,
+      baseY,
+      tileSize,
+    };
+    const decide = aiPhaseDecide(this.state, preObs, hadFired, rand);
+    this.state = decide.state;
+
+    if (decide.rotate !== null) {
+      tank.rotate(DIR_TO_ROTATION[decide.rotate as Dir]);
     }
 
-    return this.getRandomRotationExcept(Rotation.Up);
-  }
+    if (decide.willMove) {
+      tank.move(deltaTime);
 
-  private getRandomRotation(): Rotation {
-    return RandomUtils.arrayElement(ROTATIONS);
-  }
-
-  private getRandomRotationExcept(prevRotation: Rotation): Rotation {
-    const rotations = ROTATIONS.slice();
-
-    // Remove prev rotation from possible outcomes
-    const prevIndex = rotations.indexOf(prevRotation);
-    rotations.splice(prevIndex, 1);
-
-    return RandomUtils.arrayElement(rotations);
-  }
-
-  private getRotationTowardsBase(tank: Tank): Rotation {
-    const basePosition = new Vector(
-      config.BASE_DEFAULT_POSITION.x,
-      config.BASE_DEFAULT_POSITION.y,
-    );
-    const tankPosition = tank.position;
-
-    const direction = basePosition.clone().sub(tankPosition).normalize();
-
-    const maxValue = Math.max(direction.x, direction.y);
-
-    if (Math.abs(direction.x) === Math.abs(maxValue)) {
-      if (direction.x > 0) {
-        return Rotation.Right;
-      }
-      if (direction.x < 0) {
-        return Rotation.Left;
-      }
+      // Phase 3: stuck detection — only meaningful when we actually moved.
+      const stuck = aiPhaseStuck(
+        this.state,
+        {
+          x: tank.position.x,
+          y: tank.position.y,
+          rotation: rotationToDir(tank.rotation),
+          baseX,
+          baseY,
+          tileSize,
+        },
+        rand,
+      );
+      this.state = stuck.state;
     }
-
-    return Rotation.Down;
   }
 }

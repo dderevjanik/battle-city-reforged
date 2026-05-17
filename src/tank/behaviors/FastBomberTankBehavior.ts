@@ -1,17 +1,17 @@
-import { Timer } from '../../core/Timer';
-import { RandomUtils } from '../../core/utils';
+import { getGameRandom } from '../../core/Random';
 import { Bomb } from '../../gameObjects/Bomb';
 import { Tank } from '../../gameObjects/Tank';
 import { GameContext } from '../../game/GameUpdateArgs';
+import {
+  BomberState,
+  initBomber,
+  stepBomber,
+} from '../../sim/behaviors/bomber';
 
 import { TankBehavior } from '../TankBehavior';
 
-const BOMB_DROP_MIN_DELAY = 3;
-const BOMB_DROP_MAX_DELAY = 8;
-
 export class FastBomberTankBehavior extends TankBehavior {
-  private bombTimer = new Timer(RandomUtils.number(BOMB_DROP_MIN_DELAY, BOMB_DROP_MAX_DELAY));
-  private hasDroppedBomb = false;
+  private bomber: BomberState = initBomber(getGameRandom());
 
   constructor(private readonly baseBehavior: TankBehavior) {
     super();
@@ -24,21 +24,19 @@ export class FastBomberTankBehavior extends TankBehavior {
   public update(tank: Tank, deltaTime: number): void {
     this.baseBehavior.update(tank, deltaTime);
 
-    this.bombTimer.update(deltaTime);
-    if (this.bombTimer.isDone()) {
-      this.dropBomb(tank);
-      this.bombTimer.reset(RandomUtils.number(BOMB_DROP_MIN_DELAY, BOMB_DROP_MAX_DELAY));
-    }
+    const { state, dropBomb } = stepBomber(this.bomber, getGameRandom());
+    this.bomber = state;
+    if (dropBomb) this.dropBomb(tank);
   }
 
   public dropBombOnDeath(tank: Tank): void {
-    if (!this.hasDroppedBomb) {
+    if (!this.bomber.hasDroppedBomb) {
       this.dropBomb(tank);
     }
   }
 
   private dropBomb(tank: Tank): void {
-    this.hasDroppedBomb = true;
+    this.bomber = { ...this.bomber, hasDroppedBomb: true };
     const bomb = new Bomb(tank.partyIndex);
     tank.parent!.add(bomb);
     bomb.updateMatrix();

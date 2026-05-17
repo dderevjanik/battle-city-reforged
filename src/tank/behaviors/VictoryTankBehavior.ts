@@ -1,77 +1,33 @@
 import { Subject } from '../../core/Subject';
-import { Timer } from '../../core/Timer';
 import { Tank } from '../../gameObjects/Tank';
+import {
+  VictoryState,
+  initVictory,
+  stepVictory,
+  victoryAfterFire,
+} from '../../sim/behaviors/victory';
 
 import { TankBehavior } from '../TankBehavior';
-
-const MOVE_DURATION = 3;
-const PREFIRE_DELAY = 1;
-const FIRE_LIMIT = 1;
-
-enum State {
-  Moving,
-  Prefire,
-  Firing,
-  Done,
-}
 
 export class VictoryTankBehavior extends TankBehavior {
   public stopped = new Subject();
   public fired = new Subject();
 
-  private moveTimer = new Timer(MOVE_DURATION);
-  private prefireTimer = new Timer(PREFIRE_DELAY);
-  private fireCounter = 0;
-  private state = State.Moving;
+  private state: VictoryState = initVictory();
 
   public update(tank: Tank, deltaTime: number): void {
-    if (this.state === State.Done) {
-      return;
-    }
+    const decision = stepVictory(this.state);
+    this.state = decision.state;
 
-    if (this.state === State.Moving) {
-      if (this.moveTimer.isDone()) {
-        this.state = State.Prefire;
-        this.stopped.notify(null);
-        tank.idle();
-        return;
-      }
+    if (decision.notifyStopped) this.stopped.notify(null);
+    if (decision.willIdle) tank.idle();
+    if (decision.willMove) tank.move(deltaTime);
 
-      tank.move(deltaTime);
+    if (!decision.tryFire) return;
 
-      this.moveTimer.update(deltaTime);
-      return;
-    }
-
-    if (this.state === State.Prefire) {
-      if (this.prefireTimer.isDone()) {
-        this.state = State.Firing;
-        return;
-      }
-
-      this.prefireTimer.update(deltaTime);
-      return;
-    }
-
-    // Move for some time
-    if (this.moveTimer.isActive()) {
-      return;
-    }
-
-    // Once done moving start firing
-    const hasFired = tank.fire();
-    if (!hasFired) {
-      return;
-    }
-
-    this.fired.notify(null);
-
-    // Fire specific number of times
-    this.fireCounter += 1;
-    if (this.fireCounter < FIRE_LIMIT) {
-      return;
-    }
-
-    this.state = State.Done;
+    const hadFired = tank.fire() === true;
+    const { state, notifyFired } = victoryAfterFire(this.state, hadFired);
+    this.state = state;
+    if (notifyFired) this.fired.notify(null);
   }
 }

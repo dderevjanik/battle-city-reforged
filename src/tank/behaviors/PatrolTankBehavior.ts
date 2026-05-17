@@ -1,39 +1,46 @@
-import { Vector } from '../../core/Vector';
 import { Rotation } from '../../game/Rotation';
 import { Tank } from '../../gameObjects/Tank';
+import { Dir, rotationToDir } from '../../sim/GameState';
+import {
+  PatrolState,
+  initPatrol,
+  stepPatrol,
+} from '../../sim/behaviors/patrol';
 
 import { TankBehavior } from '../TankBehavior';
 
+// Mapping back from the compact Dir enum to the engine's Rotation degrees.
+// Indexed by Dir enum value. Lives here, not in sim/, because the engine-side
+// Rotation enum is a presentation detail of the GameObject tree.
+const DIR_TO_ROTATION: readonly Rotation[] = [
+  Rotation.Up,
+  Rotation.Right,
+  Rotation.Down,
+  Rotation.Left,
+];
+
 export class PatrolTankBehavior extends TankBehavior {
-  private lastPosition: Vector | null = null;
+  private state: PatrolState = initPatrol();
 
   public update(tank: Tank, deltaTime: number): void {
+    // Adapter sequence preserves the original order: move first, then
+    // observe the post-move position, then ask the pure rule whether we
+    // need to reverse.
     tank.move(deltaTime);
 
-    const tankPosition = this.roundPosition(tank.position);
+    const { state: nextState, decision } = stepPatrol(this.state, {
+      x: tank.position.x,
+      y: tank.position.y,
+      rotation: rotationToDir(tank.rotation),
+    });
 
-    if (this.lastPosition !== null && this.lastPosition.equals(tankPosition)) {
-      if (tank.rotation === Rotation.Up) {
-        tank.rotate(Rotation.Down);
-      } else if (tank.rotation === Rotation.Down) {
-        tank.rotate(Rotation.Up);
-      } else if (tank.rotation === Rotation.Left) {
-        tank.rotate(Rotation.Right);
-      } else if (tank.rotation === Rotation.Right) {
-        tank.rotate(Rotation.Left);
-      }
-      tank.move(deltaTime);
-      return;
+    this.state = nextState;
+
+    if (decision.rotate !== null) {
+      tank.rotate(DIR_TO_ROTATION[decision.rotate as Dir]);
     }
-
-    this.lastPosition = tankPosition;
-  }
-
-  private roundPosition(position: Vector): Vector {
-    const roundedPosition = new Vector(
-      Math.round(position.x),
-      Math.round(position.y),
-    );
-    return roundedPosition;
+    if (decision.secondMove) {
+      tank.move(deltaTime);
+    }
   }
 }

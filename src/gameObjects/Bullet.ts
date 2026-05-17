@@ -9,6 +9,8 @@ import { GameContext } from '../game/GameUpdateArgs';
 import { Rotation } from '../game/Rotation';
 import { Tag } from '../game/Tag';
 import { TankBulletWallDamage } from '../tank/TankTypes';
+import { Side, rotationToDir } from '../sim/GameState';
+import { DIR_DELTA, resolveBulletPair } from '../sim/bullet';
 import * as config from '../config';
 
 import { SmallExplosion } from './SmallExplosion';
@@ -61,7 +63,14 @@ export class Bullet extends GameObject {
   }
 
   protected update(deltaTime: number): void {
-    this.translateY(this.speed * deltaTime);
+    // Movement is delegated to the pure stepBullet rule via its underlying
+    // displacement table. Once GameState becomes the source of truth this
+    // method goes away entirely — the bullet view will just read its
+    // position from the next snapshot.
+    const delta = DIR_DELTA[rotationToDir(this.rotation)];
+    const distance = this.speed * deltaTime;
+    this.position.x += delta.dx * distance;
+    this.position.y += delta.dy * distance;
     this.updateMatrix();
 
     this.collider.update();
@@ -96,22 +105,15 @@ export class Bullet extends GameObject {
       return contact.collider.object.tags.includes(Tag.Bullet);
     });
 
+    // Pure-rule path: build minimal sides for this bullet and each contact,
+    // ask the rule what to do, then apply side effects (nullify) here.
     bulletContacts.forEach((contact) => {
-      const bullet = contact.collider.object as Bullet;
-
-      // Enemy bullets don't discard each other, they pass thru
-      if (bullet.tags.includes(Tag.Enemy) && this.tags.includes(Tag.Enemy)) {
-        return;
-      }
-
-      // Player bullets pass thru
-      if (bullet.tags.includes(Tag.Player) && this.tags.includes(Tag.Player)) {
-        return;
-      }
-
-      // When player bullet hits enemy bullet and vice versa, they dissappear
-      this.nullify();
-      bullet.nullify();
+      const other = contact.collider.object as Bullet;
+      const selfSide = this.tags.includes(Tag.Enemy) ? Side.Enemy : Side.Player;
+      const otherSide = other.tags.includes(Tag.Enemy) ? Side.Enemy : Side.Player;
+      const outcome = resolveBulletPair({ side: selfSide }, { side: otherSide });
+      if (outcome.destroyA) this.nullify();
+      if (outcome.destroyB) other.nullify();
     });
   }
 

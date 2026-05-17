@@ -32,7 +32,6 @@ import { getGameRandom } from '../core/Random';
 
 import {
   BulletState,
-  Dir,
   ExplosionState,
   GameState,
   PowerupState,
@@ -41,30 +40,8 @@ import {
   TankState,
   TerrainTileState,
   emptyGameState,
+  rotationToDir,
 } from './GameState';
-
-// Battle City rotations are stored in the game as degrees (Rotation enum). We
-// translate to the compact Dir enum here. The mapping is fixed by config; if
-// it ever changes, this is the one place to update.
-function rotationToDir(deg: number): Dir {
-  // Normalize to [0, 360)
-  const n = ((Math.round(deg) % 360) + 360) % 360;
-  switch (n) {
-    case 0:
-      return Dir.Up;
-    case 90:
-      return Dir.Right;
-    case 180:
-      return Dir.Down;
-    case 270:
-      return Dir.Left;
-    default:
-      // Tank rotation is supposed to be axis-aligned. If we ever see an
-      // off-axis value, that's itself a determinism bug worth surfacing.
-      // Fall through to nearest cardinal so the snapshot doesn't crash.
-      return ((n / 90) | 0) as Dir;
-  }
-}
 
 function ticksLeft(timer: { getTicksLeft?: () => number | null } | undefined): number {
   if (!timer || typeof timer.getTicksLeft !== 'function') return 0;

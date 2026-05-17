@@ -150,6 +150,25 @@ export interface GameState {
   lives: number[];
 }
 
+/**
+ * Convert the engine's degree-based rotation (Rotation enum: 0/90/180/270)
+ * into the compact Dir enum used in sim state. Kept here so the rotation/Dir
+ * mapping is defined exactly once.
+ */
+export function rotationToDir(degrees: number): Dir {
+  const n = ((Math.round(degrees) % 360) + 360) % 360;
+  switch (n) {
+    case 0: return Dir.Up;
+    case 90: return Dir.Right;
+    case 180: return Dir.Down;
+    case 270: return Dir.Left;
+    default:
+      // Off-axis rotations would be a determinism bug; snap to nearest
+      // cardinal so callers don't crash, but this should never happen.
+      return ((n / 90) | 0) as Dir;
+  }
+}
+
 /** Identity-typed helper for constructing empty state in tests. */
 export function emptyGameState(): GameState {
   return {

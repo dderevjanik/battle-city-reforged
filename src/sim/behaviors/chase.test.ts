@@ -4,26 +4,26 @@ import assert from 'node:assert/strict';
 import { Random } from '../../core/Random.ts';
 import { Dir } from '../GameState.ts';
 import {
-  HunterMode,
-  hunterPhaseDecide,
-  hunterPhaseFire,
-  hunterPhaseStuck,
-  initHunter,
+  ChaseMode,
+  chasePhaseDecide,
+  chasePhaseFire,
+  chasePhaseStuck,
+  initChase,
   pickBestRotation,
   pickChaseRotation,
   scoreRotation,
-} from './hunter.ts';
+} from './chase.ts';
 
 const fixedRand = () => new Random(0xc0ffee);
 
 const obs = (over: Partial<{
-  x: number; y: number; rotation: Dir; playerX: number | null; playerY: number | null;
+  x: number; y: number; rotation: Dir; targetX: number | null; targetY: number | null;
 }> = {}) => ({
   x: 100,
   y: 100,
   rotation: Dir.Up,
-  playerX: 400 as number | null,
-  playerY: 400 as number | null,
+  targetX: 400 as number | null,
+  targetY: 400 as number | null,
   ...over,
 });
 
@@ -70,7 +70,7 @@ describe('pickChaseRotation', () => {
     const result = pickChaseRotation(
       r,
       [Dir.Up, Dir.Right, Dir.Down, Dir.Left],
-      obs({ x: 0, y: 0, playerX: 100, playerY: 0 }),
+      obs({ x: 0, y: 0, targetX: 100, targetY: 0 }),
     );
     // Right is the chase direction; RNG should NOT advance.
     assert.equal(result, Dir.Right);
@@ -83,7 +83,7 @@ describe('pickChaseRotation', () => {
     pickChaseRotation(
       r,
       [Dir.Up, Dir.Right, Dir.Down, Dir.Left],
-      obs({ playerX: null, playerY: null }),
+      obs({ targetX: null, targetY: null }),
     );
     // RNG advanced exactly once (one rand.pick call).
     assert.notEqual(r.getState(), before);
@@ -92,10 +92,10 @@ describe('pickChaseRotation', () => {
 
 // ---- Phases ---------------------------------------------------------------
 
-describe('hunterPhaseFire', () => {
+describe('chasePhaseFire', () => {
   it('requests fire when timer expired and resets to >=1 tick', () => {
     const r = fixedRand();
-    const { state, tryFire } = hunterPhaseFire(initHunter(), r);
+    const { state, tryFire } = chasePhaseFire(initChase(), r);
     assert.equal(tryFire, true);
     assert.ok(state.fireTicksLeft >= 1);
   });
@@ -103,8 +103,8 @@ describe('hunterPhaseFire', () => {
   it('decrements the timer when not yet due, no RNG consumption', () => {
     const r = fixedRand();
     const before = r.getState();
-    const { state, tryFire } = hunterPhaseFire(
-      { ...initHunter(), fireTicksLeft: 5 },
+    const { state, tryFire } = chasePhaseFire(
+      { ...initChase(), fireTicksLeft: 5 },
       r,
     );
     assert.equal(tryFire, false);
@@ -113,35 +113,35 @@ describe('hunterPhaseFire', () => {
   });
 });
 
-describe('hunterPhaseDecide', () => {
+describe('chasePhaseDecide', () => {
   it('Firing → Moving when fire succeeded; willMove=true', () => {
     const r = fixedRand();
-    const out = hunterPhaseDecide(
-      { ...initHunter(), mode: HunterMode.Firing },
+    const out = chasePhaseDecide(
+      { ...initChase(), mode: ChaseMode.Firing },
       obs(),
       true,
       r,
     );
-    assert.equal(out.state.mode, HunterMode.Moving);
+    assert.equal(out.state.mode, ChaseMode.Moving);
     assert.equal(out.willMove, true);
   });
 
   it('stays in Firing when fire failed', () => {
     const r = fixedRand();
-    const out = hunterPhaseDecide(
-      { ...initHunter(), mode: HunterMode.Firing },
+    const out = chasePhaseDecide(
+      { ...initChase(), mode: ChaseMode.Firing },
       obs(),
       false,
       r,
     );
-    assert.equal(out.state.mode, HunterMode.Firing);
+    assert.equal(out.state.mode, ChaseMode.Firing);
     assert.equal(out.willMove, false);
   });
 
   it('decrements thinkTicksLeft while Thinking', () => {
     const r = fixedRand();
-    const out = hunterPhaseDecide(
-      { ...initHunter(), mode: HunterMode.Thinking, thinkTicksLeft: 5 },
+    const out = chasePhaseDecide(
+      { ...initChase(), mode: ChaseMode.Thinking, thinkTicksLeft: 5 },
       obs(),
       false,
       r,
@@ -155,13 +155,13 @@ describe('hunterPhaseDecide', () => {
     // Try multiple seeds to find one — easier than computing analytically.
     for (let seed = 1; seed < 200; seed++) {
       const r = new Random(seed);
-      const out = hunterPhaseDecide(
-        { ...initHunter(), mode: HunterMode.Thinking, thinkTicksLeft: 0 },
-        obs({ rotation: Dir.Up, playerX: 200, playerY: 200 }),
+      const out = chasePhaseDecide(
+        { ...initChase(), mode: ChaseMode.Thinking, thinkTicksLeft: 0 },
+        obs({ rotation: Dir.Up, targetX: 200, targetY: 200 }),
         false,
         r,
       );
-      if (out.state.mode === HunterMode.Moving) {
+      if (out.state.mode === ChaseMode.Moving) {
         assert.notEqual(out.rotate, Dir.Up);
         assert.notEqual(out.rotate, null);
         return;
@@ -171,12 +171,12 @@ describe('hunterPhaseDecide', () => {
   });
 });
 
-describe('hunterPhaseStuck', () => {
+describe('chasePhaseStuck', () => {
   it('flips Moving → Thinking when post-move position unchanged', () => {
     const r = fixedRand();
-    const before = { ...initHunter(), mode: HunterMode.Moving, lastX: 100, lastY: 100 };
-    const { state, rotate } = hunterPhaseStuck(before, obs({ x: 100, y: 100 }), r);
-    assert.equal(state.mode, HunterMode.Thinking);
+    const before = { ...initChase(), mode: ChaseMode.Moving, lastX: 100, lastY: 100 };
+    const { state, rotate } = chasePhaseStuck(before, obs({ x: 100, y: 100 }), r);
+    assert.equal(state.mode, ChaseMode.Thinking);
     assert.equal(rotate, null);
     assert.ok(state.thinkTicksLeft > 0);
   });
@@ -184,14 +184,14 @@ describe('hunterPhaseStuck', () => {
   it('fires periodic redirect when redirect timer expires', () => {
     const r = fixedRand();
     const before = {
-      ...initHunter(),
-      mode: HunterMode.Moving,
+      ...initChase(),
+      mode: ChaseMode.Moving,
       lastX: 0, lastY: 0,
       redirectTicksLeft: 0,
     };
-    const { state, rotate } = hunterPhaseStuck(
+    const { state, rotate } = chasePhaseStuck(
       before,
-      obs({ x: 50, y: 50, playerX: 200, playerY: 50 }),
+      obs({ x: 50, y: 50, targetX: 200, targetY: 50 }),
       r,
     );
     assert.equal(rotate, Dir.Right); // chase eastward
@@ -201,33 +201,33 @@ describe('hunterPhaseStuck', () => {
   it('decrements redirect timer when not yet due', () => {
     const r = fixedRand();
     const before = {
-      ...initHunter(),
-      mode: HunterMode.Moving,
+      ...initChase(),
+      mode: ChaseMode.Moving,
       lastX: 0, lastY: 0,
       redirectTicksLeft: 10,
     };
-    const { state, rotate } = hunterPhaseStuck(before, obs({ x: 5, y: 5 }), r);
+    const { state, rotate } = chasePhaseStuck(before, obs({ x: 5, y: 5 }), r);
     assert.equal(rotate, null);
     assert.equal(state.redirectTicksLeft, 9);
   });
 
   it('is a no-op when not in Moving mode', () => {
     const r = fixedRand();
-    const before = { ...initHunter(), mode: HunterMode.Firing };
-    const { state, rotate } = hunterPhaseStuck(before, obs(), r);
+    const before = { ...initChase(), mode: ChaseMode.Firing };
+    const { state, rotate } = chasePhaseStuck(before, obs(), r);
     assert.equal(rotate, null);
     assert.deepEqual(state, before);
   });
 });
 
-describe('Hunter multi-tick determinism', () => {
+describe('Chase multi-tick determinism', () => {
   it('two runs with the same seed produce identical state sequences', () => {
     function run(seed: number) {
       const r = new Random(seed);
-      let state = initHunter();
+      let state = initChase();
       const trace: number[] = [];
       for (let tick = 0; tick < 300; tick++) {
-        const fire = hunterPhaseFire(state, r);
+        const fire = chasePhaseFire(state, r);
         state = fire.state;
         const hadFired = fire.tryFire && tick % 4 === 0;
 
@@ -235,15 +235,15 @@ describe('Hunter multi-tick determinism', () => {
           x: tick * 2,
           y: tick,
           rotation: (tick % 4) as Dir,
-          playerX: 400,
-          playerY: 400,
+          targetX: 400,
+          targetY: 400,
         });
 
-        const decide = hunterPhaseDecide(state, observation, hadFired, r);
+        const decide = chasePhaseDecide(state, observation, hadFired, r);
         state = decide.state;
 
         if (decide.willMove) {
-          const stuck = hunterPhaseStuck(
+          const stuck = chasePhaseStuck(
             state,
             { ...observation, x: observation.x + 5, y: observation.y + 5 },
             r,

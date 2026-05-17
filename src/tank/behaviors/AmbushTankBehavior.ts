@@ -1,155 +1,106 @@
-import { Logger } from '../../core/Logger';
-import { Timer } from '../../core/Timer';
-import { Vector } from '../../core/Vector';
-import { RandomUtils } from '../../core/utils';
+import { getGameRandom } from '../../core/Random';
 import { Rotation } from '../../game/Rotation';
 import { Tag } from '../../game/Tag';
 import { Tank } from '../../gameObjects/Tank';
+import { Dir, rotationToDir } from '../../sim/GameState';
+import {
+  AmbushState,
+  ambushPhaseDecide,
+  ambushPhaseFire,
+  ambushPhaseStuck,
+  initAmbush,
+  projectAmbushTarget,
+} from '../../sim/behaviors/ambush';
 import * as config from '../../config';
 
 import { TankBehavior } from '../TankBehavior';
 
-enum State {
-  Moving,
-  Thinking,
-  Firing,
-}
+const DIR_TO_ROTATION: readonly Rotation[] = [
+  Rotation.Up,
+  Rotation.Right,
+  Rotation.Down,
+  Rotation.Left,
+];
 
-const THINK_DURATION = 0.3;
-const FIRE_MIN_DELAY = 0;
-const FIRE_MAX_DELAY = 1.5;
-const STUCK_FIRE_CHANCE = 30;
 const TILES_AHEAD = 4;
-const REDIRECT_INTERVAL = 0.4;
-
-const ROTATIONS = [Rotation.Up, Rotation.Down, Rotation.Left, Rotation.Right];
+const AMBUSH_OFFSET_PX = TILES_AHEAD * config.TILE_SIZE_LARGE;
 
 // Targets 4 tiles ahead of the player's current direction (Pinky-style from
 // Pac-Man). At every tile intersection re-evaluates the intercept point.
 export class AmbushTankBehavior extends TankBehavior {
-  private state: State = State.Moving;
-  private lastPosition = new Vector(-1, -1);
-  private thinkTimer = new Timer();
-  private fireTimer = new Timer();
-  private redirectTimer = new Timer();
-  private log = new Logger(AmbushTankBehavior.name, Logger.Level.Info);
+  private state: AmbushState = initAmbush();
 
   public update(tank: Tank, deltaTime: number): void {
-    if (this.fireTimer.isDone()) {
-      const hasFired = tank.fire();
-      if (hasFired && this.state === State.Firing) {
-        this.state = State.Moving;
-      }
-      this.attemptFire();
-    } else {
-      this.fireTimer.update(deltaTime);
-    }
+    const rand = getGameRandom();
 
-    if (this.state === State.Firing) {
-      return;
-    }
+    const fire = ambushPhaseFire(this.state, rand);
+    this.state = fire.state;
+    const hadFired = fire.tryFire ? tank.fire() === true : false;
 
-    if (this.state === State.Thinking) {
-      if (this.thinkTimer.isDone()) {
-        if (this.shouldFireWhenStuck()) {
-          this.state = State.Firing;
-          return;
-        }
-        this.state = State.Moving;
-        // Exclude the blocked direction so we don't immediately re-hit the same wall
-        tank.rotate(this.getBestRotation(tank, ROTATIONS.filter((r) => r !== tank.rotation)));
-        return;
-      }
-      this.thinkTimer.update(deltaTime);
-      return;
+    const target = this.computeAmbushTarget(tank);
+
+    const decide = ambushPhaseDecide(
+      this.state,
+      {
+        x: tank.position.x,
+        y: tank.position.y,
+        rotation: rotationToDir(tank.rotation),
+        targetX: target?.x ?? null,
+        targetY: target?.y ?? null,
+      },
+      hadFired,
+      rand,
+    );
+    this.state = decide.state;
+
+    if (decide.rotate !== null) {
+      tank.rotate(DIR_TO_ROTATION[decide.rotate as Dir]);
     }
+    if (!decide.willMove) return;
 
     tank.move(deltaTime);
 
-    const tankPosition = tank.position.clone().round();
-    const isStuck =
-      this.lastPosition.equals(tankPosition) && this.state === State.Moving;
-
-    if (isStuck) {
-      this.log.debug('Ambush: stuck, thinking...');
-      this.state = State.Thinking;
-      this.thinkTimer.reset(THINK_DURATION);
-      return;
-    }
-
-    // Periodically re-orient toward the intercept point.
-    if (this.redirectTimer.isDone()) {
-      tank.rotate(this.getBestRotation(tank, ROTATIONS));
-      this.redirectTimer.reset(REDIRECT_INTERVAL);
-    } else {
-      this.redirectTimer.update(deltaTime);
-    }
-
-    this.lastPosition = tankPosition;
-  }
-
-  private attemptFire(): void {
-    const min = FIRE_MIN_DELAY * 1000;
-    const max = FIRE_MAX_DELAY * 1000;
-    this.fireTimer.reset(RandomUtils.number(min, max) / 1000);
-  }
-
-  private shouldFireWhenStuck(): boolean {
-    return RandomUtils.probability(STUCK_FIRE_CHANCE);
-  }
-
-  // Picks the rotation from candidates that best closes distance to the ambush target.
-  private getBestRotation(tank: Tank, candidates: Rotation[]): Rotation {
-    const player = this.getPlayerTank(tank);
-    if (player === null) {
-      return RandomUtils.arrayElement(candidates);
-    }
-
-    const target = this.getAmbushTarget(player);
-    const diff = target.clone().sub(tank.position);
-    let best = candidates[0];
-    let bestScore = -Infinity;
-
-    for (const rotation of candidates) {
-      const score = this.scoreRotation(rotation, diff);
-      if (score > bestScore) {
-        bestScore = score;
-        best = rotation;
-      }
-    }
-    return best;
-  }
-
-  private scoreRotation(rotation: Rotation, diff: Vector): number {
-    switch (rotation) {
-      case Rotation.Right: return diff.x;
-      case Rotation.Left:  return -diff.x;
-      case Rotation.Down:  return diff.y;
-      case Rotation.Up:    return -diff.y;
+    const postTarget = this.computeAmbushTarget(tank);
+    const stuck = ambushPhaseStuck(
+      this.state,
+      {
+        x: tank.position.x,
+        y: tank.position.y,
+        rotation: rotationToDir(tank.rotation),
+        targetX: postTarget?.x ?? null,
+        targetY: postTarget?.y ?? null,
+      },
+      rand,
+    );
+    this.state = stuck.state;
+    if (stuck.rotate !== null) {
+      tank.rotate(DIR_TO_ROTATION[stuck.rotate as Dir]);
     }
   }
 
-  private getPlayerTank(tank: Tank): Tank | null {
+  /**
+   * Find the nearest player tank and project the ambush target ahead of it.
+   * Returns null when no player is alive. Tree walking lives here — the pure
+   * `projectAmbushTarget` is invoked with plain coordinates.
+   */
+  private computeAmbushTarget(tank: Tank): { x: number; y: number } | null {
     let player: Tank | null = null;
-    tank.parent?.traverseDescedants((node: Tank) => {
-      if (player === null && node.tags?.includes(Tag.Player)) {
-        player = node;
+    tank.parent?.traverseDescedants((node) => {
+      if (player !== null) return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const tags: unknown[] | undefined = (node as any).tags;
+      if (tags && tags.includes(Tag.Player)) {
+        player = node as Tank;
       }
     });
-    return player;
-  }
+    if (player === null) return null;
 
-  // Projects 4 tiles ahead of the player's facing direction.
-  private getAmbushTarget(player: Tank): Vector {
-    const offset = TILES_AHEAD * config.TILE_SIZE_LARGE;
-    const pos = player.position.clone();
-
-    switch (player.rotation) {
-      case Rotation.Up:    return pos.subY(offset);
-      case Rotation.Down:  return pos.addY(offset);
-      case Rotation.Left:  return pos.subX(offset);
-      case Rotation.Right: return pos.addX(offset);
-      default:             return pos;
-    }
+    const p = player as Tank;
+    return projectAmbushTarget(
+      p.position.x,
+      p.position.y,
+      rotationToDir(p.rotation),
+      AMBUSH_OFFSET_PX,
+    );
   }
 }

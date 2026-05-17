@@ -4,12 +4,12 @@ import { Tag } from '../../game/Tag';
 import { Tank } from '../../gameObjects/Tank';
 import { Dir, rotationToDir } from '../../sim/GameState';
 import {
-  HunterState,
-  hunterPhaseDecide,
-  hunterPhaseFire,
-  hunterPhaseStuck,
-  initHunter,
-} from '../../sim/behaviors/hunter';
+  ChaseState,
+  chasePhaseDecide,
+  chasePhaseFire,
+  chasePhaseStuck,
+  initChase,
+} from '../../sim/behaviors/chase';
 
 import { TankBehavior } from '../TankBehavior';
 
@@ -23,13 +23,13 @@ const DIR_TO_ROTATION: readonly Rotation[] = [
 // Targets the player's current tile. At every tile intersection re-evaluates
 // direction and turns toward the player (Blinky-style from Pac-Man).
 export class HunterTankBehavior extends TankBehavior {
-  private state: HunterState = initHunter();
+  private state: ChaseState = initChase();
 
   public update(tank: Tank, deltaTime: number): void {
     const rand = getGameRandom();
 
     // Phase 1: fire.
-    const fire = hunterPhaseFire(this.state, rand);
+    const fire = chasePhaseFire(this.state, rand);
     this.state = fire.state;
     const hadFired = fire.tryFire ? tank.fire() === true : false;
 
@@ -38,14 +38,14 @@ export class HunterTankBehavior extends TankBehavior {
     const player = this.findPlayerPosition(tank);
 
     // Phase 2: decide.
-    const decide = hunterPhaseDecide(
+    const decide = chasePhaseDecide(
       this.state,
       {
         x: tank.position.x,
         y: tank.position.y,
         rotation: rotationToDir(tank.rotation),
-        playerX: player?.x ?? null,
-        playerY: player?.y ?? null,
+        targetX: player?.x ?? null,
+        targetY: player?.y ?? null,
       },
       hadFired,
       rand,
@@ -61,14 +61,14 @@ export class HunterTankBehavior extends TankBehavior {
 
     // Phase 3: stuck + periodic redirect.
     const postPlayer = this.findPlayerPosition(tank);
-    const stuck = hunterPhaseStuck(
+    const stuck = chasePhaseStuck(
       this.state,
       {
         x: tank.position.x,
         y: tank.position.y,
         rotation: rotationToDir(tank.rotation),
-        playerX: postPlayer?.x ?? null,
-        playerY: postPlayer?.y ?? null,
+        targetX: postPlayer?.x ?? null,
+        targetY: postPlayer?.y ?? null,
       },
       rand,
     );

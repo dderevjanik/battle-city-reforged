@@ -14,17 +14,24 @@
 
 import { Dir } from '../GameState';
 
+// Value re-exports (enums + functions).
 export {
   ChaseMode as AmbushMode,
+  chasePhaseDecide as ambushPhaseDecide,
+  chasePhaseFire as ambushPhaseFire,
+  chasePhaseStuck as ambushPhaseStuck,
+  initChase as initAmbush,
+} from './chase';
+
+// Type-only re-exports. Must be `export type` so isolatedModules-style
+// bundlers (Rolldown via Vite) can strip them at build time — a plain
+// `export {}` of an interface fails the build with "not exported".
+export type {
   ChaseState as AmbushState,
   ChaseObservation as AmbushObservation,
   ChaseDecideResult as AmbushDecideResult,
   ChaseFireResult as AmbushFireResult,
   ChaseStuckResult as AmbushStuckResult,
-  chasePhaseDecide as ambushPhaseDecide,
-  chasePhaseFire as ambushPhaseFire,
-  chasePhaseStuck as ambushPhaseStuck,
-  initChase as initAmbush,
 } from './chase';
 
 /**

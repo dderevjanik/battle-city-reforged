@@ -12,17 +12,22 @@
 
 import { pickBestRotation } from './chase';
 
+// Value re-exports (enums + functions).
 export {
   ChaseMode as AttackBaseMode,
+  chasePhaseDecide as attackBasePhaseDecide,
+  chasePhaseFire as attackBasePhaseFire,
+  chasePhaseStuck as attackBasePhaseStuck,
+  initChase as initAttackBase,
+} from './chase';
+
+// Type-only re-exports — see the matching note in ambush.ts.
+export type {
   ChaseState as AttackBaseState,
   ChaseObservation as AttackBaseObservation,
   ChaseDecideResult as AttackBaseDecideResult,
   ChaseFireResult as AttackBaseFireResult,
   ChaseStuckResult as AttackBaseStuckResult,
-  chasePhaseDecide as attackBasePhaseDecide,
-  chasePhaseFire as attackBasePhaseFire,
-  chasePhaseStuck as attackBasePhaseStuck,
-  initChase as initAttackBase,
 } from './chase';
 
 export interface Point {

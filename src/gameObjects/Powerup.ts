@@ -1,4 +1,5 @@
 import { Animation } from '../core/Animation';
+import { BoundingBox } from '../core/BoundingBox';
 import { GameObject } from '../core/GameObject';
 import { Subject } from '../core/Subject';
 import { assertNever } from '../core/assertNever';
@@ -9,12 +10,19 @@ import { SpritePainter } from '../core/painters/SpritePainter';
 import { GameContext } from '../game/GameUpdateArgs';
 import { Tag } from '../game/Tag';
 import { PowerupType } from '../powerup/PowerupType';
+import { shouldPickupPowerup } from '../sim/powerupPickup';
+import { Box } from '../sim/wallHit';
 import * as config from '../config';
 
 import { EnemyTank } from './EnemyTank';
 import { PlayerTank } from './PlayerTank';
 
-const PICKUP_MIN_INTERSECTION_SIZE = 16;
+function boxFromBoundingBox(b: BoundingBox): Box {
+  return {
+    min: { x: b.min.x, y: b.min.y },
+    max: { x: b.max.x, y: b.max.y },
+  };
+}
 
 export class Powerup extends GameObject {
   public zIndex = config.POWERUP_Z_INDEX;
@@ -57,59 +65,32 @@ export class Powerup extends GameObject {
   }
 
   protected collide(collision: Collision): void {
-    const playerTankContacts = collision.contacts.filter((contact) => {
-      return (
-        contact.collider.object.tags.includes(Tag.Tank) &&
-        contact.collider.object.tags.includes(Tag.Player)
-      );
-    });
+    const selfBox = boxFromBoundingBox(this.collider.getBox());
 
-    if (playerTankContacts.length > 0) {
-      const firstPlayerTankContact = playerTankContacts[0];
-      const tankBox = firstPlayerTankContact.collider.getBox();
-      const selfBox = this.collider.getBox();
-
-      // Fixes the issue that tank can pick up powerup with his collision box
-      // even though tank is visually not exactly touching the powerup.
-      // Calculate minimum intersection area in order for powerup to get
-      // picked up.
-
-      const intersectionBox = selfBox.clone().intersectWith(tankBox);
-      const intersectionRect = intersectionBox.toRect();
-
-      if (
-        intersectionRect.width > PICKUP_MIN_INTERSECTION_SIZE &&
-        intersectionRect.height > PICKUP_MIN_INTERSECTION_SIZE
-      ) {
-        const tank = firstPlayerTankContact.collider.object as PlayerTank;
-        const { partyIndex } = tank;
-
+    const playerTankContact = collision.contacts.find((contact) =>
+      contact.collider.object.tags.includes(Tag.Tank) &&
+      contact.collider.object.tags.includes(Tag.Player),
+    );
+    if (playerTankContact) {
+      const tankBox = boxFromBoundingBox(playerTankContact.collider.getBox());
+      if (shouldPickupPowerup(selfBox, tankBox)) {
+        const tank = playerTankContact.collider.object as PlayerTank;
         this.destroy();
-        this.picked.notify({ partyIndex });
+        this.picked.notify({ partyIndex: tank.partyIndex });
       }
     }
+    // No early return: legacy code allowed both `picked` and `enemyPicked`
+    // to fire in the same tick if both touch (rare but possible). Preserved
+    // for behavioral parity.
 
-    const enemyTankContacts = collision.contacts.filter((contact) => {
-      return (
-        contact.collider.object.tags.includes(Tag.Tank) &&
-        contact.collider.object.tags.includes(Tag.Enemy)
-      );
-    });
-
-    if (enemyTankContacts.length > 0) {
-      const firstEnemyTankContact = enemyTankContacts[0];
-      const tankBox = firstEnemyTankContact.collider.getBox();
-      const selfBox = this.collider.getBox();
-
-      const intersectionBox = selfBox.clone().intersectWith(tankBox);
-      const intersectionRect = intersectionBox.toRect();
-
-      if (
-        intersectionRect.width > PICKUP_MIN_INTERSECTION_SIZE &&
-        intersectionRect.height > PICKUP_MIN_INTERSECTION_SIZE
-      ) {
-        const tank = firstEnemyTankContact.collider.object as EnemyTank;
-
+    const enemyTankContact = collision.contacts.find((contact) =>
+      contact.collider.object.tags.includes(Tag.Tank) &&
+      contact.collider.object.tags.includes(Tag.Enemy),
+    );
+    if (enemyTankContact) {
+      const tankBox = boxFromBoundingBox(enemyTankContact.collider.getBox());
+      if (shouldPickupPowerup(selfBox, tankBox)) {
+        const tank = enemyTankContact.collider.object as EnemyTank;
         this.destroy();
         this.enemyPicked.notify(tank);
       }

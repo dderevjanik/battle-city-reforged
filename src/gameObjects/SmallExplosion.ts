@@ -6,6 +6,9 @@ import { SpritePainter } from '../core/painters/SpritePainter';
 import { GameContext } from '../game/GameUpdateArgs';
 import * as config from '../config';
 
+// Animation-only entity — see the matching note on Explosion. No pure
+// module needed; lifecycle is driven entirely by the shared Animation
+// class.
 export class SmallExplosion extends GameObject {
   public zIndex = config.SMALL_EXPLOSION_Z_INDEX;
   public readonly painter = new SpritePainter();

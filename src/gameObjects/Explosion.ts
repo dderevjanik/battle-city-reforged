@@ -6,6 +6,10 @@ import { SpritePainter } from '../core/painters/SpritePainter';
 import { GameContext } from '../game/GameUpdateArgs';
 import * as config from '../config';
 
+// Animation-only entity: no gameplay rules, no RNG. The Animation class
+// (already shared infrastructure) drives the lifecycle; on completion this
+// removes itself and notifies. Not migrated to a pure module because there
+// is no logic to extract — see also SmallExplosion, BombBlast, Shield.
 export class Explosion extends GameObject {
   public zIndex = config.LARGE_EXPLOSION_Z_INDEX;
   public readonly painter = new SpritePainter();

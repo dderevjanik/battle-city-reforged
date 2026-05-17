@@ -22,6 +22,13 @@ import { TankWeaponSystem } from '../tank/TankWeaponSystem';
 import { Side, rotationToDir } from '../sim/GameState';
 import { classifyBulletHit } from '../sim/bulletHit';
 import { isOnIce as isOnIceRule, minkowskiResolve } from '../sim/tankCollision';
+import {
+  PlayerCollisionState as SimPlayerCollisionState,
+  TankResolution,
+  decideTankCollision,
+  tickPlayerFsmFromUpdate,
+  updatePlayerFsmDuringCollide,
+} from '../sim/tankVsTank';
 import { Box } from '../sim/wallHit';
 import {
   shouldStartIceSlide,
@@ -74,17 +81,12 @@ enum SpawnCollisionState {
   Resolved,
 }
 
-enum PlayerCollisionState {
-  NotColliding,
-  Colliding,
-  WaitCollide,
-}
-
-enum TankCollisionResolution {
-  Unknown,
-  Self,
-  Both,
-}
+// Use the sim enums directly so the values match what decideTankCollision
+// expects. The State<T> wrapper still owns the per-tank instance.
+const PlayerCollisionState = SimPlayerCollisionState;
+type PlayerCollisionState = SimPlayerCollisionState;
+const TankCollisionResolution = TankResolution;
+type TankCollisionResolution = TankResolution;
 
 const SKIN_LAYER_DESCRIPTIONS = [{ opacity: 1 }, { opacity: 0.5 }];
 const SNAP_SIZE = config.TILE_SIZE_MEDIUM;
@@ -186,16 +188,11 @@ export class Tank extends GameObject {
       this.spawnCollisionState.set(SpawnCollisionState.WaitCollide);
     }
 
-    if (this.playerCollisionState.is(PlayerCollisionState.WaitCollide)) {
-      // Collide has not been called on prev frame means tank is not colliding
-      // with player
-      this.playerCollisionState.set(PlayerCollisionState.NotColliding);
-    } else if (this.playerCollisionState.is(PlayerCollisionState.Colliding)) {
-      // If tanks were previously colliding. From here we wait for next
-      // #collide() call, where it either goes back to colliding or not
-      //  colliding.
-      this.playerCollisionState.set(PlayerCollisionState.WaitCollide);
-    }
+    // Advance the per-frame player-collision FSM. Pure rule documented in
+    // sim/tankVsTank.ts.
+    this.playerCollisionState.set(
+      tickPlayerFsmFromUpdate(this.playerCollisionState.get()),
+    );
 
     // Shield: pure tick; on expiry edge, remove the Shield GameObject. The
     // legacy code did this in a Timer.done callback (handleShieldTimer).
@@ -491,273 +488,95 @@ export class Tank extends GameObject {
   }
 
   protected collideTanks(collision: Collision): void {
-    if (!this.tags.includes(Tag.BlockMove)) {
-      return;
-    }
+    if (!this.tags.includes(Tag.BlockMove)) return;
 
-    const tankContacts = [];
-    const playerTankContacts = [];
-    const wallContacts = [];
-
+    // Partition contacts. The legacy code did three filter passes; one loop.
+    const tankContacts: CollisionContact[] = [];
+    const wallContacts: CollisionContact[] = [];
+    let hasPlayerTankContact = false;
     for (const contact of collision.contacts) {
       const { tags } = contact.collider.object;
-
-      if (tags.includes(Tag.BlockMove) && tags.includes(Tag.Tank)) {
-        tankContacts.push(contact);
-      }
-      if (tags.includes(Tag.BlockMove) && !tags.includes(Tag.Tank)) {
-        wallContacts.push(contact);
+      if (tags.includes(Tag.BlockMove)) {
+        if (tags.includes(Tag.Tank)) tankContacts.push(contact);
+        else wallContacts.push(contact);
       }
       if (tags.includes(Tag.Tank) && tags.includes(Tag.Player)) {
-        playerTankContacts.push(contact);
+        hasPlayerTankContact = true;
       }
     }
 
-    if (this.playerCollisionState.is(PlayerCollisionState.WaitCollide)) {
-      if (playerTankContacts.length > 0) {
-        this.playerCollisionState.set(PlayerCollisionState.Colliding);
-      } else {
-        this.playerCollisionState.set(PlayerCollisionState.NotColliding);
-      }
-    }
-
-    if (tankContacts.length === 0) {
-      return;
-    }
-
-    const closestTankContacts = this.getClosestContacts(
-      tankContacts,
-      this.collider.getPrevBox(),
+    // FSM transition for player-collision (pure rule).
+    this.playerCollisionState.set(
+      updatePlayerFsmDuringCollide(
+        this.playerCollisionState.get(),
+        hasPlayerTankContact,
+      ),
     );
 
-    const firstTankContact = closestTankContacts[0];
+    if (tankContacts.length === 0) return;
 
-    const otherCollider = firstTankContact.collider as SweptBoxCollider;
+    const closest = this.getClosestContacts(tankContacts, this.collider.getPrevBox());
+    const firstContact = closest[0];
+    const otherCollider = firstContact.collider as SweptBoxCollider;
     const other = otherCollider.object as Tank;
 
-    if (other.tankCollisionResolution === TankCollisionResolution.Self) {
-      // Other tank has already resolved the collision, skip for current tank
-      return;
-    }
-
-    // First we check which tanks are moving. It is easier if only one of them
-    // is moving, because we only need to resolve his collision.
+    // Gather the inputs the pure rule needs from both tanks.
     const selfCurrentBox = this.collider.getCurrentBox();
     const selfPrevBox = this.collider.getPrevBox();
-    const isSelfMoving = !selfCurrentBox.equals(selfPrevBox);
-
-    const otherPrevBox = otherCollider.getPrevBox();
     const otherCurrentBox = otherCollider.getCurrentBox();
-    const isOtherMoving = !otherCurrentBox.equals(otherPrevBox);
+    const otherPrevBox = otherCollider.getPrevBox();
 
-    if (!isOtherMoving && !isSelfMoving) {
-      // Both still. It might happen when one tank goes on spawn of another
-      // tank and stand there. Both should do nothing until they get of each
-      // others way.
-      return;
-    }
+    const otherCollision = this.collisionSystem.getCollisionByCollider(other.collider);
+    const selfContactsExceptOther = collision.contacts.filter(
+      (c) => c.collider !== other.collider,
+    ).length;
+    const otherContactsExceptSelf = otherCollision
+      ? otherCollision.contacts.filter((c) => c.collider !== this.collider).length
+      : 0;
 
-    if (isOtherMoving && !isSelfMoving) {
-      // Let other resolve because it is moving
-      return;
-    }
-
-    const selfDirection = this.collider.getDirection().normalize();
-    const otherDirection = otherCollider.getDirection().normalize();
-
-    if (!isOtherMoving && isSelfMoving) {
-      // We are going to resolve because we are moving
-
-      // There is a special case when enemy tank is moving and player tank
-      // is standing in the way but it can not be hit with a bullet. Player
-      // could abuse this to block enemy tanks from moving. To workaround it
-      // we check if enemy tank is moving directly on grid and it collides
-      // with player. If at the moment of collision the intersecrion area is
-      // not enough for bullet to hit, then we disable collision at all and
-      // enemy tank will move "through" player tank.
-      if (this.tags.includes(Tag.Enemy) && other.tags.includes(Tag.Player)) {
-        // If enemy is already colliding with player - skip it right away
-        if (this.playerCollisionState.is(PlayerCollisionState.Colliding)) {
-          return;
-        }
-
-        const roundedPosition = this.position.clone().round();
-        const isMovingOnGridHorizontally =
-          (selfDirection.x === 1 || selfDirection.x === -1) &&
-          roundedPosition.y % config.TILE_SIZE_MEDIUM === 0;
-        const isMovingOnGridVertically =
-          (selfDirection.y === 1 || selfDirection.y === -1) &&
-          roundedPosition.x % config.TILE_SIZE_MEDIUM === 0;
-
-        const intersectionBox = selfCurrentBox
-          .clone()
-          .intersectWith(otherCurrentBox);
-        const intersectionRect = intersectionBox.toRect();
-
-        const thresholdWidth = (this.size.width - config.BULLET_WIDTH) / 2;
-        const thresholdHeight = (this.size.height - config.BULLET_WIDTH) / 2;
-
-        // Don't resolve and remember that player tank was in contact with
-        // current tank so we can resolve collision later when they continue
-        // moving
-
-        if (
-          isMovingOnGridVertically &&
-          intersectionRect.width <= thresholdWidth
-        ) {
-          this.playerCollisionState.set(PlayerCollisionState.Colliding);
-          return;
-        }
-
-        // Don't resolve
-        if (
-          isMovingOnGridHorizontally &&
-          intersectionRect.height <= thresholdHeight
-        ) {
-          this.playerCollisionState.set(PlayerCollisionState.Colliding);
-          return;
-        }
-      }
-
-      this.resolveMinkowski(otherPrevBox);
-      this.tankCollisionResolution = TankCollisionResolution.Self;
-      return;
-    }
-
-    // Below we handle if both tanks are moving
-
-    // If player tank is colliding with enemy who decided to temporarily
-    // ignore collsion with player. We also check if enemy is waiting because
-    // we don't know which tank's #collide() is called first
-    if (this.tags.includes(Tag.Player) && other.tags.includes(Tag.Enemy)) {
-      if (
-        other.playerCollisionState.is(PlayerCollisionState.Colliding) ||
-        other.playerCollisionState.is(PlayerCollisionState.WaitCollide)
-      ) {
-        return;
-      }
-    }
-
-    // If enemy tank who decided to temporarily ignore collsion with player
-    // is colliding with player. We also check if enemy is waiting because
-    // we don't know which tank's #collide() is called first.
-    if (this.tags.includes(Tag.Enemy) && other.tags.includes(Tag.Player)) {
-      if (
-        this.playerCollisionState.is(PlayerCollisionState.Colliding) ||
-        other.playerCollisionState.is(PlayerCollisionState.WaitCollide)
-      ) {
-        return;
-      }
-    }
-
-    // First tank rolled-back his movement, current tank should align to it.
-    if (other.tankCollisionResolution === TankCollisionResolution.Both) {
-      this.resolveMinkowski(otherCurrentBox);
-      return;
-    }
-
-    const hasWallCollision = wallContacts.length > 0;
-
-    // Find which direction tank is moving, then find direction of collision
-    // from the tank's perspective.
-
-    const selfCurrentCenter = selfCurrentBox.getCenter();
-    const otherCurrentCenter = otherCurrentBox.getCenter();
-
-    const selfCollisionDirection = otherCurrentCenter
-      .clone()
-      .sub(selfCurrentCenter)
-      .normalize();
-    const otherCollisionDirection = selfCurrentCenter
-      .clone()
-      .sub(otherCurrentCenter)
-      .normalize();
-
-    // Dot product of tank's direction and collision direction from his
-    // perspective lets us know if tank is moving towards collision. If that
-    // is the case, we consider him as an initiator of the collision and it
-    // will be responsible for resolving the collision.
-    // If both of them are moving towards collision, then we compare dot
-    // product value to check who participates in collision more.
-    // If they move towards each other, dot products will be equal and tanks
-    // should both resolve the collision. It is important that they resolve
-    // it in respect to each other - one should rollback is movement, the other
-    // one will account for that rollback and position himself according to
-    // first tank bounding box. This will hold tanks in place if they continue
-    // moving towards each other.
-
-    const selfDot = selfDirection.dot(selfCollisionDirection);
-    const otherDot = otherDirection.dot(otherCollisionDirection);
-
-    let isSelfInitiator = selfDot > 0;
-    let isOtherInitiator = otherDot > 0;
-
-    if (selfDot > 0 && otherDot > 0) {
-      if (selfDot === otherDot) {
-        isSelfInitiator = true;
-        isOtherInitiator = true;
-      } else {
-        isSelfInitiator = selfDot > otherDot;
-        isOtherInitiator = otherDot > selfDot;
-      }
-    }
-
-    // In case current tank has other collision with walls, let him be, and
-    // resolve collsion ourselves
-    if (hasWallCollision) {
-      isSelfInitiator = false;
-      isOtherInitiator = true;
-    }
-
-    if (isSelfInitiator && !isOtherInitiator) {
-      this.resolveMinkowski(otherPrevBox);
-      this.tankCollisionResolution = TankCollisionResolution.Self;
-      return;
-    }
-
-    if (!isSelfInitiator && isOtherInitiator) {
-      // We go where we were going, other one will resolve the collision
-      return;
-    }
-
-    if (isSelfInitiator && isOtherInitiator) {
-      // Both should resolve because they are moving towards each other.
-      // One should rollback his movement completely, and the other one
-      // should use former tank box to align itself. As a result if they
-      // both move at each other at full speed, they will be kept in place.
-      this.resolveByRollback(this.collider.getDirection());
-      this.tankCollisionResolution = TankCollisionResolution.Both;
-      return;
-    }
-
-    // In case neither is an initiator, we check who has more collsiions with
-    // other objects.
-
-    const otherCollision = this.collisionSystem.getCollisionByCollider(
-      other.collider,
-    );
-
-    const selfContactsExceptOther = collision.contacts.filter((contact) => {
-      return contact.collider !== other.collider;
+    const action = decideTankCollision({
+      selfSide: this.tags.includes(Tag.Enemy) ? Side.Enemy : Side.Player,
+      otherSide: other.tags.includes(Tag.Enemy) ? Side.Enemy : Side.Player,
+      selfCurrentBox: boxOf(selfCurrentBox),
+      selfPrevBox: boxOf(selfPrevBox),
+      otherCurrentBox: boxOf(otherCurrentBox),
+      otherPrevBox: boxOf(otherPrevBox),
+      selfDirection: this.collider.getDirection().clone().normalize(),
+      otherDirection: otherCollider.getDirection().clone().normalize(),
+      selfPosX: this.position.x,
+      selfPosY: this.position.y,
+      selfTankWidth: this.size.width,
+      selfTankHeight: this.size.height,
+      bulletWidth: config.BULLET_WIDTH,
+      tileSize: config.TILE_SIZE_MEDIUM,
+      otherTankResolution: other.tankCollisionResolution,
+      selfPlayerCollisionState: this.playerCollisionState.get(),
+      otherPlayerCollisionState: other.playerCollisionState.get(),
+      hasWallCollision: wallContacts.length > 0,
+      selfContactsExceptOther,
+      otherContactsExceptSelf,
     });
 
-    const otherContactsExceptSelf = otherCollision!.contacts.filter(
-      (contact) => {
-        return contact.collider !== this.collider;
-      },
-    );
-
-    if (
-      otherContactsExceptSelf.length > 0 &&
-      selfContactsExceptOther.length === 0
-    ) {
-      this.resolveMinkowski(otherPrevBox);
-      this.tankCollisionResolution = TankCollisionResolution.Self;
-      return;
+    switch (action.kind) {
+      case 'skip':
+        return;
+      case 'set-player-colliding':
+        this.playerCollisionState.set(PlayerCollisionState.Colliding);
+        return;
+      case 'resolve-against-other-prev':
+        this.resolveMinkowski(otherPrevBox);
+        this.tankCollisionResolution = TankCollisionResolution.Self;
+        return;
+      case 'resolve-against-other-current':
+        // Other already rolled back; align to its CURRENT (post-rollback) box.
+        // Adapter does NOT mark self as Self — matches legacy.
+        this.resolveMinkowski(otherCurrentBox);
+        return;
+      case 'rollback':
+        this.resolveByRollback(this.collider.getDirection());
+        this.tankCollisionResolution = TankCollisionResolution.Both;
+        return;
     }
-
-    // For the rest of the situations, we just let them be. During testing
-    // this seemed to work fine.
   }
 
   protected collideBullets(collision: Collision): void {

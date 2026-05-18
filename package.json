@@ -44,13 +44,13 @@
     "ajv": "^8.18.0",
     "peerjs": "^1.5.5",
     "phaser": "^4.0.0",
-    "posthog-js": "^1.372.6"
+    "posthog-js": "^1.374.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "tsx": "^4.21.0",
+    "@types/node": "^25.9.0",
+    "tsx": "^4.22.1",
     "typescript": "^6.0.0",
-    "vite": "^8.0.7",
+    "vite": "^8.0.13",
     "vite-plugin-static-copy": "^4.0.1"
   }
 }

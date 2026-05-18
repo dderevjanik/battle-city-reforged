@@ -3,8 +3,10 @@ import './main.css';
 import { installErrorReporter, reportManual } from './core/ErrorReporter';
 import { Logger } from './core/Logger';
 import { Analytics } from './analytics/Analytics';
+import { installMpConsole } from './net/mpConsole';
 
 installErrorReporter();
+installMpConsole();
 
 const analytics = new Analytics();
 analytics.init();

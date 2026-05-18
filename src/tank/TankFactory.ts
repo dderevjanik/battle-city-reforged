@@ -44,22 +44,21 @@ export class TankFactory {
     return new EnemyTank(type, baseBehavior, partyIndex);
   }
 
-  public static createBehaviorForAiMode(ai: TankAiMode, basePositions: Vector[] = []): TankBehavior {
-    switch (ai) {
-      case TankAiMode.Hunter:
-        return new HunterTankBehavior();
-      case TankAiMode.Ambush:
-        return new AmbushTankBehavior();
-      case TankAiMode.AttackBase:
-        return new AttackBaseTankBehavior(basePositions);
-      case TankAiMode.Classic:
-      default:
-        return new AiTankBehavior();
-    }
+  public static createBehaviorForAiMode(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _ai: TankAiMode,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _basePositions: Vector[] = [],
+  ): TankBehavior {
+    // All enemies use the same default Classic AI. The per-type AI mode
+    // (Hunter / Ambush / AttackBase) is intentionally ignored — those
+    // variants exist in the data model and the pure modules, but the live
+    // game gates them off until the host (or future per-level config) opts
+    // back in.
+    return new AiTankBehavior();
   }
 
-  private static createBehaviorForType(type: TankType): TankBehavior {
-    const { ai } = TankAttributesFactory.create(type);
-    return TankFactory.createBehaviorForAiMode(ai ?? TankAiMode.Classic);
+  private static createBehaviorForType(_type: TankType): TankBehavior {
+    return new AiTankBehavior();
   }
 }

@@ -2,6 +2,9 @@ import * as Phaser from 'phaser';
 
 import { GameObject, initRenderer } from '../core/GameObject';
 import { maybeTraceTick } from '../core/determinism';
+import { Match } from '../net/Match';
+import { readLocalInputBits } from '../net/readLocalInputBits';
+import { hashSimState } from '../core/determinism';
 import { setActiveScene } from '../core/scene/ActiveScene';
 import { SceneNavigator, SceneParams } from '../core/scene/Scene';
 import { GameContext } from '../game/GameUpdateArgs';
@@ -90,6 +93,7 @@ export abstract class GameScene<
       this.simTick++;
       steps++;
       maybeTraceTick(this.simTick, this.root);
+      this.broadcastSimTickIfMultiplayer();
     }
 
     // If we hit the catch-up cap, drop the leftover backlog rather than
@@ -100,6 +104,39 @@ export abstract class GameScene<
 
     this._renderScene();
     this.context.gameState.update();
+  }
+
+  /**
+   * Override on subclasses whose state should be synchronised across
+   * peers. Defaults to false because most scenes (menus, score screens,
+   * intro animations) are intentionally local — their state depends on
+   * input that is NOT exchanged over the wire, and broadcasting their
+   * hashes would produce noisy false-positive desyncs.
+   *
+   * LevelPlayScene overrides this to true.
+   */
+  protected isMultiplayerSyncScene(): boolean {
+    return false;
+  }
+
+  /**
+   * Phase-1 multiplayer hook: after each sim tick, broadcast our local
+   * player's input bits and the post-tick state hash. Phase-1 is observe-
+   * only — no lockstep gating, no input application. The remote peer
+   * stores what arrives; the developer console can inspect divergence.
+   */
+  private broadcastSimTickIfMultiplayer(): void {
+    const match = Match.current;
+    if (match === null) return;
+    if (!this.isMultiplayerSyncScene()) return;
+
+    const bits = readLocalInputBits(
+      this.context.inputManager,
+      this.context.session,
+      match.localPartyIndex,
+    );
+    const hash = hashSimState(this.root).combined;
+    match.recordLocalTick(this.simTick, bits, hash);
   }
 
   // ---------------------------------------------------------------------------

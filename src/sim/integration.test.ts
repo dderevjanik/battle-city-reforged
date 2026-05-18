@@ -540,18 +540,18 @@ describe('integration — single-rule sanity checks', () => {
     assert.equal(playerBullets(), 1, 'second player fire blocked by cooldown');
   });
 
-  it('player walks up and onto ice; releasing input starts a slide', () => {
+  it('player walks Down onto ice; releasing input starts a slide', () => {
+    // Engine is y-down: Down direction moves toward LARGER y. Ice tile at
+    // (100, 250)..(164, 314). Player starts at (100, 100) facing Up. We
+    // rotate the player to face Down then walk for 40 ticks → y = 100+160 = 260.
+    // Center y = 292, center x = 132, both inside ice rect. ✓
     const s = makeScenarioWorld();
-    // Player at (100, 100) facing Up. moveSpeed=240, dt=1/60 → 4 px/tick.
-    // To put player center y inside ice (250..314), need tank y in 218..282.
-    // 40 ticks → y = 100 + 40*4 = 260. Center y = 292. Center x = 132 (in 100..164). ✓
     for (let i = 0; i < 40; i++) {
-      simStep(s, { players: new Map([[0, makeInput({ Up: true })]]) });
+      simStep(s, { players: new Map([[0, makeInput({ Down: true })]]) });
     }
     const p = s.tanks[0];
     assert.equal(p.isOnIce, true, `player center should be on ice, y=${p.y}`);
 
-    // Release input — willIdle edge + isOnIce → start slide.
     simStep(s, { players: new Map([[0, 0]]) });
     assert.equal(isSliding(s.tanks[0].slide), true, 'slide should have started');
   });
@@ -678,10 +678,10 @@ describe('integration — complex multi-rule scenario', () => {
     for (let i = 0; i < 30; i++) {
       simStep(s, { players: new Map([[0, makeInput({ Right: true })]]) });
     }
-    assert.ok(s.tanks[0].x < 100, 'player moved right (in y-up coords, Right=-x)');
+    assert.ok(s.tanks[0].x > 100, 'player moved Right (y-down: Right = +x)');
     const pb = playerBullets();
     if (pb.length > 0) {
-      assert.ok(pb[0].y > initialBulletY, 'player bullet moved Up (y-up)');
+      assert.ok(pb[0].y < initialBulletY, 'player bullet moved Up (y-down: Up = -y)');
     }
 
     // PHASE 2 (ticks 31-60): player idles. AI ticks consume RNG. Enemy may

@@ -15,28 +15,30 @@
 import { BulletState, Dir, Side } from './GameState';
 
 /**
- * Unit displacement vector per facing direction.
+ * Unit displacement vector per facing direction, in the engine's
+ * screen-space y-down world (Phaser default: y=0 at top, larger y is down).
  *
- * The game stores rotation in screen-degree units (Up=0, Right=90, Down=180,
- * Left=270) and its underlying transform matrix happens to map a positive
- * local-Y translation to:
+ *   Up:    (0, -1)   // smaller y = visually up
+ *   Right: (+1, 0)
+ *   Down:  (0, +1)
+ *   Left:  (-1, 0)
  *
- *   Up:    (0, +1)
- *   Right: (-1, 0)
- *   Down:  (0, -1)
- *   Left:  (+1, 0)
- *
- * (i.e. the world uses y-up; Phaser's renderer flips it at display time.)
+ * These values reproduce what `obj.translateY(d)` produces in the legacy
+ * code for each rotation. The legacy `Y_AXIS` is `(0, -1)` (see
+ * src/core/GameObject.ts), so `translateY(d)` for Rotation.Up effectively
+ * does `position.y -= d` — i.e. moves toward smaller y, which is visually
+ * up on screen.
  *
  * Bullets / tanks have only ever used `translateY(speed * dt)` to move, so
- * any new motion code must agree with these vectors exactly or the migration
- * will visibly shift bullets to the wrong side of walls.
+ * any new motion code must agree with these vectors exactly or the
+ * migration will visibly invert motion (the exact symptom of the original
+ * inversion bug: Right arrow moves Left).
  */
 export const DIR_DELTA: readonly { dx: number; dy: number }[] = [
-  { dx: 0, dy: 1 },    // Dir.Up
-  { dx: -1, dy: 0 },   // Dir.Right
-  { dx: 0, dy: -1 },   // Dir.Down
-  { dx: 1, dy: 0 },    // Dir.Left
+  { dx: 0, dy: -1 },   // Dir.Up
+  { dx: 1, dy: 0 },    // Dir.Right
+  { dx: 0, dy: 1 },    // Dir.Down
+  { dx: -1, dy: 0 },   // Dir.Left
 ];
 
 /**

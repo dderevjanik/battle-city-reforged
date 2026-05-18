@@ -16,6 +16,7 @@ import { TerrainGPULayer } from '../../terrain/TerrainGPULayer';
 import { TerrainTile } from '../../gameObjects/TerrainTile';
 import { seedGameRandom } from '../../core/Random';
 import { resetEntityIds } from '../../core/GameObject';
+import { Match } from '../../net/Match';
 import * as config from '../../config';
 
 import { LevelEventBus } from '../../level/LevelEventBus';
@@ -92,6 +93,16 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
   private statsScript!: LevelStatsScript;
   private cameraScript: LevelCameraScript | null = null;
 
+  /**
+   * This is the scene that participates in multiplayer sync. Menus and
+   * other non-gameplay scenes do not — their local state intentionally
+   * diverges (different cursor positions, etc.) and broadcasting their
+   * hashes produces false-positive desync alerts.
+   */
+  protected isMultiplayerSyncScene(): boolean {
+    return true;
+  }
+
   protected setup(context: GameContext): void {
     const { analytics, collisionSystem, continueManager, inputManager, levelProgressManager, mapLoader, session } = context;
 
@@ -117,11 +128,18 @@ export class LevelPlayScene extends GameScene<LevelPlayLocationParams> {
     // Seed the gameplay PRNG deterministically from level metadata so that two
     // peers running the same level produce identical RNG sequences. For
     // networked play the host's seed will be sent over the wire instead.
-    let diffHash = 0;
-    for (const ch of session.getDifficulty()) {
-      diffHash = (diffHash * 31 + ch.charCodeAt(0)) | 0;
+    // In multiplayer the seed comes from the host's handshake so both
+    // peers' simulations are identical. Otherwise we derive it from the
+    // local level+difficulty as before.
+    if (Match.current !== null) {
+      seedGameRandom(Match.current.seed);
+    } else {
+      let diffHash = 0;
+      for (const ch of session.getDifficulty()) {
+        diffHash = (diffHash * 31 + ch.charCodeAt(0)) | 0;
+      }
+      seedGameRandom((session.getLevelNumber() * 2654435761) ^ diffHash);
     }
-    seedGameRandom((session.getLevelNumber() * 2654435761) ^ diffHash);
     resetEntityIds();
 
     if (!session.isDemo() && !session.isPlaytest()) {

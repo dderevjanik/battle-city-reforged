@@ -23,27 +23,30 @@ describe('stepBullet', () => {
     assert.deepEqual(baseBullet, before);
   });
 
-  it('moves Up bullets toward larger y (engine uses y-up)', () => {
+  // Engine uses Phaser default y-down (y=0 top of screen, larger y is
+  // visually down). Up direction = smaller y; Down = larger y. These
+  // assertions reproduce the legacy translateY-with-Y_AXIS=(0,-1) behavior.
+  it('moves Up bullets toward smaller y (visually up in y-down screen)', () => {
     const out = stepBullet({ ...baseBullet, rotation: Dir.Up }, 1 / 60);
-    assert.equal(out.x, 100);
-    assert.equal(out.y, 100 + 240 / 60);
-  });
-
-  it('moves Down bullets toward smaller y', () => {
-    const out = stepBullet({ ...baseBullet, rotation: Dir.Down }, 1 / 60);
     assert.equal(out.x, 100);
     assert.equal(out.y, 100 - 240 / 60);
   });
 
-  it('moves Right bullets toward smaller x (matches translateY+rotation)', () => {
+  it('moves Down bullets toward larger y', () => {
+    const out = stepBullet({ ...baseBullet, rotation: Dir.Down }, 1 / 60);
+    assert.equal(out.x, 100);
+    assert.equal(out.y, 100 + 240 / 60);
+  });
+
+  it('moves Right bullets toward larger x', () => {
     const out = stepBullet({ ...baseBullet, rotation: Dir.Right }, 1 / 60);
-    assert.equal(out.x, 100 - 240 / 60);
+    assert.equal(out.x, 100 + 240 / 60);
     assert.equal(out.y, 100);
   });
 
-  it('moves Left bullets toward larger x', () => {
+  it('moves Left bullets toward smaller x', () => {
     const out = stepBullet({ ...baseBullet, rotation: Dir.Left }, 1 / 60);
-    assert.equal(out.x, 100 + 240 / 60);
+    assert.equal(out.x, 100 - 240 / 60);
     assert.equal(out.y, 100);
   });
 
@@ -65,12 +68,15 @@ describe('stepBullet', () => {
   });
 
   it('DIR_DELTA is indexed by Dir enum value', () => {
-    // Wire-format invariant: the array MUST be in Dir enum order. If someone
-    // reorders the Dir enum, this test catches it immediately.
-    assert.deepEqual(DIR_DELTA[Dir.Up], { dx: 0, dy: 1 });
-    assert.deepEqual(DIR_DELTA[Dir.Right], { dx: -1, dy: 0 });
-    assert.deepEqual(DIR_DELTA[Dir.Down], { dx: 0, dy: -1 });
-    assert.deepEqual(DIR_DELTA[Dir.Left], { dx: 1, dy: 0 });
+    // Wire-format invariant: the array MUST be in Dir enum order AND use
+    // the engine's y-down sign convention (Up = -y). If someone reorders
+    // the Dir enum OR flips the sign convention, this test catches it
+    // immediately — flipping signs was the source of an Aug-2026 motion-
+    // inversion bug where Right moved the player Left.
+    assert.deepEqual(DIR_DELTA[Dir.Up], { dx: 0, dy: -1 });
+    assert.deepEqual(DIR_DELTA[Dir.Right], { dx: 1, dy: 0 });
+    assert.deepEqual(DIR_DELTA[Dir.Down], { dx: 0, dy: 1 });
+    assert.deepEqual(DIR_DELTA[Dir.Left], { dx: -1, dy: 0 });
   });
 });
 

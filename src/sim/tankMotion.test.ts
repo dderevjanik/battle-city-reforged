@@ -11,26 +11,26 @@ import {
 // ---- tankMoveDelta -------------------------------------------------------
 
 describe('tankMoveDelta', () => {
-  it('Up moves toward larger y (y-up world convention, matches stepBullet)', () => {
+  it('Up moves toward smaller y (visually up in y-down screen)', () => {
     const { dx, dy } = tankMoveDelta(Dir.Up, 240, 1 / 60);
-    assert.equal(dx, 0);
-    assert.equal(dy, 240 / 60);
-  });
-
-  it('Down moves toward smaller y', () => {
-    const { dx, dy } = tankMoveDelta(Dir.Down, 240, 1 / 60);
     assert.equal(dx, 0);
     assert.equal(dy, -240 / 60);
   });
 
-  it('Right moves toward smaller x', () => {
-    const { dx } = tankMoveDelta(Dir.Right, 120, 1 / 60);
-    assert.equal(dx, -120 / 60);
+  it('Down moves toward larger y', () => {
+    const { dx, dy } = tankMoveDelta(Dir.Down, 240, 1 / 60);
+    assert.equal(dx, 0);
+    assert.equal(dy, 240 / 60);
   });
 
-  it('Left moves toward larger x', () => {
-    const { dx } = tankMoveDelta(Dir.Left, 120, 1 / 60);
+  it('Right moves toward larger x', () => {
+    const { dx } = tankMoveDelta(Dir.Right, 120, 1 / 60);
     assert.equal(dx, 120 / 60);
+  });
+
+  it('Left moves toward smaller x', () => {
+    const { dx } = tankMoveDelta(Dir.Left, 120, 1 / 60);
+    assert.equal(dx, -120 / 60);
   });
 
   it('scales linearly with speed', () => {

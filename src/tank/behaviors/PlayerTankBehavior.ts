@@ -3,9 +3,8 @@ import { Rotation } from '../../game/Rotation';
 import { PlayerTank } from '../../gameObjects/PlayerTank';
 import { TankState } from '../../gameObjects/Tank';
 import { InputManager } from '../../input/InputManager';
-import { LevelPlayInputContext } from '../../input/InputContexts';
+import { readLocalInputBits } from '../../net/readLocalInputBits';
 import { Dir } from '../../sim/GameState';
-import { InputBits, PlayerInputBits } from '../../sim/Input';
 import { stepPlayer } from '../../sim/behaviors/player';
 
 import { TankBehavior } from '../TankBehavior';
@@ -39,7 +38,7 @@ export class PlayerTankBehavior extends TankBehavior {
   }
 
   public update(tank: PlayerTank, deltaTime: number): void {
-    const bits = this.readLocalInputBits(tank);
+    const bits = readLocalInputBits(this.inputManager, this.session, tank.partyIndex);
 
     const decision = stepPlayer(bits, {
       isSliding: tank.isSliding(),
@@ -61,41 +60,4 @@ export class PlayerTankBehavior extends TankBehavior {
     if (decision.willIdle) tank.idle();
   }
 
-  /**
-   * Translate the local InputManager into a PlayerInputBits.
-   *
-   * Preserves legacy semantics:
-   *   - Fire is set if EITHER Fire (edge) OR RapidFire (held) input is
-   *     active — both produce the same tank.fire() call in the original,
-   *     so they collapse to one bit. Per-shot rate limiting stays in
-   *     TankWeaponSystem.
-   *   - Direction bits use isHoldAny (held) — the pure layer's priority
-   *     order replaces the legacy isHoldLastAny.
-   *
-   * In multiplayer the session may route each player to a specific input
-   * device; that lookup is preserved here.
-   */
-  private readLocalInputBits(tank: PlayerTank): PlayerInputBits {
-    let inputMethod = this.inputManager.getActiveMethod();
-    if (this.session.isMultiplayer()) {
-      const playerSession = this.session.getPlayer(tank.partyIndex);
-      const playerInputVariant = playerSession.getInputVariant();
-      if (playerInputVariant !== null) {
-        inputMethod = this.inputManager.getMethodByVariant(playerInputVariant);
-      }
-    }
-
-    let bits: PlayerInputBits = 0;
-    if (inputMethod.isHoldAny(LevelPlayInputContext.MoveUp)) bits |= InputBits.Up;
-    if (inputMethod.isHoldAny(LevelPlayInputContext.MoveDown)) bits |= InputBits.Down;
-    if (inputMethod.isHoldAny(LevelPlayInputContext.MoveLeft)) bits |= InputBits.Left;
-    if (inputMethod.isHoldAny(LevelPlayInputContext.MoveRight)) bits |= InputBits.Right;
-    if (
-      inputMethod.isDownAny(LevelPlayInputContext.Fire) ||
-      inputMethod.isHoldAny(LevelPlayInputContext.RapidFire)
-    ) {
-      bits |= InputBits.Fire;
-    }
-    return bits;
-  }
 }

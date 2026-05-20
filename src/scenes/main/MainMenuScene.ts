@@ -245,6 +245,7 @@ export class MainMenuScene extends GameScene {
   };
 
   private handleSinglePlayerSelected = (): void => {
+    this.session.setPlayerCount(1);
     this.navigator.push(GameSceneType.MainMapGroup);
   };
 

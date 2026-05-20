@@ -44,6 +44,24 @@ const QUADRANT_PATCHES: ReadonlyArray<readonly [number, readonly [number, number
 ];
 
 /**
+ * Clears the 4×4 TS-cell tank footprint at a given display-pixel position.
+ * Used to make sure ROM-placed terrain never blocks a base / player spawn /
+ * enemy spawn — those positions need to be physically traversable for the
+ * eagle to render and for tanks to spawn without being trapped or
+ * shielded against bullets.
+ */
+function clearTankFootprint(grid: Uint8Array, displayX: number, displayY: number): void {
+  const col0 = Math.floor(displayX / TS);
+  const row0 = Math.floor(displayY / TS);
+  for (let r = row0; r < row0 + 4; r++) {
+    for (let c = col0; c < col0 + 4; c++) {
+      if (c < 0 || c >= GRID_W || r < 0 || r >= GRID_W) continue;
+      grid[r * GRID_W + c] = 0;
+    }
+  }
+}
+
+/**
  * Paints the eagle's brick surround (top wall + side wings) into `grid` —
  * only into cells that are currently empty, so ROM terrain placed on top of
  * the base (steel, jungle, water, ice, …) overrides it.
@@ -100,15 +118,23 @@ export function stageToMapDto(
     }
   }
 
+  const spawns = extractSharedSpawns(rom);
+  const convoy = extractEnemyConvoy(rom, idx);
+
+  // Clear terrain on top of the eagle, player spawns, and enemy spawns.
+  // Some hacks (e.g. Random City) place steel/water/brick over these positions,
+  // which would block the eagle base from being rendered or trap tanks behind
+  // bullet-proof walls. The engine itself treats these cells as traversable.
+  clearTankFootprint(grid, BASE_BLOCK_X * TL, BASE_BLOCK_Y * TL);
+  for (const p of spawns.playerSpawns) clearTankFootprint(grid, p.x, p.y);
+  for (const p of spawns.enemySpawns)  clearTankFootprint(grid, p.x, p.y);
+
   // Paint the original Battle City eagle-base brick surround. Only fill cells
-  // the ROM left empty — ROM-defined terrain (steel, jungle, water, ice, brick)
-  // wins, matching the in-game overlay rendering.
+  // the ROM left empty — ROM-defined terrain that survived the spawn-clear
+  // step still wins.
   paintBaseDefense(grid);
 
   const regions = gridToRegionsPure(grid, GRID_W, GRID_W, TS);
-
-  const spawns = extractSharedSpawns(rom);
-  const convoy = extractEnemyConvoy(rom, idx);
 
   const enemyList: { type: TankKind; ai: TankAiMode; drop?: 'random' }[] = [];
   for (const slot of convoy.slots) {

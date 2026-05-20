@@ -124,17 +124,17 @@ describe('extractSharedSpawns', () => {
 describe('stageToMapDto', () => {
   it('emits a valid 832×832 MapDto with merged terrain regions', () => {
     const rom = makeRom();
-    // Stage 0 row 0: full-brick at column 0, then empties (0xD).
-    const row = [4, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd];
-    const packed = packRow(row);
-    for (let i = 0; i < 7; i++) rom[LEVEL_BASE + i] = packed[i];
-    // Other rows: all empty (0xD)
-    for (let y = 1; y < 13; y++) {
-      const emptyRow = packRow(new Array(13).fill(0xd));
-      for (let i = 0; i < 7; i++) rom[LEVEL_BASE + y * 7 + i] = emptyRow[i];
+    // Stage 0 row 4: full-brick at column 0 (away from any spawn). Other rows empty.
+    for (let y = 0; y < 13; y++) {
+      const r = y === 4
+        ? [4, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd]
+        : new Array(13).fill(0xd);
+      const packed = packRow(r);
+      for (let i = 0; i < 7; i++) rom[LEVEL_BASE + y * 7 + i] = packed[i];
     }
-    // Spawns
-    rom[0x2484] = 0x70; rom[0x2485] = 0xd0; rom[0x2486] = 0x10;
+    // Spawns: keep them away from row 4 so the test brick survives the
+    // spawn-footprint clear step.
+    rom[0x2484] = 0x70; rom[0x2485] = 0xd0; rom[0x2486] = 0x20;
     rom[0x2487] = 0x10; rom[0x2488] = 0x10; rom[0x2489] = 0x10;
     rom[0x248a] = 0x50; rom[0x248b] = 0x90; rom[0x248c] = 0xd0; rom[0x248d] = 0xd0;
     // Enemy convoy: 4 basic tanks (NES type 4) in slot 0
@@ -151,36 +151,37 @@ describe('stageToMapDto', () => {
     assert.equal(dto.spawn.bases?.[0].y, 768);
     assert.equal(dto.spawn.enemy.list?.length, 4);
     assert.equal(dto.spawn.enemy.list?.[0].type, 'basic');
-    // The brick block at (0,0) should produce one merged 64×64 region.
-    const brick = dto.terrain?.regions?.find((r) => r.type === 'brick');
-    assert.ok(brick, 'expected brick region');
-    assert.equal(brick.x, 0);
-    assert.equal(brick.y, 0);
-    assert.equal(brick.width, 64);
-    assert.equal(brick.height, 64);
+    // The brick block at (0, 4) should produce one merged 64×64 region.
+    const placedBrick = dto.terrain?.regions?.find(
+      (r) => r.type === 'brick' && r.x === 0 && r.y === 256,
+    );
+    assert.ok(placedBrick, 'expected brick region at (0, 256)');
+    assert.equal(placedBrick.width, 64);
+    assert.equal(placedBrick.height, 64);
   });
 
   it('renders a half-brick (right) as a 32×64 region', () => {
     const rom = makeRom();
-    // 0x0 = right-half brick; rest are 0xD = empty.
-    const row = [0, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd];
-    const packed = packRow(row);
-    for (let i = 0; i < 7; i++) rom[LEVEL_BASE + i] = packed[i];
-    for (let y = 1; y < 13; y++) {
-      const emptyRow = packRow(new Array(13).fill(0xd));
-      for (let i = 0; i < 7; i++) rom[LEVEL_BASE + y * 7 + i] = emptyRow[i];
+    // 0x0 = right-half brick at (col 0, row 4); rest are 0xD = empty.
+    for (let y = 0; y < 13; y++) {
+      const r = y === 4
+        ? [0, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd, 0xd]
+        : new Array(13).fill(0xd);
+      const packed = packRow(r);
+      for (let i = 0; i < 7; i++) rom[LEVEL_BASE + y * 7 + i] = packed[i];
     }
-    rom[0x2484] = 0x10; rom[0x2485] = 0x10; rom[0x2486] = 0x10;
+    // Spawns at corners — away from row 4.
+    rom[0x2484] = 0x70; rom[0x2485] = 0xd0; rom[0x2486] = 0x20;
     rom[0x2487] = 0x10; rom[0x2488] = 0x10; rom[0x2489] = 0x10;
-    rom[0x248a] = 0x10; rom[0x248b] = 0x10; rom[0x248c] = 0x10; rom[0x248d] = 0x10;
+    rom[0x248a] = 0x50; rom[0x248b] = 0x90; rom[0x248c] = 0xd0; rom[0x248d] = 0xd0;
 
     const parsed = parseRom(rom);
     const dto = stageToMapDto(parsed, 0);
-    const brick = dto.terrain?.regions?.find((r) => r.type === 'brick');
-    assert.ok(brick);
-    // Right half of block 0: starts at x=32, full 64 height, 32 wide.
-    assert.equal(brick.x, 32);
-    assert.equal(brick.y, 0);
+    // Right half of block (0, 4) → display (32, 256, 32, 64).
+    const brick = dto.terrain?.regions?.find(
+      (r) => r.type === 'brick' && r.x === 32 && r.y === 256,
+    );
+    assert.ok(brick, 'expected brick at (32, 256)');
     assert.equal(brick.width, 32);
     assert.equal(brick.height, 64);
   });
